@@ -10,7 +10,7 @@
     font-family: 'Arial', sans-serif;
     color: #fff;
     text-align: center;
-    background: url('bg.jpg') no-repeat center center fixed;
+    background: url('final.jpg') no-repeat center center fixed;
     background-size: cover;
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -18,7 +18,7 @@
   }
 
   /* Particle canvas */
-  #particles {
+  #particles, #mouseParticles {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
@@ -111,6 +111,7 @@
 <body>
 
 <canvas id="particles"></canvas>
+<canvas id="mouseParticles"></canvas>
 
 <!-- Home Section -->
 <section id="home" class="active">
@@ -244,6 +245,65 @@
 
   initParticles();
   animate();
+
+  // Mouse move fire particles (flame trails)
+  const mouseCanvas = document.getElementById('mouseParticles');
+  const mCtx = mouseCanvas.getContext('2d');
+  mouseCanvas.width = window.innerWidth;
+  mouseCanvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    mouseCanvas.width = window.innerWidth;
+    mouseCanvas.height = window.innerHeight;
+  });
+
+  const mouseParticles = [];
+
+  class MouseParticle {
+    constructor(x, y){
+      this.x = x;
+      this.y = y;
+      this.size = Math.random() * 5 + 2;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.alpha = 1;
+      this.fade = Math.random() * 0.02 + 0.01;
+    }
+    update(){
+      this.y -= 1;
+      this.alpha -= this.fade;
+    }
+    draw(){
+      mCtx.globalAlpha = this.alpha;
+      mCtx.fillStyle = this.color;
+      mCtx.beginPath();
+      mCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      mCtx.fill();
+      mCtx.globalAlpha = 1;
+    }
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    for(let i=0; i<3; i++){ // multiple particles per move
+      mouseParticles.push(new MouseParticle(e.clientX, e.clientY));
+    }
+  });
+
+  function animateMouseParticles(){
+    mCtx.clearRect(0,0,mouseCanvas.width, mouseCanvas.height);
+    for(let i=mouseParticles.length-1; i>=0; i--){
+      const p = mouseParticles[i];
+      p.update();
+      if(p.alpha <= 0){
+        mouseParticles.splice(i,1);
+      } else {
+        p.draw();
+      }
+    }
+    requestAnimationFrame(animateMouseParticles);
+  }
+
+  animateMouseParticles();
+
 </script>
 
 </body>
