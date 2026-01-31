@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon</title>
 <style>
+  /* Body & Background */
   body {
     margin: 0;
     font-family: 'Arial', sans-serif;
@@ -13,14 +14,19 @@
     background: url('bg.jpg') no-repeat center center fixed;
     background-size: cover;
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
+  /* Neon Glow Text */
   .glow-text {
-    font-size: 2.5em;
+    font-size: 3em;
     color: #fff;
     text-shadow: 0 0 5px #fff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
     animation: neonPulse 2s infinite alternate;
     margin-top: 100px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out;
   }
 
   @keyframes neonPulse {
@@ -28,8 +34,12 @@
     to { text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff; }
   }
 
+  /* Buttons */
   .buttons {
     margin-top: 50px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out 0.5s;
   }
 
   .btn {
@@ -50,11 +60,21 @@
     transform: scale(1.1);
   }
 
+  /* Extra Image */
   .extra-image {
     width: 300px;
     margin-top: 50px;
     border: 2px solid #fff;
     border-radius: 10px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out 1s;
+  }
+
+  /* Fade-in class */
+  .fade-in {
+    opacity: 1 !important;
+    transform: translateY(0px) !important;
   }
 
 </style>
@@ -64,14 +84,30 @@
 <h1 class="glow-text">Music for wanderers of time, thought, and identity.</h1>
 
 <div class="buttons">
-  <a href="https://www.youtube.com/@WanderAeon" class="btn" target="_blank">YouTube</a>
-  <a href="https://www.facebook.com/profile.php?id=61584853409975" class="btn" target="_blank">Facebook</a>
-  <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" class="btn" target="_blank">WhatsApp</a>
-  <a href=" https://www.tiktok.com/@wanderaeon?_r=1&_t=ZS-92b0L7R5HBy" class="btn" target="_blank">TikTok</a>
-  <a href="https://soundcloud.com/wanderaeon" class="btn" target="_blank">SoundCloud</a>
+  <a href="https://www.youtube.com" class="btn" target="_blank">YouTube</a>
+  <a href="https://www.facebook.com" class="btn" target="_blank">Facebook</a>
+  <a href="https://www.whatsapp.com" class="btn" target="_blank">WhatsApp</a>
+  <a href="https://www.tiktok.com" class="btn" target="_blank">TikTok</a>
 </div>
 
 <img src="bg2.jpg" class="extra-image" alt="Extra Image">
+
+<script>
+  // Scroll animation
+  function reveal() {
+    const elements = document.querySelectorAll('.glow-text, .buttons, .extra-image');
+    elements.forEach(el => {
+      const top = el.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+      if (top < windowHeight - 100) {
+        el.classList.add('fade-in');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', reveal);
+  window.addEventListener('load', reveal);
+</script>
 
 </body>
 </html>
