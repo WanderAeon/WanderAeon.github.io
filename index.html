@@ -15,27 +15,45 @@
     background-size: cover;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    position: relative;
+  }
+
+  /* Particles background */
+  #particles {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
   }
 
   /* Neon Glow Text */
   .glow-text {
+    position: relative;
+    z-index: 1;
     font-size: 3em;
     color: #fff;
     text-shadow: 0 0 5px #fff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff;
-    animation: neonPulse 2s infinite alternate;
     margin-top: 100px;
     opacity: 0;
     transform: translateY(50px);
     transition: all 1s ease-out;
   }
 
-  @keyframes neonPulse {
-    from { text-shadow: 0 0 5px #fff, 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 40px #ff00ff; }
-    to { text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff; }
+  /* Typing effect */
+  .typed-text {
+    display: inline-block;
+    border-right: 3px solid #ff00ff;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   /* Buttons */
   .buttons {
+    position: relative;
+    z-index: 1;
     margin-top: 50px;
     opacity: 0;
     transform: translateY(50px);
@@ -69,6 +87,8 @@
     opacity: 0;
     transform: translateY(50px);
     transition: all 1s ease-out 1s;
+    position: relative;
+    z-index: 1;
   }
 
   /* Fade-in class */
@@ -81,7 +101,9 @@
 </head>
 <body>
 
-<h1 class="glow-text">Music for wanderers of time, thought, and identity.</h1>
+<canvas id="particles"></canvas>
+
+<h1 class="glow-text"><span class="typed-text"></span></h1>
 
 <div class="buttons">
   <a href="https://www.youtube.com" class="btn" target="_blank">YouTube</a>
@@ -93,7 +115,20 @@
 <img src="bg2.jpg" class="extra-image" alt="Extra Image">
 
 <script>
-  // Scroll animation
+  // Typing effect
+  const text = "Music for wanderers of time, thought, and identity.";
+  const typedText = document.querySelector('.typed-text');
+  let index = 0;
+
+  function type() {
+    if(index < text.length) {
+      typedText.innerHTML += text.charAt(index);
+      index++;
+      setTimeout(type, 80); // typing speed
+    }
+  }
+
+  // Scroll fade-in
   function reveal() {
     const elements = document.querySelectorAll('.glow-text, .buttons, .extra-image');
     elements.forEach(el => {
@@ -106,7 +141,65 @@
   }
 
   window.addEventListener('scroll', reveal);
-  window.addEventListener('load', reveal);
+  window.addEventListener('load', () => {
+    reveal();
+    type();
+  });
+
+  // Particles effect
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const particlesArray = [];
+  const colors = ['#ff00ff','#ff66ff','#ff33cc','#ff00cc'];
+
+  class Particle {
+    constructor() {
+      this.x = Math.random()*width;
+      this.y = Math.random()*height;
+      this.size = Math.random()*3+1;
+      this.speedX = (Math.random()-0.5)*1.5;
+      this.speedY = (Math.random()-0.5)*1.5;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      if(this.x < 0 || this.x > width) this.speedX *= -1;
+      if(this.y < 0 || this.y > height) this.speedY *= -1;
+    }
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  function initParticles(){
+    for(let i=0;i<100;i++){
+      particlesArray.push(new Particle());
+    }
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,width,height);
+    particlesArray.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  initParticles();
+  animate();
 </script>
 
 </body>
