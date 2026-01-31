@@ -9,7 +9,6 @@
     margin: 0;
     font-family: 'Arial', sans-serif;
     color: #fff;
-    text-align: center;
     background: url('final.jpg') no-repeat center center fixed;
     background-size: cover;
     overflow-x: hidden;
@@ -26,59 +25,18 @@
     pointer-events: none;
   }
 
-  /* Sections */
-  section {
-    min-height: 100vh;
+  /* Buttons at top */
+  .buttons {
+    position: absolute;
+    top: 5%; /* 1-5 inch approx top */
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 1s ease-out;
+    flex-wrap: wrap;
+    gap: 15px;
+    z-index: 2;
   }
 
-  section.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Fire effect text */
-  .glow-text {
-    font-size: 3em;
-    font-weight: bold;
-    background: linear-gradient(90deg, #ff0000, #ff6600, #ffff00);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: fire 1s infinite alternate;
-    margin-bottom: 30px;
-    transition: all 0.5s ease;
-  }
-
-  .glow-text:hover {
-    text-shadow: 0 0 30px #ff0000, 0 0 50px #ff6600, 0 0 70px #ffff00;
-    transform: scale(1.05);
-  }
-
-  @keyframes fire {
-    0% { background-position: 0% 50%; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff6600; }
-    50% { background-position: 50% 50%; text-shadow: 0 0 20px #ff6600, 0 0 30px #ffff00; }
-    100% { background-position: 100% 50%; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff6600; }
-  }
-
-  /* Typing effect */
-  .typed-text {
-    display: inline-block;
-    border-right: 3px solid #ff6600;
-    white-space: nowrap;
-    overflow: hidden;
-  }
-
-  /* Buttons */
-  .buttons { margin: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
   .btn {
     padding: 12px 20px;
     border: 2px solid #ff6600;
@@ -93,6 +51,75 @@
     transform: scale(1.1);
   }
 
+  /* Sections */
+  section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s ease-out;
+  }
+  section.active { opacity: 1; transform: translateY(0); }
+
+  /* Fire effect text */
+  .glow-text {
+    font-size: 3em;
+    font-weight: bold;
+    background: linear-gradient(90deg, #ff0000, #ff6600, #ffff00);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fire 1s infinite alternate;
+    margin-bottom: 50px;
+    transition: all 0.5s ease;
+    z-index:2;
+  }
+  .glow-text:hover {
+    text-shadow: 0 0 30px #ff0000, 0 0 50px #ff6600, 0 0 70px #ffff00;
+    transform: scale(1.05);
+  }
+  @keyframes fire {
+    0% { background-position: 0% 50%; text-shadow: 0 0 10px #ff0000,0 0 20px #ff6600;}
+    50% { background-position: 50% 50%; text-shadow: 0 0 20px #ff6600,0 0 30px #ffff00;}
+    100% { background-position: 100% 50%; text-shadow:0 0 10px #ff0000,0 0 20px #ff6600;}
+  }
+
+  /* Typing effect */
+  .typed-text {
+    display: inline-block;
+    border-right: 3px solid #ff6600;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  /* Rolling banner */
+  .rolling-banner {
+    position: relative;
+    margin-top: 2in; /* 2 inch gap below main text */
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    z-index:2;
+  }
+  .rolling-banner span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: roll 20s linear infinite;
+    font-size: 2em;
+    color: #ff9900;
+    font-weight:bold;
+    text-shadow: 0 0 10px #ff6600, 0 0 20px #ff3300;
+  }
+  @keyframes roll {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
   /* Extra Image */
   .extra-image {
     width: 300px;
@@ -103,9 +130,8 @@
   }
   .extra-image:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 30px #ff6600, 0 0 50px #ff3300;
+    box-shadow: 0 0 30px #ff6600,0 0 50px #ff3300;
   }
-
 </style>
 </head>
 <body>
@@ -113,16 +139,19 @@
 <canvas id="particles"></canvas>
 <canvas id="mouseParticles"></canvas>
 
+<!-- Buttons Top -->
+<div class="buttons">
+  <a href="https://www.youtube.com/@WanderAeon" target="_blank" class="btn">YouTube</a>
+  <a href="https://www.tiktok.com/@wanderaeon?_r=1&_t=ZS-92b0L7R5HBy" target="_blank" class="btn">TikTok</a>
+  <a href="https://soundcloud.com/wanderaeon" target="_blank" class="btn">SoundCloud</a>
+  <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank" class="btn">WhatsApp</a>
+</div>
+
 <!-- Home Section -->
 <section id="home" class="active">
   <h1 class="glow-text"><span class="typed-text"></span></h1>
-  <div class="buttons">
-    <a href="https://www.youtube.com/@WanderAeon" target="_blank" class="btn">YouTube</a>
-    <a href="https://www.tiktok.com/@wanderaeon?_r=1&_t=ZS-92b0L7R5HBy" target="_blank" class="btn">TikTok</a>
-    <a href="https://soundcloud.com/wanderaeon" target="_blank" class="btn">SoundCloud</a>
-    <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank" class="btn">WhatsApp</a>
-    <a href="#youtube" class="btn">Scroll to YouTube</a>
-    <a href="#facebook" class="btn">Scroll to Facebook</a>
+  <div class="rolling-banner">
+    <span>Music for wanderers of time, thought, and identity. 🎵🔥 — WanderAeon — 🔥🎵 </span>
   </div>
 </section>
 
@@ -181,129 +210,72 @@
     type();
   });
 
-  // Smooth scroll for internal buttons
-  const buttons = document.querySelectorAll('.btn[href^="#"]');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.querySelector(btn.getAttribute('href'));
-      target.scrollIntoView({behavior: 'smooth'});
-    });
-  });
-
   // Fire-colored particle effect
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
   let width = canvas.width = window.innerWidth;
   let height = canvas.height = window.innerHeight;
-
   window.addEventListener('resize', () => {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
   });
-
   const particlesArray = [];
   const colors = ['#ff6600','#ff3300','#ffcc00','#ff9933'];
-
   class Particle {
     constructor() {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.size = Math.random() * 3 + 1;
-      this.speedX = (Math.random() - 0.5) * 1.5;
-      this.speedY = (Math.random() - 0.5) * 1.5;
-      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.x = Math.random()*width;
+      this.y = Math.random()*height;
+      this.size = Math.random()*3+1;
+      this.speedX = (Math.random()-0.5)*1.5;
+      this.speedY = (Math.random()-0.5)*1.5;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
     }
     update() {
       this.x += this.speedX;
       this.y += this.speedY;
-      if(this.x < 0 || this.x > width) this.speedX *= -1;
-      if(this.y < 0 || this.y > height) this.speedY *= -1;
+      if(this.x<0||this.x>width)this.speedX*=-1;
+      if(this.y<0||this.y>height)this.speedY*=-1;
     }
     draw() {
-      ctx.fillStyle = this.color;
+      ctx.fillStyle=this.color;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
       ctx.fill();
     }
   }
-
-  function initParticles() {
-    for(let i = 0; i < 150; i++){
-      particlesArray.push(new Particle());
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    particlesArray.forEach(p => {
-      p.update();
-      p.draw();
-    });
+  function initParticles(){ for(let i=0;i<150;i++){particlesArray.push(new Particle());}}
+  function animate(){
+    ctx.clearRect(0,0,width,height);
+    particlesArray.forEach(p=>{p.update();p.draw();});
     requestAnimationFrame(animate);
   }
-
   initParticles();
   animate();
 
-  // Mouse move fire particles (flame trails)
-  const mouseCanvas = document.getElementById('mouseParticles');
-  const mCtx = mouseCanvas.getContext('2d');
-  mouseCanvas.width = window.innerWidth;
-  mouseCanvas.height = window.innerHeight;
-
-  window.addEventListener('resize', () => {
-    mouseCanvas.width = window.innerWidth;
-    mouseCanvas.height = window.innerHeight;
-  });
-
-  const mouseParticles = [];
-
-  class MouseParticle {
-    constructor(x, y){
-      this.x = x;
-      this.y = y;
-      this.size = Math.random() * 5 + 2;
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-      this.alpha = 1;
-      this.fade = Math.random() * 0.02 + 0.01;
+  // Mouse move fire particles
+  const mouseCanvas=document.getElementById('mouseParticles');
+  const mCtx=mouseCanvas.getContext('2d');
+  mouseCanvas.width=window.innerWidth;
+  mouseCanvas.height=window.innerHeight;
+  window.addEventListener('resize',()=>{mouseCanvas.width=window.innerWidth; mouseCanvas.height=window.innerHeight;});
+  const mouseParticles=[];
+  class MouseParticle{
+    constructor(x,y){
+      this.x=x; this.y=y; this.size=Math.random()*5+2; this.color=colors[Math.floor(Math.random()*colors.length)];
+      this.alpha=1; this.fade=Math.random()*0.02+0.01;
     }
-    update(){
-      this.y -= 1;
-      this.alpha -= this.fade;
-    }
-    draw(){
-      mCtx.globalAlpha = this.alpha;
-      mCtx.fillStyle = this.color;
-      mCtx.beginPath();
-      mCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      mCtx.fill();
-      mCtx.globalAlpha = 1;
-    }
+    update(){this.y-=1; this.alpha-=this.fade;}
+    draw(){mCtx.globalAlpha=this.alpha; mCtx.fillStyle=this.color; mCtx.beginPath(); mCtx.arc(this.x,this.y,this.size,0,Math.PI*2); mCtx.fill(); mCtx.globalAlpha=1;}
   }
-
-  window.addEventListener('mousemove', (e) => {
-    for(let i=0; i<3; i++){ // multiple particles per move
-      mouseParticles.push(new MouseParticle(e.clientX, e.clientY));
-    }
-  });
-
+  window.addEventListener('mousemove',e=>{for(let i=0;i<3;i++){mouseParticles.push(new MouseParticle(e.clientX,e.clientY));}});
   function animateMouseParticles(){
-    mCtx.clearRect(0,0,mouseCanvas.width, mouseCanvas.height);
-    for(let i=mouseParticles.length-1; i>=0; i--){
-      const p = mouseParticles[i];
-      p.update();
-      if(p.alpha <= 0){
-        mouseParticles.splice(i,1);
-      } else {
-        p.draw();
-      }
+    mCtx.clearRect(0,0,mouseCanvas.width,mouseCanvas.height);
+    for(let i=mouseParticles.length-1;i>=0;i--){
+      const p=mouseParticles[i]; p.update(); if(p.alpha<=0){mouseParticles.splice(i,1);} else{p.draw();}
     }
     requestAnimationFrame(animateMouseParticles);
   }
-
   animateMouseParticles();
-
 </script>
 
 </body>
