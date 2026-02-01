@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderAeon — Echo Universe Step-2 Spiral</title>
+<title>WanderAeon — Multi Universe</title>
 
 <style>
 :root {
-  --bg-color: #0b0c1c;
-  --text-glow: #00ffff;
-  --btn-border: #00ffff;
-  --btn-hover-bg: #00ffff;
+  /* DEFAULT INFERNO */
+  --bg-image: url('final.jpg');
+  --main-color: #ff4500;
+  --glow-color: #ff9900;
+  --soft-color: #ffcc66;
+  --text-glow: #ff9900;
+  --btn-border: #ff4500;
+  --btn-hover-bg: #ff4500;
   --btn-hover-color: #000;
+  --body-bg: var(--bg-image);
 }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--bg-color);
+  background: var(--body-bg) no-repeat center center fixed;
+  background-size: cover;
   color: white;
   overflow-x: hidden;
-  overflow-y: scroll;
 }
 
 canvas {
@@ -49,13 +54,24 @@ canvas {
   color: white;
   text-decoration: none;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .btn:hover {
   background: var(--btn-hover-bg);
   color: var(--btn-hover-color);
-  box-shadow: 0 0 30px var(--btn-border);
+  box-shadow: 0 0 30px var(--glow-color);
   transform: scale(1.04);
+}
+
+.theme-switcher {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 5;
 }
 
 section {
@@ -68,26 +84,34 @@ section {
   z-index: 1;
 }
 
-.echo-text {
+.glow-text {
   font-size: 3em;
   font-weight: bold;
   text-align: center;
-  color: var(--text-glow);
+  background: linear-gradient(90deg, var(--main-color), var(--glow-color), var(--soft-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-shadow:
-    0 0 15px var(--text-glow),
-    0 0 30px rgba(0,255,255,0.5),
-    0 0 50px rgba(0,255,255,0.3);
+    0 0 10px var(--glow-color),
+    0 0 20px var(--soft-color);
+  animation: fireMove 1s infinite alternate;
+}
+
+@keyframes fireMove {
+  from {background-position:0% 50%;}
+  to {background-position:100% 50%;}
 }
 
 @media (max-width: 768px) {
-  .echo-text {font-size:2.2em;}
+  .glow-text {font-size:2.2em;}
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="echo-bg"></canvas>
+<canvas id="bg"></canvas>
+<canvas id="effect"></canvas>
 
 <div class="buttons">
   <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
@@ -97,10 +121,16 @@ section {
   <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
 </div>
 
+<div class="theme-switcher">
+  <button class="btn" onclick="switchTheme('inferno')">🔥 Inferno</button>
+  <button class="btn" onclick="switchTheme('echo')">🌌 Echo</button>
+  <button class="btn" onclick="switchTheme('void')">🖤 Void</button>
+</div>
+
 <section>
-  <h1 class="echo-text">WanderAeon — Echo</h1>
-  <p style="margin-top:20px; text-align:center; font-size:1.2em; color:#00ffff88;">
-    Move your mouse or touch to spin the waves and repel particles!
+  <h1 class="glow-text" id="title">WanderAeon</h1>
+  <p style="margin-top:20px; text-align:center; font-size:1.2em; color:#ffffff88;" id="desc">
+    Music, Fire, Waves… explore the universe by switching themes!
   </p>
 </section>
 
@@ -109,115 +139,124 @@ section {
 <audio id="ambient3" loop src="ambient3.mp3"></audio>
 
 <script>
-const canvas = document.getElementById("echo-bg");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+const root = document.documentElement;
+
+// ========== THEME CONFIG ==========
+const themes = {
+  inferno: {
+    '--body-bg': "url('final.jpg')",
+    '--main-color': '#ff4500',
+    '--glow-color': '#ff9900',
+    '--soft-color': '#ffcc66',
+    '--text-glow': '#ff9900',
+    '--btn-border': '#ff4500',
+    '--btn-hover-bg': '#ff4500',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Inferno',
+    desc: 'Inferno Aeon — Music born from fire and shadows 🔥'
+  },
+  echo: {
+    '--body-bg': "#0b0c1c",
+    '--main-color': '#00ffff',
+    '--glow-color': '#00ffff',
+    '--soft-color': '#00ffff66',
+    '--text-glow': '#00ffff',
+    '--btn-border': '#00ffff',
+    '--btn-hover-bg': '#00ffff',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Echo',
+    desc: 'Echo Aeon — Waves and ambient sound 🌌'
+  },
+  void: {
+    '--body-bg': "#000000",
+    '--main-color': '#888888',
+    '--glow-color': '#aaaaaa',
+    '--soft-color': '#555555',
+    '--text-glow': '#888888',
+    '--btn-border': '#888888',
+    '--btn-hover-bg': '#555555',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Void',
+    desc: 'Void Aeon — Silence, minimalism, infinity 🖤'
+  }
+};
+
+// ========== SWITCH THEME FUNCTION ==========
+function switchTheme(name){
+  const t = themes[name];
+  for(const key in t){
+    if(key.startsWith('--')) root.style.setProperty(key, t[key]);
+  }
+  document.getElementById('title').innerText = t.title;
+  document.getElementById('desc').innerText = t.desc;
+}
+</script>
+
+<!-- =========================
+   CANVAS EFFECTS (Particles / Waves)
+========================= -->
+<script>
+const bg = document.getElementById("bg");
+const bctx = bg.getContext("2d");
+bg.width = innerWidth;
+bg.height = innerHeight;
+
+const effect = document.getElementById("effect");
+const ectx = effect.getContext("2d");
+effect.width = innerWidth;
+effect.height = innerHeight;
 
 window.addEventListener("resize", ()=>{
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
+  bg.width = innerWidth;
+  bg.height = innerHeight;
+  effect.width = innerWidth;
+  effect.height = innerHeight;
 });
 
-// ========== SPIRAL & PARTICLE WAVES ==========
-const layers = 4;
-let waves = [];
-
-for(let l=0;l<layers;l++){
-  let layer = [];
-  for(let i=0;i<120;i++){
-    layer.push({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      baseX: 0,
-      baseY: 0,
-      amp: Math.random()*25+15*(l+1),
-      speed: Math.random()*0.03+0.005*(l+1),
-      phase: Math.random()*Math.PI*2,
-      size: Math.random()*2+1+l,
-      color: `rgba(${0+l*50},${255-l*50},255,${0.2+l*0.2})`
-    });
-    layer[i].baseX = layer[i].x;
-    layer[i].baseY = layer[i].y;
-  }
-  waves.push(layer);
+// SIMPLE PARTICLES FOR DEMO (can expand per theme)
+let particles = [];
+for(let i=0;i<150;i++){
+  particles.push({
+    x:Math.random()*bg.width,
+    y:Math.random()*bg.height,
+    size:Math.random()*3+1,
+    color: 'rgba(255,150,0,0.7)'
+  });
 }
 
 let pointer = {x:null, y:null};
+window.addEventListener("mousemove", e=>{pointer.x=e.clientX; pointer.y=e.clientY;});
+window.addEventListener("touchmove", e=>{let t=e.touches[0]; pointer.x=t.clientX; pointer.y=t.clientY;});
 
-window.addEventListener("mousemove", e=>{
-  pointer.x = e.clientX;
-  pointer.y = e.clientY;
-});
-window.addEventListener("touchmove", e=>{
-  let t = e.touches[0];
-  pointer.x = t.clientX;
-  pointer.y = t.clientY;
-});
+function animate(){
+  bctx.clearRect(0,0,bg.width,bg.height);
+  ectx.clearRect(0,0,effect.width,effect.height);
 
-function animateWaves(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // background particles
+  particles.forEach(p=>{
+    p.y += 0.5;
+    if(p.y>bg.height) p.y=0;
+    bctx.fillStyle=p.color;
+    bctx.beginPath();
+    bctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    bctx.fill();
 
-  waves.forEach((layer,l)=>{
-    layer.forEach(w=>{
-      w.phase += w.speed;
-      let y = w.baseY + Math.sin(w.phase)*w.amp;
-
-      // Spiral mouse effect
-      if(pointer.x !== null && pointer.y !== null){
-        let dx = w.x - pointer.x;
-        let dy = w.y - pointer.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 200){
-          let angle = Math.atan2(dy, dx) + Math.sin(w.phase*0.5)*0.5; // circular spiral
-          let force = (200 - dist)/200 * 20; // intensity
-          w.x += Math.cos(angle)*force*0.05;
-          w.y += Math.sin(angle)*force*0.05;
-
-          // particle repel slightly
-          w.x += dx/dist * 2;
-          w.y += dy/dist * 2;
-        } else {
-          // Gradually return to base
-          w.x += (w.baseX - w.x)*0.02;
-          w.y += (w.baseY - w.y)*0.02;
-        }
+    // repel near pointer
+    if(pointer.x && pointer.y){
+      let dx = p.x - pointer.x;
+      let dy = p.y - pointer.y;
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist<100){
+        let force = (100-dist)/100*5;
+        p.x += dx/dist*force;
+        p.y += dy/dist*force;
       }
-
-      ctx.fillStyle = w.color;
-      ctx.shadowBlur = 15 + l*8;
-      ctx.shadowColor = w.color;
-      ctx.beginPath();
-      ctx.arc(w.x, y, w.size, 0, Math.PI*2);
-      ctx.fill();
-    });
+    }
   });
 
-  requestAnimationFrame(animateWaves);
+  requestAnimationFrame(animate);
 }
-animateWaves();
-
-// ========== SCROLL CONTROLLED AMBIENT ==========
-const ambient1 = document.getElementById("ambient1");
-const ambient2 = document.getElementById("ambient2");
-const ambient3 = document.getElementById("ambient3");
-
-window.addEventListener("scroll", ()=>{
-  let volume1 = Math.min(window.scrollY / 600, 1);
-  let volume2 = Math.min((window.scrollY-300) / 600, 1);
-  let volume3 = Math.min((window.scrollY-600) / 600, 1);
-
-  ambient1.volume = volume1;
-  ambient2.volume = volume2;
-  ambient3.volume = volume3;
-
-  if(volume1>0.01 && ambient1.paused) ambient1.play();
-  if(volume1<=0.01) ambient1.pause();
-  if(volume2>0.01 && ambient2.paused) ambient2.play();
-  if(volume2<=0.01) ambient2.pause();
-  if(volume3>0.01 && ambient3.paused) ambient3.play();
-  if(volume3<=0.01) ambient3.pause();
-});
+animate();
 </script>
 
 </body>
