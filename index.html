@@ -1,6 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style>
+
+/* ===== BODY ===== */
+body {
+  margin: 0;
+  padding: 0;
+  background: black;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== MAIN SECTION (CONTROL BOX) ===== */
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* left-right control */
+  justify-content: center;  /* upar-neeche control */
+}
+
+/* ===== TITLE ===== */
+.glow-text {
+  font-size: 3em;
+  margin-top: -60px;   /* upar neeche */
+  text-align: center;
+}
+
+/* ===== RUNNING TEXT ===== */
+.rolling-banner {
+  margin-top: 1in;
+  width: 100%;
+  text-align: center;
+}
+
+/* ===== BUTTONS ===== */
+.buttons {
+  position: absolute;
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* ===== MOBILE FIX ===== */
+@media (max-width: 768px) {
+
+  .glow-text {
+    font-size: 2.2em;
+    margin-top: -40px;
+  }
+
+  .rolling-banner {
+    margin-top: 0.6in;
+  }
+
+}
+
+</style>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon</title>
