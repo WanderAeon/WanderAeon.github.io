@@ -1,1 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WanderAeon — Multi Universe</title>
+
+<style>
+:root {
+  /* DEFAULT INFERNO */
+  --bg-image: url('final.jpg');
+  --main-color: #ff4500;
+  --glow-color: #ff9900;
+  --soft-color: #ffcc66;
+  --text-glow: #ff9900;
+  --btn-border: #ff4500;
+  --btn-hover-bg: #ff4500;
+  --btn-hover-color: #000;
+  --body-bg: var(--bg-image);
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--body-bg) no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.buttons {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  z-index: 5;
+}
+
+.btn {
+  padding: 10px 16px;
+  border: 2px solid var(--btn-border);
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--btn-hover-bg);
+  color: var(--btn-hover-color);
+  box-shadow: 0 0 35px var(--glow-color);
+  transform: scale(1.04);
+}
+
+.theme-switcher {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 5;
+}
+
+section {
+  min-height: 250vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.glow-text {
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(90deg, var(--main-color), var(--glow-color), var(--soft-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow:
+    0 0 15px var(--glow-color),
+    0 0 30px var(--soft-color);
+  animation: fireMove 1s infinite alternate;
+}
+
+@keyframes fireMove {
+  from {background-position:0% 50%;}
+  to {background-position:100% 50%;}
+}
+
+@media (max-width: 768px) {
+  .glow-text {font-size:2.2em;}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+<canvas id="effect"></canvas>
+
+<div class="buttons">
+  <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
+  <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
+  <a class="btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
+  <a class="btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
+  <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
+</div>
+
+<div class="theme-switcher">
+  <button class="btn" onclick="switchTheme('inferno')">🔥 Inferno</button>
+  <button class="btn" onclick="switchTheme('echo')">🌌 Echo</button>
+  <button class="btn" onclick="switchTheme('void')">🖤 Void</button>
+</div>
+
+<section>
+  <h1 class="glow-text" id="title">WanderAeon</h1>
+  <p style="margin-top:20px; text-align:center; font-size:1.2em; color:#ffffff88;" id="desc">
+    Music, Fire, Waves… explore the universe by switching themes!
+  </p>
+</section>
+
+<script>
+const root = document.documentElement;
+
+// ================= THEME CONFIG =================
+const themes = {
+  inferno: {
+    '--body-bg': "url('final.jpg')",
+    '--main-color': '#ff4500',
+    '--glow-color': '#ff9900',
+    '--soft-color': '#ffcc66',
+    '--text-glow': '#ff9900',
+    '--btn-border': '#ff4500',
+    '--btn-hover-bg': '#ff4500',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Inferno',
+    desc: 'Inferno Aeon — Music born from fire and shadows 🔥'
+  },
+  echo: {
+    '--body-bg': "#0b0c1c",
+    '--main-color': '#00ffff',
+    '--glow-color': '#00ffff',
+    '--soft-color': '#00ffff66',
+    '--text-glow': '#00ffff',
+    '--btn-border': '#00ffff',
+    '--btn-hover-bg': '#00ffff',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Echo',
+    desc: 'Echo Aeon — Waves and ambient sound 🌌'
+  },
+  void: {
+    '--body-bg': "#000000",
+    '--main-color': '#888888',
+    '--glow-color': '#aaaaaa',
+    '--soft-color': '#555555',
+    '--text-glow': '#888888',
+    '--btn-border': '#888888',
+    '--btn-hover-bg': '#555555',
+    '--btn-hover-color': '#000',
+    title: 'WanderAeon — Void',
+    desc: 'Void Aeon — Silence, minimalism, infinity 🖤'
+  }
+};
+
+function switchTheme(name){
+  const t = themes[name];
+  for(const key in t){
+    if(key.startsWith('--')) root.style.setProperty(key, t[key]);
+  }
+  document.getElementById('title').innerText = t.title;
+  document.getElementById('desc').innerText = t.desc;
+
+  // Reset particle/wave layers
+  particles = [];
+  waves = [];
+  initParticles();
+  initWaves();
+}
+
+// ================= CANVAS EFFECTS =================
+const bg = document.getElementById("bg");
+const bctx = bg.getContext("2d");
+bg.width = innerWidth;
+bg.height = innerHeight;
+
+const effect = document.getElementById("effect");
+const ectx = effect.getContext("2d");
+effect.width = innerWidth;
+effect.height = innerHeight;
+
+window.addEventListener("resize", ()=>{
+  bg.width = innerWidth;
+  bg.height = innerHeight;
+  effect.width = innerWidth;
+  effect.height = innerHeight;
+});
+
+let pointer = {x:null, y:null};
+window.addEventListener("mousemove", e=>{pointer.x=e.clientX; pointer.y=e.clientY;});
+window.addEventListener("touchmove", e=>{let t=e.touches[0]; pointer.x=t.clientX; pointer.y=t.clientY;});
+
+// ================= PARTICLES + WAVES =================
+let particles = [];
+let waves = [];
+
+function initParticles(){
+  for(let i=0;i<200;i++){
+    particles.push({
+      x: Math.random()*bg.width,
+      y: Math.random()*bg.height,
+      size: Math.random()*4+1,
+      color: getComputedStyle(root).getPropertyValue('--main-color')
+    });
+  }
+}
+
+function initWaves(){
+  for(let i=0;i<12;i++){
+    waves.push({
+      x: Math.random()*effect.width,
+      y: Math.random()*effect.height,
+      radius: Math.random()*25+15,
+      speed: Math.random()*0.05+0.01,
+      angle: Math.random()*Math.PI*2,
+      color: getComputedStyle(root).getPropertyValue('--glow-color')
+    });
+  }
+}
+
+initParticles();
+initWaves();
+
+function animate(){
+  bctx.clearRect(0,0,bg.width,bg.height);
+  ectx.clearRect(0,0,effect.width,effect.height);
+
+  // ===== Particles (Inferno / Void)
+  particles.forEach(p=>{
+    p.y += 0.5;
+    if(p.y>bg.height) p.y=0;
+    bctx.fillStyle = p.color;
+    bctx.beginPath();
+    bctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    bctx.fill();
+
+    if(pointer.x && pointer.y){
+      let dx = p.x - pointer.x;
+      let dy = p.y - pointer.y;
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist<120){
+        let force = (120-dist)/120*4;
+        p.x += dx/dist*force;
+        p.y += dy/dist*force;
+      }
+    }
+  });
+
+  // ===== Waves (Echo)
+  waves.forEach(w=>{
+    w.angle += w.speed*0.02;
+    let dx = Math.cos(w.angle)*15;
+    let dy = Math.sin(w.angle)*15;
+    ectx.beginPath();
+    ectx.arc(w.x + dx, w.y + dy, w.radius, 0, Math.PI*2);
+    ectx.strokeStyle = w.color;
+    ectx.lineWidth = 2;
+    ectx.shadowColor = w.color;
+    ectx.shadowBlur = 12;
+    ectx.stroke();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
 
