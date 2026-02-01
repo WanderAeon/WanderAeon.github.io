@@ -134,9 +134,10 @@ section {
   </p>
 </section>
 
-<audio id="ambient1" loop src="ambient1.mp3"></audio>
-<audio id="ambient2" loop src="ambient2.mp3"></audio>
-<audio id="ambient3" loop src="ambient3.mp3"></audio>
+<!-- OPTIONAL AUDIO PLACEHOLDERS -->
+<audio id="ambient1" loop></audio>
+<audio id="ambient2" loop></audio>
+<audio id="ambient3" loop></audio>
 
 <script>
 const root = document.documentElement;
@@ -189,11 +190,17 @@ function switchTheme(name){
   }
   document.getElementById('title').innerText = t.title;
   document.getElementById('desc').innerText = t.desc;
+
+  // Reset particle layers on theme switch
+  particles = [];
+  waves = [];
+  initParticles();
+  initWaves();
 }
 </script>
 
 <!-- =========================
-   CANVAS EFFECTS (Particles / Waves)
+   CANVAS EFFECTS (Particles / Waves per theme)
 ========================= -->
 <script>
 const bg = document.getElementById("bg");
@@ -213,26 +220,46 @@ window.addEventListener("resize", ()=>{
   effect.height = innerHeight;
 });
 
-// SIMPLE PARTICLES FOR DEMO (can expand per theme)
+// PARTICLES / FIRE / WAVES
 let particles = [];
-for(let i=0;i<150;i++){
-  particles.push({
-    x:Math.random()*bg.width,
-    y:Math.random()*bg.height,
-    size:Math.random()*3+1,
-    color: 'rgba(255,150,0,0.7)'
-  });
-}
-
+let waves = [];
 let pointer = {x:null, y:null};
+
 window.addEventListener("mousemove", e=>{pointer.x=e.clientX; pointer.y=e.clientY;});
 window.addEventListener("touchmove", e=>{let t=e.touches[0]; pointer.x=t.clientX; pointer.y=t.clientY;});
+
+function initParticles(){
+  for(let i=0;i<150;i++){
+    particles.push({
+      x:Math.random()*bg.width,
+      y:Math.random()*bg.height,
+      size:Math.random()*3+1,
+      color: getComputedStyle(root).getPropertyValue('--main-color')
+    });
+  }
+}
+
+function initWaves(){
+  for(let i=0;i<8;i++){
+    waves.push({
+      x: Math.random()*effect.width,
+      y: Math.random()*effect.height,
+      radius: Math.random()*20+20,
+      speed: Math.random()*0.5+0.2,
+      angle: Math.random()*Math.PI*2,
+      color: getComputedStyle(root).getPropertyValue('--glow-color')
+    });
+  }
+}
+
+initParticles();
+initWaves();
 
 function animate(){
   bctx.clearRect(0,0,bg.width,bg.height);
   ectx.clearRect(0,0,effect.width,effect.height);
 
-  // background particles
+  // particles
   particles.forEach(p=>{
     p.y += 0.5;
     if(p.y>bg.height) p.y=0;
@@ -241,7 +268,6 @@ function animate(){
     bctx.arc(p.x,p.y,p.size,0,Math.PI*2);
     bctx.fill();
 
-    // repel near pointer
     if(pointer.x && pointer.y){
       let dx = p.x - pointer.x;
       let dy = p.y - pointer.y;
@@ -254,8 +280,23 @@ function animate(){
     }
   });
 
+  // waves (Echo style)
+  waves.forEach(w=>{
+    w.angle += w.speed*0.02;
+    let dx = Math.cos(w.angle)*10;
+    let dy = Math.sin(w.angle)*10;
+    ectx.beginPath();
+    ectx.arc(w.x + dx, w.y + dy, w.radius, 0, Math.PI*2);
+    ectx.strokeStyle = w.color;
+    ectx.lineWidth = 2;
+    ectx.shadowColor = w.color;
+    ectx.shadowBlur = 8;
+    ectx.stroke();
+  });
+
   requestAnimationFrame(animate);
 }
+
 animate();
 </script>
 
