@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderAeon — Echo Universe Step-2 (Mouse Reactive)</title>
+<title>WanderAeon — Echo Universe Step-2 Spiral</title>
 
 <style>
 :root {
@@ -100,7 +100,7 @@ section {
 <section>
   <h1 class="echo-text">WanderAeon — Echo</h1>
   <p style="margin-top:20px; text-align:center; font-size:1.2em; color:#00ffff88;">
-    Scroll and move your mouse to feel the waves in 3D...
+    Move your mouse or touch to spin the waves and repel particles!
   </p>
 </section>
 
@@ -119,35 +119,40 @@ window.addEventListener("resize", ()=>{
   canvas.height = innerHeight;
 });
 
-// ========== MULTI-LAYER MOUSE REACTIVE WAVES ==========
+// ========== SPIRAL & PARTICLE WAVES ==========
 const layers = 4;
 let waves = [];
+
 for(let l=0;l<layers;l++){
   let layer = [];
   for(let i=0;i<120;i++){
     layer.push({
       x: Math.random()*canvas.width,
       y: Math.random()*canvas.height,
+      baseX: 0,
+      baseY: 0,
       amp: Math.random()*25+15*(l+1),
       speed: Math.random()*0.03+0.005*(l+1),
       phase: Math.random()*Math.PI*2,
       size: Math.random()*2+1+l,
       color: `rgba(${0+l*50},${255-l*50},255,${0.2+l*0.2})`
     });
+    layer[i].baseX = layer[i].x;
+    layer[i].baseY = layer[i].y;
   }
   waves.push(layer);
 }
 
-let mousePos = {x:null, y:null};
+let pointer = {x:null, y:null};
 
 window.addEventListener("mousemove", e=>{
-  mousePos.x = e.clientX;
-  mousePos.y = e.clientY;
+  pointer.x = e.clientX;
+  pointer.y = e.clientY;
 });
 window.addEventListener("touchmove", e=>{
   let t = e.touches[0];
-  mousePos.x = t.clientX;
-  mousePos.y = t.clientY;
+  pointer.x = t.clientX;
+  pointer.y = t.clientY;
 });
 
 function animateWaves(){
@@ -156,17 +161,26 @@ function animateWaves(){
   waves.forEach((layer,l)=>{
     layer.forEach(w=>{
       w.phase += w.speed;
-      let y = w.y + Math.sin(w.phase)*w.amp;
+      let y = w.baseY + Math.sin(w.phase)*w.amp;
 
-      // Real mouse reactive displacement
-      if(mousePos.x !== null && mousePos.y !== null){
-        let dx = w.x - mousePos.x;
-        let dy = w.y - mousePos.y;
+      // Spiral mouse effect
+      if(pointer.x !== null && pointer.y !== null){
+        let dx = w.x - pointer.x;
+        let dy = w.y - pointer.y;
         let dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 150){ // influence radius
-          let force = (150 - dist)/150 * 15; // effect intensity
-          y += dy/dist * force;
-          w.x += dx/dist * force * 0.05;
+        if(dist < 200){
+          let angle = Math.atan2(dy, dx) + Math.sin(w.phase*0.5)*0.5; // circular spiral
+          let force = (200 - dist)/200 * 20; // intensity
+          w.x += Math.cos(angle)*force*0.05;
+          w.y += Math.sin(angle)*force*0.05;
+
+          // particle repel slightly
+          w.x += dx/dist * 2;
+          w.y += dy/dist * 2;
+        } else {
+          // Gradually return to base
+          w.x += (w.baseX - w.x)*0.02;
+          w.y += (w.baseY - w.y)*0.02;
         }
       }
 
