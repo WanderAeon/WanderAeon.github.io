@@ -1,73 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <style>
-
-/* ===== BODY ===== */
-body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  color: white;
-  font-family: Arial, sans-serif;
-}
-
-/* ===== MAIN SECTION (CONTROL BOX) ===== */
-section {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;      /* left-right control */
-  justify-content: center;  /* upar-neeche control */
-}
-
-/* ===== TITLE ===== */
-.glow-text {
-  font-size: 3em;
-  margin-top: -60px;   /* upar neeche */
-  text-align: center;
-}
-
-/* ===== RUNNING TEXT ===== */
-.rolling-banner {
-  margin-top: 1in;
-  width: 100%;
-  text-align: center;
-}
-
-/* ===== BUTTONS ===== */
-.buttons {
-  position: absolute;
-  top: 1%;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-/* ===== MOBILE FIX ===== */
-@media (max-width: 768px) {
-
-  .glow-text {
-    font-size: 2.2em;
-    margin-top: -40px;
-  }
-
-  .rolling-banner {
-    margin-top: 0.6in;
-  }
-
-}
-
-</style>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon</title>
 
 <style>
+/* ===== BODY ===== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -77,7 +16,7 @@ body {
   overflow-x: hidden;
 }
 
-/* INTRO OVERLAY */
+/* ===== INTRO ===== */
 #intro {
   position: fixed;
   inset: 0;
@@ -86,12 +25,11 @@ body {
   animation: introFade 3.2s ease forwards;
 }
 @keyframes introFade {
-  0% { opacity: 1; }
-  70% { opacity: 1; }
+  0%,70% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
 }
 
-/* CANVAS */
+/* ===== CANVAS ===== */
 #particles, #mouseParticles {
   position: fixed;
   inset: 0;
@@ -101,23 +39,26 @@ body {
   z-index: 0;
 }
 
-/* BUTTONS */
+/* ===== BUTTONS ===== */
 .buttons {
-  position: absolute;
-  top: 1.5%;
+  position: fixed;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 15px;
-  z-index: 2;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  z-index: 10;
 }
 .btn {
-  padding: 12px 20px;
+  padding: 10px 18px;
   border: 2px solid #ff6600;
   border-radius: 10px;
   color: #fff;
   text-decoration: none;
-  transition: all 0.3s;
+  transition: 0.3s;
+  font-size: 15px;
 }
 .btn:hover {
   background: #ff6600;
@@ -125,7 +66,7 @@ body {
   transform: scale(1.1);
 }
 
-/* SECTION */
+/* ===== SECTION ===== */
 section {
   min-height: 100vh;
   display: flex;
@@ -134,9 +75,10 @@ section {
   align-items: center;
   position: relative;
   z-index: 1;
+  text-align: center;
 }
 
-/* FIRE TEXT */
+/* ===== TITLE ===== */
 .glow-text {
   font-size: 3em;
   font-weight: bold;
@@ -145,14 +87,14 @@ section {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: fire 1s infinite alternate;
-  margin-bottom: 40px;
+  margin-top: 40px;
 }
 @keyframes fire {
   from { background-position: 0% 50%; }
   to { background-position: 100% 50%; }
 }
 
-/* ROLLING TEXT */
+/* ===== ROLLING TEXT ===== */
 .rolling-banner {
   margin-top: 1.2in;
   width: 100%;
@@ -162,8 +104,8 @@ section {
 .rolling-banner span {
   display: inline-block;
   padding-left: 100%;
-  animation: roll 12s linear infinite;
-  font-size: 2em;
+  animation: roll 14s linear infinite;
+  font-size: 1.8em;
   color: #ff9900;
   font-weight: bold;
   text-shadow: 0 0 15px #ff6600;
@@ -173,11 +115,35 @@ section {
   to { transform: translateX(-100%); }
 }
 
-/* IMAGE */
+/* ===== IMAGE ===== */
 .extra-image {
   width: 300px;
   border-radius: 10px;
   margin-top: 20px;
+}
+
+/* ===== MOBILE FIX ===== */
+@media (max-width: 768px) {
+
+  .glow-text {
+    font-size: 2.2em;
+    margin-top: 20px;
+  }
+
+  .rolling-banner {
+    margin-top: 0.6in;
+  }
+
+  .buttons {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .buttons a {
+    flex: 1 1 45%;
+    text-align: center;
+    font-size: 14px;
+  }
 }
 </style>
 </head>
@@ -198,7 +164,6 @@ section {
   <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
 </div>
 
-<!-- HOME -->
 <section>
   <h1 class="glow-text">WanderAeon</h1>
   <div class="rolling-banner">
@@ -212,10 +177,10 @@ section {
 
 <script>
 /* BACKGROUND PARTICLES */
-const bgCanvas = document.getElementById("particles");
-const bgCtx = bgCanvas.getContext("2d");
-bgCanvas.width = innerWidth;
-bgCanvas.height = innerHeight;
+const bgCanvas=document.getElementById("particles");
+const bgCtx=bgCanvas.getContext("2d");
+bgCanvas.width=innerWidth;
+bgCanvas.height=innerHeight;
 
 let bgParticles=[];
 for(let i=0;i<200;i++){
@@ -234,7 +199,7 @@ function animateBG(){
 }
 animateBG();
 
-/* FIRE TRAIL (DESKTOP + MOBILE) */
+/* FIRE TRAIL */
 const mouseCanvas=document.getElementById("mouseParticles");
 const mCtx=mouseCanvas.getContext("2d");
 mouseCanvas.width=innerWidth;
@@ -253,11 +218,7 @@ class FireParticle{
     this.vx=(Math.random()-0.5)*2;
     this.vy=Math.random()*-2-1;
   }
-  update(){
-    this.x+=this.vx;
-    this.y+=this.vy;
-    this.alpha-=this.fade;
-  }
+  update(){ this.x+=this.vx; this.y+=this.vy; this.alpha-=this.fade; }
   draw(){
     mCtx.globalAlpha=this.alpha;
     mCtx.fillStyle=this.color;
@@ -267,28 +228,14 @@ class FireParticle{
     mCtx.globalAlpha=1;
   }
 }
-
 function spawnFire(x,y){
-  for(let i=0;i<5;i++){
-    fireParticles.push(new FireParticle(x,y));
-  }
+  for(let i=0;i<5;i++) fireParticles.push(new FireParticle(x,y));
 }
-
-/* DESKTOP */
-window.addEventListener("mousemove",e=>{
-  spawnFire(e.clientX,e.clientY);
-});
-
-/* MOBILE */
-window.addEventListener("touchstart",e=>{
-  const t=e.touches[0];
-  spawnFire(t.clientX,t.clientY);
-});
+window.addEventListener("mousemove",e=>spawnFire(e.clientX,e.clientY));
 window.addEventListener("touchmove",e=>{
   const t=e.touches[0];
   spawnFire(t.clientX,t.clientY);
 });
-
 function animateFire(){
   mCtx.clearRect(0,0,mouseCanvas.width,mouseCanvas.height);
   for(let i=fireParticles.length-1;i>=0;i--){
