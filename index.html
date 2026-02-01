@@ -26,6 +26,7 @@ body {
   color: white;
   background: var(--bg-image) no-repeat center center fixed;
   background-size: cover;
+  filter: contrast(1.2) brightness(1.05);
   overflow-x: hidden;
 }
 
@@ -83,8 +84,8 @@ canvas {
 .btn:hover {
   background: var(--fire-main);
   color: black;
-  box-shadow: 0 0 15px var(--fire-glow);
-  transform: scale(1.08);
+  box-shadow: 0 0 25px var(--fire-glow);
+  transform: scale(1.04);
 }
 
 /* =========================
@@ -116,6 +117,7 @@ section {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: fireMove 1s infinite alternate;
+  text-shadow: 0 0 10px var(--fire-glow);
 }
 
 @keyframes fireMove {
@@ -137,10 +139,10 @@ section {
 .rolling-banner span {
   display: inline-block;
   padding-left: 100%;
-  animation: roll 12s linear infinite;
+  animation: roll 15s linear infinite;
   font-size: 1.6em;
   color: var(--fire-glow);
-  text-shadow: 0 0 15px var(--fire-main);
+  text-shadow: 0 0 20px var(--fire-main), 0 0 10px #000;
 }
 
 @keyframes roll {
@@ -154,6 +156,13 @@ section {
 @media (max-width: 768px) {
   .glow-text {font-size:2.2em;}
   .rolling-banner {margin-top:0.7in;}
+}
+
+/* =========================
+   MOBILE FIRE TRAIL
+========================= */
+@media (max-width: 480px) {
+  canvas#fire {opacity:0.7;}
 }
 
 </style>
@@ -183,7 +192,9 @@ section {
 
 <script>
 
-/* BACKGROUND EMBERS */
+/* =========================
+   BACKGROUND EMBERS
+========================= */
 const bg = document.getElementById("bg");
 const bctx = bg.getContext("2d");
 bg.width = innerWidth;
@@ -207,7 +218,9 @@ function animateBG(){
 }
 animateBG();
 
-/* FIRE TRAIL (DESKTOP + MOBILE) */
+/* =========================
+   FIRE TRAIL (DESKTOP + MOBILE)
+========================= */
 const fire=document.getElementById("fire");
 const fctx=fire.getContext("2d");
 fire.width=innerWidth;
