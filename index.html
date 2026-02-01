@@ -3,12 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderAeon — Echo Universe Step-2</title>
+<title>WanderAeon — Echo Universe Step-2 (Mouse Reactive)</title>
 
 <style>
-/* =========================
-   🌌 ECHO VARIABLES
-========================= */
 :root {
   --bg-color: #0b0c1c;
   --text-glow: #00ffff;
@@ -17,9 +14,6 @@
   --btn-hover-color: #000;
 }
 
-/* =========================
-   BODY
-========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -29,9 +23,6 @@ body {
   overflow-y: scroll;
 }
 
-/* =========================
-   CANVAS
-========================= */
 canvas {
   position: fixed;
   inset: 0;
@@ -39,9 +30,6 @@ canvas {
   z-index: 0;
 }
 
-/* =========================
-   BUTTONS (FIXED TOP)
-========================= */
 .buttons {
   position: fixed;
   top: 10px;
@@ -70,22 +58,16 @@ canvas {
   transform: scale(1.04);
 }
 
-/* =========================
-   SECTION
-========================= */
 section {
-  min-height: 250vh; /* more scrollable area for Step-2 */
+  min-height: 250vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 
-/* =========================
-   ECHO TEXT
-========================= */
 .echo-text {
   font-size: 3em;
   font-weight: bold;
@@ -97,9 +79,6 @@ section {
     0 0 50px rgba(0,255,255,0.3);
 }
 
-/* =========================
-   MOBILE FIX
-========================= */
 @media (max-width: 768px) {
   .echo-text {font-size:2.2em;}
 }
@@ -125,15 +104,11 @@ section {
   </p>
 </section>
 
-<!-- Ambient audio layers -->
 <audio id="ambient1" loop src="ambient1.mp3"></audio>
 <audio id="ambient2" loop src="ambient2.mp3"></audio>
 <audio id="ambient3" loop src="ambient3.mp3"></audio>
 
 <script>
-/* =========================
-   CANVAS SETUP
-========================= */
 const canvas = document.getElementById("echo-bg");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
@@ -144,12 +119,9 @@ window.addEventListener("resize", ()=>{
   canvas.height = innerHeight;
 });
 
-/* =========================
-   MULTI-LAYER WAVES (Step-2)
-========================= */
-const layers = 4; // more layers for depth
+// ========== MULTI-LAYER MOUSE REACTIVE WAVES ==========
+const layers = 4;
 let waves = [];
-
 for(let l=0;l<layers;l++){
   let layer = [];
   for(let i=0;i<120;i++){
@@ -166,41 +138,8 @@ for(let l=0;l<layers;l++){
   waves.push(layer);
 }
 
-/* =========================
-   ANIMATE WAVES WITH GLOW
-========================= */
-function animateWaves(mouseX, mouseY){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  waves.forEach((layer,l)=>{
-    layer.forEach(w=>{
-      w.phase += w.speed;
-      let y = w.y + Math.sin(w.phase)*w.amp;
-
-      // mouse reactive
-      let dx = mouseX ? mouseX - w.x : 0;
-      let dy = mouseY ? mouseY - w.y : 0;
-      let dist = Math.sqrt(dx*dx + dy*dy);
-      let offset = Math.min(25, 120/dist*12 || 0);
-      let finalY = y + offset;
-
-      // gradient + glow + depth
-      ctx.fillStyle = w.color;
-      ctx.shadowBlur = 15 + l*8;
-      ctx.shadowColor = w.color;
-      ctx.beginPath();
-      ctx.arc(w.x, finalY, w.size, 0, Math.PI*2);
-      ctx.fill();
-    });
-  });
-
-  requestAnimationFrame(()=>animateWaves(mousePos.x, mousePos.y));
-}
-
-/* =========================
-   MOUSE / TOUCH
-========================= */
 let mousePos = {x:null, y:null};
+
 window.addEventListener("mousemove", e=>{
   mousePos.x = e.clientX;
   mousePos.y = e.clientY;
@@ -211,14 +150,40 @@ window.addEventListener("touchmove", e=>{
   mousePos.y = t.clientY;
 });
 
-/* =========================
-   START ANIMATION
-========================= */
+function animateWaves(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  waves.forEach((layer,l)=>{
+    layer.forEach(w=>{
+      w.phase += w.speed;
+      let y = w.y + Math.sin(w.phase)*w.amp;
+
+      // Real mouse reactive displacement
+      if(mousePos.x !== null && mousePos.y !== null){
+        let dx = w.x - mousePos.x;
+        let dy = w.y - mousePos.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 150){ // influence radius
+          let force = (150 - dist)/150 * 15; // effect intensity
+          y += dy/dist * force;
+          w.x += dx/dist * force * 0.05;
+        }
+      }
+
+      ctx.fillStyle = w.color;
+      ctx.shadowBlur = 15 + l*8;
+      ctx.shadowColor = w.color;
+      ctx.beginPath();
+      ctx.arc(w.x, y, w.size, 0, Math.PI*2);
+      ctx.fill();
+    });
+  });
+
+  requestAnimationFrame(animateWaves);
+}
 animateWaves();
 
-/* =========================
-   SCROLL CONTROLLED AMBIENT LAYERS
-========================= */
+// ========== SCROLL CONTROLLED AMBIENT ==========
 const ambient1 = document.getElementById("ambient1");
 const ambient2 = document.getElementById("ambient2");
 const ambient3 = document.getElementById("ambient3");
@@ -234,10 +199,8 @@ window.addEventListener("scroll", ()=>{
 
   if(volume1>0.01 && ambient1.paused) ambient1.play();
   if(volume1<=0.01) ambient1.pause();
-
   if(volume2>0.01 && ambient2.paused) ambient2.play();
   if(volume2<=0.01) ambient2.pause();
-
   if(volume3>0.01 && ambient3.paused) ambient3.play();
   if(volume3<=0.01) ambient3.pause();
 });
