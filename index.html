@@ -12,43 +12,27 @@
   --fire-soft:#ffcc66;
 }
 
-/* BODY */
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  color:white;
+  font-family:Arial,sans-serif;
+  color:#fff;
   background:url('final.jpg') no-repeat center center fixed;
   background-size:cover;
   overflow:hidden;
 }
 
-/* SOFT GLOW OVERLAY */
+/* cinematic glow */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  background:
-    radial-gradient(circle at center,
-    rgba(255,120,0,0.15),
-    rgba(0,0,0,0.6));
-  pointer-events:none;
+  background:radial-gradient(circle at center,
+    rgba(255,130,0,.18),
+    rgba(0,0,0,.65));
   z-index:0;
+  pointer-events:none;
 }
 
-/* INTRO */
-#intro{
-  position:fixed;
-  inset:0;
-  background:black;
-  z-index:9999;
-  animation:introFade 3s ease forwards;
-}
-@keyframes introFade{
-  0%,70%{opacity:1;}
-  100%{opacity:0;visibility:hidden;}
-}
-
-/* CANVAS */
 canvas{
   position:fixed;
   inset:0;
@@ -56,7 +40,6 @@ canvas{
   z-index:1;
 }
 
-/* BUTTONS */
 .buttons{
   position:fixed;
   top:10px;
@@ -70,18 +53,17 @@ canvas{
   padding:10px 16px;
   border:2px solid var(--fire-main);
   border-radius:10px;
-  color:white;
+  color:#fff;
   text-decoration:none;
-  transition:0.3s;
+  transition:.3s;
 }
 .btn:hover{
   background:var(--fire-main);
-  color:black;
-  box-shadow:0 0 22px var(--fire-glow);
+  color:#000;
+  box-shadow:0 0 24px var(--fire-glow);
   transform:scale(1.03);
 }
 
-/* CENTER */
 section{
   min-height:100vh;
   display:flex;
@@ -92,25 +74,20 @@ section{
   z-index:3;
 }
 
-/* TITLE */
 .glow-text{
   font-size:3em;
-  background:linear-gradient(90deg,
-    var(--fire-main),
-    var(--fire-glow),
-    var(--fire-soft));
+  background:linear-gradient(90deg,var(--fire-main),var(--fire-glow),var(--fire-soft));
   background-size:200% 200%;
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  animation:fireMove 1.2s ease-in-out infinite alternate;
-  text-shadow:0 0 12px var(--fire-glow);
+  animation:fireMove 1.2s infinite alternate;
+  text-shadow:0 0 14px var(--fire-glow);
 }
 @keyframes fireMove{
-  from{background-position:0% 50%;}
-  to{background-position:100% 50%;}
+  from{background-position:0% 50%}
+  to{background-position:100% 50%}
 }
 
-/* ROLLING TEXT */
 .rolling-banner{
   margin-top:1in;
   width:100%;
@@ -126,23 +103,17 @@ section{
   text-shadow:0 0 18px var(--fire-main);
 }
 @keyframes roll{
-  from{transform:translateX(0);}
-  to{transform:translateX(-100%);}
+  from{transform:translateX(0)}
+  to{transform:translateX(-100%)}
 }
 
-/* MOBILE */
-@media(max-width:768px){
-  .glow-text{font-size:2.2em;}
-}
 @media(max-width:480px){
-  #fire{opacity:0.65;}
+  #fire{opacity:.65}
 }
 </style>
 </head>
 
 <body>
-
-<div id="intro"></div>
 
 <canvas id="bg"></canvas>
 <canvas id="fire"></canvas>
@@ -151,8 +122,6 @@ section{
   <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
   <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
   <a class="btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
-  <a class="btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
-  <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
 </div>
 
 <section>
@@ -163,59 +132,91 @@ section{
 </section>
 
 <script>
-/* RESIZE FIX */
+/* setup */
+const bg=document.getElementById("bg"),
+fire=document.getElementById("fire"),
+bctx=bg.getContext("2d"),
+fctx=fire.getContext("2d");
+
 function resize(){
   bg.width=fire.width=innerWidth;
   bg.height=fire.height=innerHeight;
 }
-window.addEventListener("resize",resize);
-
-/* EMBERS */
-const bg=document.getElementById("bg"),
-bctx=bg.getContext("2d");
+addEventListener("resize",resize);
 resize();
+
+/* mouse position */
+let mouse={x:-1000,y:-1000};
+addEventListener("mousemove",e=>{
+  mouse.x=e.clientX;
+  mouse.y=e.clientY;
+});
+addEventListener("touchmove",e=>{
+  let t=e.touches[0];
+  mouse.x=t.clientX;
+  mouse.y=t.clientY;
+});
+
+/* embers with drift + repel */
 let embers=[];
-for(let i=0;i<160;i++)
-  embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*2+1});
+for(let i=0;i<180;i++){
+  embers.push({
+    x:Math.random()*bg.width,
+    y:Math.random()*bg.height,
+    r:Math.random()*2+1,
+    vy:Math.random()*0.6+0.3,
+    vx:(Math.random()-0.5)*0.3
+  });
+}
 
 function animateBG(){
   bctx.clearRect(0,0,bg.width,bg.height);
   embers.forEach(e=>{
-    e.y+=0.5;
+    let dx=e.x-mouse.x;
+    let dy=e.y-mouse.y;
+    let dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<120){
+      e.x+=dx/dist*2;
+      e.y+=dy/dist*2;
+    }
+    e.y+=e.vy;
+    e.x+=e.vx;
     if(e.y>bg.height) e.y=0;
-    bctx.fillStyle="rgba(255,120,0,0.6)";
+    if(e.x<0) e.x=bg.width;
+    if(e.x>bg.width) e.x=0;
+    bctx.fillStyle="rgba(255,120,0,0.65)";
     bctx.beginPath();
-    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
+    bctx.arc(e.x,e.y,e.r,0,Math.PI*2);
     bctx.fill();
   });
   requestAnimationFrame(animateBG);
 }
 animateBG();
 
-/* FIRE TRAIL */
-const fire=document.getElementById("fire"),
-fctx=fire.getContext("2d");
+/* fire trail */
 let flames=[];
 function spawn(x,y){
-  for(let i=0;i<4;i++)
+  for(let i=0;i<5;i++){
     flames.push({
       x,y,
-      s:Math.random()*5+3,
+      s:Math.random()*6+3,
       a:1,
-      vx:(Math.random()-0.5)*1.5,
+      vx:(Math.random()-0.5)*2,
       vy:Math.random()*-2
     });
+  }
 }
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 addEventListener("touchmove",e=>{
   let t=e.touches[0];
   spawn(t.clientX,t.clientY);
 });
+
 function animateFire(){
   fctx.clearRect(0,0,fire.width,fire.height);
   for(let i=flames.length-1;i>=0;i--){
     let p=flames[i];
-    p.x+=p.vx; p.y+=p.vy; p.a-=0.035;
+    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
     if(p.a<=0) flames.splice(i,1);
     else{
       fctx.globalAlpha=p.a;
