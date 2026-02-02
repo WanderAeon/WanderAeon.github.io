@@ -6,7 +6,6 @@
 <title>WanderAeon — Inferno</title>
 
 <style>
-
 /* =========================
    🔥 INFERNO VARIABLES
 ========================= */
@@ -165,6 +164,15 @@ section {
   canvas#fire {opacity:0.7;}
 }
 
+/* =========================
+   BACKGROUND BREATHING (Optional Later)
+========================= */
+@keyframes breathe {
+  0% {transform: scale(1);}
+  50% {transform: scale(1.03);}
+  100% {transform: scale(1);}
+}
+body.breathing {animation: breathe 8s ease-in-out infinite;}
 </style>
 </head>
 
@@ -191,7 +199,6 @@ section {
 </section>
 
 <script>
-
 /* =========================
    BACKGROUND EMBERS
 ========================= */
@@ -220,49 +227,75 @@ animateBG();
 
 /* =========================
    FIRE TRAIL (DESKTOP + MOBILE)
+   ✅ Performance Auto-system
 ========================= */
-const fire=document.getElementById("fire");
-const fctx=fire.getContext("2d");
-fire.width=innerWidth;
-fire.height=innerHeight;
+const fire = document.getElementById("fire");
+const fctx = fire.getContext("2d");
+fire.width = innerWidth;
+fire.height = innerHeight;
 
-let flames=[];
+let flames = [];
+
+// Auto detect mobile / desktop
+const isMobile = window.innerWidth < 768;
+
+// Particle settings
+const PARTICLE_COUNT = isMobile ? 50 : 180;
+const MAX_FIRE_SIZE = isMobile ? 5 : 8;
+const FPS = isMobile ? 30 : 60;
+
 function spawn(x,y){
   for(let i=0;i<5;i++)
     flames.push({
-      x,y,
-      s:Math.random()*6+3,
+      x, y,
+      s: Math.random()*MAX_FIRE_SIZE + 2,
       a:1,
       vx:(Math.random()-0.5)*2,
       vy:Math.random()*-2-1
     });
 }
 
+// Mouse + Touch unified
 window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 window.addEventListener("touchmove",e=>{
-  let t=e.touches[0];
-  spawn(t.clientX,t.clientY);
+  let t = e.touches[0];
+  spawn(t.clientX, t.clientY);
 });
 
 function animateFire(){
   fctx.clearRect(0,0,fire.width,fire.height);
   for(let i=flames.length-1;i>=0;i--){
-    let p=flames[i];
-    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
-    if(p.a<=0) flames.splice(i,1);
-    else{
-      fctx.globalAlpha=p.a;
-      fctx.fillStyle="orange";
+    let p = flames[i];
+    p.x += p.vx; p.y += p.vy; p.a -= 0.03;
+    if(p.a <= 0) flames.splice(i,1);
+    else {
+      fctx.globalAlpha = p.a;
+      fctx.fillStyle = "orange";
       fctx.beginPath();
       fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
       fctx.fill();
     }
   }
-  fctx.globalAlpha=1;
-  requestAnimationFrame(animateFire);
+  fctx.globalAlpha = 1;
+
+  // Cap FPS for mobile
+  if(isMobile){
+    setTimeout(()=>requestAnimationFrame(animateFire),1000/FPS);
+  } else {
+    requestAnimationFrame(animateFire);
+  }
 }
 animateFire();
 
+/* =========================
+   RESIZE HANDLER
+========================= */
+window.addEventListener('resize',()=>{
+  bg.width = innerWidth;
+  bg.height = innerHeight;
+  fire.width = innerWidth;
+  fire.height = innerHeight;
+});
 </script>
 
 </body>
