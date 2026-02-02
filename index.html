@@ -6,9 +6,6 @@
 <title>WanderAeon — Inferno</title>
 
 <style>
-/* =========================
-   🔥 INFERNO VARIABLES
-========================= */
 :root {
   --bg-image: url('final.jpg');
   --fire-main: #ff4500;
@@ -16,11 +13,8 @@
   --fire-soft: #ffcc66;
 }
 
-/* =========================
-   BODY
-========================= */
 body {
-  margin: 0;
+  margin:0;
   font-family: Arial, sans-serif;
   color: white;
   background: var(--bg-image) no-repeat center center fixed;
@@ -30,20 +24,23 @@ body {
 }
 
 /* =========================
-   INTRO
+   Cinematic Intro
 ========================= */
 #intro {
   position: fixed;
   inset: 0;
   background: black;
   z-index: 9999;
-  animation: introFade 3s ease forwards;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes introFade {
-  0% {opacity:1;}
-  70% {opacity:1;}
-  100% {opacity:0; visibility:hidden;}
+#intro-text {
+  font-size: 3em;
+  color: var(--fire-glow);
+  opacity:0;
+  text-shadow: 0 0 25px var(--fire-main);
 }
 
 /* =========================
@@ -57,7 +54,7 @@ canvas {
 }
 
 /* =========================
-   BUTTONS (FIXED TOP)
+   BUTTONS
 ========================= */
 .buttons {
   position: fixed;
@@ -88,7 +85,7 @@ canvas {
 }
 
 /* =========================
-   SECTION (CONTROL CENTER)
+   SECTION
 ========================= */
 section {
   min-height: 100vh;
@@ -100,18 +97,11 @@ section {
   position: relative;
 }
 
-/* =========================
-   FIRE TEXT
-========================= */
 .glow-text {
   font-size: 3em;
   font-weight: bold;
   text-align: center;
-  background: linear-gradient(90deg,
-    var(--fire-main),
-    var(--fire-glow),
-    var(--fire-soft)
-  );
+  background: linear-gradient(90deg,var(--fire-main),var(--fire-glow),var(--fire-soft));
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -124,9 +114,6 @@ section {
   to {background-position:100% 50%;}
 }
 
-/* =========================
-   ROLLING TEXT
-========================= */
 .rolling-banner {
   margin-top: 1.2in;
   width: 100%;
@@ -141,7 +128,7 @@ section {
   animation: roll 15s linear infinite;
   font-size: 1.6em;
   color: var(--fire-glow);
-  text-shadow: 0 0 20px var(--fire-main), 0 0 10px #000;
+  text-shadow: 0 0 20px var(--fire-main),0 0 10px #000;
 }
 
 @keyframes roll {
@@ -149,36 +136,27 @@ section {
   to {transform:translateX(-100%);}
 }
 
-/* =========================
-   MOBILE FIX
-========================= */
-@media (max-width: 768px) {
-  .glow-text {font-size:2.2em;}
-  .rolling-banner {margin-top:0.7in;}
-}
+@media (max-width:768px){.glow-text{font-size:2.2em}.rolling-banner{margin-top:0.7in}}
+@media (max-width:480px){canvas#fire{opacity:0.7}}
 
 /* =========================
-   MOBILE FIRE TRAIL
+   Background breathing
 ========================= */
-@media (max-width: 480px) {
-  canvas#fire {opacity:0.7;}
+body.breathing {
+  animation: breathe 8s ease-in-out infinite;
 }
-
-/* =========================
-   BACKGROUND BREATHING (Optional Later)
-========================= */
 @keyframes breathe {
   0% {transform: scale(1);}
   50% {transform: scale(1.03);}
   100% {transform: scale(1);}
 }
-body.breathing {animation: breathe 8s ease-in-out infinite;}
 </style>
 </head>
-
 <body>
 
-<div id="intro"></div>
+<div id="intro">
+  <div id="intro-text">🔥 InfernoAeon 🔥</div>
+</div>
 
 <canvas id="bg"></canvas>
 <canvas id="fire"></canvas>
@@ -200,102 +178,56 @@ body.breathing {animation: breathe 8s ease-in-out infinite;}
 
 <script>
 /* =========================
-   BACKGROUND EMBERS
+   Background Embers
 ========================= */
-const bg = document.getElementById("bg");
-const bctx = bg.getContext("2d");
-bg.width = innerWidth;
-bg.height = innerHeight;
-
-let embers=[];
-for(let i=0;i<180;i++)
-  embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
-
-function animateBG(){
-  bctx.clearRect(0,0,bg.width,bg.height);
-  embers.forEach(e=>{
-    e.y+=0.6;
-    if(e.y>bg.height) e.y=0;
-    bctx.fillStyle="rgba(255,100,0,0.8)";
-    bctx.beginPath();
-    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-    bctx.fill();
-  });
-  requestAnimationFrame(animateBG);
-}
+const bg=document.getElementById("bg"),bctx=bg.getContext("2d");
+bg.width=innerWidth; bg.height=innerHeight;
+let embers=[]; for(let i=0;i<180;i++) embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
+function animateBG(){bctx.clearRect(0,0,bg.width,bg.height);embers.forEach(e=>{e.y+=0.6;if(e.y>bg.height)e.y=0;bctx.fillStyle="rgba(255,100,0,0.8)";bctx.beginPath();bctx.arc(e.x,e.y,e.s,0,Math.PI*2);bctx.fill()});requestAnimationFrame(animateBG)}
 animateBG();
 
 /* =========================
-   FIRE TRAIL (DESKTOP + MOBILE)
-   ✅ Performance Auto-system
+   Fire Trail + Performance Auto-system
 ========================= */
-const fire = document.getElementById("fire");
-const fctx = fire.getContext("2d");
-fire.width = innerWidth;
-fire.height = innerHeight;
+const fire=document.getElementById("fire"),fctx=fire.getContext("2d");
+fire.width=innerWidth; fire.height=innerHeight;
+let flames=[]; const isMobile=window.innerWidth<768;
+const PARTICLE_COUNT = isMobile?50:180, MAX_FIRE_SIZE=isMobile?5:8, FPS=isMobile?30:60;
 
-let flames = [];
-
-// Auto detect mobile / desktop
-const isMobile = window.innerWidth < 768;
-
-// Particle settings
-const PARTICLE_COUNT = isMobile ? 50 : 180;
-const MAX_FIRE_SIZE = isMobile ? 5 : 8;
-const FPS = isMobile ? 30 : 60;
-
-function spawn(x,y){
-  for(let i=0;i<5;i++)
-    flames.push({
-      x, y,
-      s: Math.random()*MAX_FIRE_SIZE + 2,
-      a:1,
-      vx:(Math.random()-0.5)*2,
-      vy:Math.random()*-2-1
-    });
-}
-
-// Mouse + Touch unified
+function spawn(x,y){for(let i=0;i<5;i++) flames.push({x,y,s:Math.random()*MAX_FIRE_SIZE+2,a:1,vx:(Math.random()-0.5)*2,vy:Math.random()*-2-1})}
 window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-window.addEventListener("touchmove",e=>{
-  let t = e.touches[0];
-  spawn(t.clientX, t.clientY);
-});
+window.addEventListener("touchmove",e=>{let t=e.touches[0]; spawn(t.clientX,t.clientY)});
 
 function animateFire(){
   fctx.clearRect(0,0,fire.width,fire.height);
   for(let i=flames.length-1;i>=0;i--){
-    let p = flames[i];
-    p.x += p.vx; p.y += p.vy; p.a -= 0.03;
-    if(p.a <= 0) flames.splice(i,1);
-    else {
-      fctx.globalAlpha = p.a;
-      fctx.fillStyle = "orange";
-      fctx.beginPath();
-      fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-      fctx.fill();
-    }
+    let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
+    if(p.a<=0) flames.splice(i,1);
+    else{fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill()}
   }
-  fctx.globalAlpha = 1;
-
-  // Cap FPS for mobile
-  if(isMobile){
-    setTimeout(()=>requestAnimationFrame(animateFire),1000/FPS);
-  } else {
-    requestAnimationFrame(animateFire);
-  }
+  fctx.globalAlpha=1;
+  isMobile?setTimeout(()=>requestAnimationFrame(animateFire),1000/FPS):requestAnimationFrame(animateFire);
 }
 animateFire();
 
 /* =========================
-   RESIZE HANDLER
+   Intro Spark + Reveal
 ========================= */
-window.addEventListener('resize',()=>{
-  bg.width = innerWidth;
-  bg.height = innerHeight;
-  fire.width = innerWidth;
-  fire.height = innerHeight;
-});
+const intro=document.getElementById("intro"),introText=document.getElementById("intro-text");
+function playIntro(){
+  let alpha=0,scale=0.3;
+  const interval=setInterval(()=>{
+    alpha+=0.02; scale+=0.02;
+    introText.style.opacity=alpha; introText.style.transform=`scale(${scale})`;
+    if(alpha>=1){ clearInterval(interval); setTimeout(()=>{intro.style.opacity=0; intro.style.visibility="hidden"; document.body.classList.add('breathing')},1000) }
+  },30)
+}
+window.onload=playIntro;
+
+/* =========================
+   Resize Handler
+========================= */
+window.addEventListener('resize',()=>{bg.width=innerWidth; bg.height=innerHeight; fire.width=innerWidth; fire.height=innerHeight;});
 </script>
 
 </body>
