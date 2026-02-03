@@ -5,17 +5,15 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>WanderAeon — Inferno</title>
+<title>WanderAeon</title>
 
 <style>
 :root{
-  --bg-image:url('final.jpg');
   --main:#ff4500;
   --glow:#ff9900;
   --soft:#ffcc66;
 }
 
-/* BODY */
 html,body{
   margin:0;
   width:100%;
@@ -23,8 +21,15 @@ html,body{
   overflow:hidden;
   font-family:Arial,sans-serif;
   color:white;
-  background:var(--bg-image) no-repeat center center fixed;
+  background:#000;
+}
+
+/* INFERNO BACKGROUND (MASTER) */
+body.inferno{
+  background-image:url('final.jpg');
+  background-repeat:no-repeat;
   background-size:cover;
+  background-position:center;
 }
 
 /* CANVAS */
@@ -35,8 +40,8 @@ canvas{
   z-index:0;
 }
 
-/* BUTTONS */
-.buttons{
+/* TOP THEME BUTTONS */
+.theme-buttons{
   position:fixed;
   top:10px;
   left:50%;
@@ -46,20 +51,32 @@ canvas{
   z-index:5;
 }
 
+/* SOCIAL BUTTONS */
+.social-buttons{
+  position:fixed;
+  top:60px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:10px;
+  z-index:5;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
 .btn{
-  padding:10px 16px;
+  padding:9px 14px;
   border:2px solid var(--main);
   border-radius:10px;
   color:white;
-  text-decoration:none;
-  cursor:pointer;
   background:transparent;
+  cursor:pointer;
   transition:.3s;
 }
 .btn:hover{
   background:var(--main);
   color:black;
-  box-shadow:0 0 20px var(--glow);
+  box-shadow:0 0 18px var(--glow);
 }
 
 /* CENTER */
@@ -73,7 +90,7 @@ section{
   z-index:2;
 }
 
-/* FIRE TEXT */
+/* GLOW TEXT */
 .glow-text{
   font-size:3em;
   font-weight:bold;
@@ -84,7 +101,6 @@ section{
   animation:fire 1s infinite alternate;
   text-shadow:0 0 15px var(--glow);
 }
-
 @keyframes fire{
   from{background-position:0% 50%;}
   to{background-position:100% 50%;}
@@ -110,26 +126,35 @@ section{
   to{transform:translateX(-100%);}
 }
 
-/* MOBILE */
 @media(max-width:768px){
   .glow-text{font-size:2.2em;}
 }
 </style>
 </head>
 
-<body>
+<body class="inferno">
 
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
-<div class="buttons">
+<!-- THEME BUTTONS -->
+<div class="theme-buttons">
   <button class="btn" onclick="setTheme('inferno')">Inferno</button>
   <button class="btn" onclick="setTheme('echo')">Echo</button>
   <button class="btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
+<!-- SOCIAL BUTTONS -->
+<div class="social-buttons">
+  <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
+  <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
+  <a class="btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
+  <a class="btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
+  <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
+</div>
+
 <section>
-  <h1 class="glow-text" id="title">WanderAeon</h1>
+  <h1 class="glow-text">WanderAeon</h1>
   <div class="rolling">
     <span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
   </div>
@@ -138,33 +163,30 @@ section{
 <script>
 /* DPR FIX */
 const dpr=window.devicePixelRatio||1;
-
-/* EMBERS */
 const bg=document.getElementById("embers");
+const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
+const fctx=fire.getContext("2d");
 
 function resize(){
-  bg.width=innerWidth*dpr;
-  bg.height=innerHeight*dpr;
-  bg.style.width=innerWidth+"px";
-  bg.style.height=innerHeight+"px";
+  [bg,fire].forEach(c=>{
+    c.width=innerWidth*dpr;
+    c.height=innerHeight*dpr;
+    c.style.width=innerWidth+"px";
+    c.style.height=innerHeight+"px";
+  });
   bctx.setTransform(dpr,0,0,dpr,0,0);
-
-  fire.width=bg.width;
-  fire.height=bg.height;
-  fire.style.width=bg.style.width;
-  fire.style.height=bg.style.height;
   fctx.setTransform(dpr,0,0,dpr,0,0);
 }
 window.onresize=resize;
 
+/* EMBERS */
 let embers=[];
-function initEmbers(count){
+function initEmbers(n){
   embers=[];
-  for(let i=0;i<count;i++)
+  for(let i=0;i<n;i++)
     embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3+1});
 }
-
 function animateBG(){
   bctx.clearRect(0,0,innerWidth,innerHeight);
   embers.forEach(e=>{
@@ -179,15 +201,11 @@ function animateBG(){
 }
 
 /* FIRE MOUSE */
-const fire=document.getElementById("fire");
-const fctx=fire.getContext("2d");
 let flames=[];
-
 function spawn(x,y){
   for(let i=0;i<5;i++)
     flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-0.5)*2,vy:Math.random()*-2-1});
 }
-
 window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 window.addEventListener("touchmove",e=>{
   e.preventDefault();
@@ -215,34 +233,30 @@ function animateFire(){
 
 /* THEMES */
 function setTheme(t){
-  document.documentElement.style.setProperty('--bg-image', t==="inferno" ? "url('final.jpg')" : "none");
+  document.body.className=t;
 
   if(t==="inferno"){
-    document.documentElement.style.setProperty('--main','#ff4500');
-    document.documentElement.style.setProperty('--glow','#ff9900');
-    document.documentElement.style.setProperty('--soft','#ffcc66');
-    document.body.style.backgroundImage="url('final.jpg')";
+    setVars('#ff4500','#ff9900','#ffcc66');
     tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
     initEmbers(180);
   }
-
   if(t==="echo"){
-    document.documentElement.style.setProperty('--main','#013f69');
-    document.documentElement.style.setProperty('--glow','#7dffb0');
-    document.documentElement.style.setProperty('--soft','#bfffe0');
+    setVars('#013f69','#7dffb0','#bfffe0');
     document.body.style.background="#021f2e";
     tagline.innerText="WanderAeon — Music beyond time.";
     initEmbers(120);
   }
-
   if(t==="dark"){
-    document.documentElement.style.setProperty('--main','#ffffff');
-    document.documentElement.style.setProperty('--glow','#999');
-    document.documentElement.style.setProperty('--soft','#666');
+    setVars('#fff','#999','#666');
     document.body.style.background="#000";
     tagline.innerText="WanderAeon — Not just heard, experienced.";
     initEmbers(90);
   }
+}
+function setVars(a,b,c){
+  document.documentElement.style.setProperty('--main',a);
+  document.documentElement.style.setProperty('--glow',b);
+  document.documentElement.style.setProperty('--soft',c);
 }
 
 /* START */
