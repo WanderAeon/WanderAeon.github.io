@@ -6,12 +6,8 @@
 <title>WanderAeon — Inferno</title>
 
 <style>
-
-/* =========================
-   🔥 THEME VARIABLES
-========================= */
 :root {
-  --bg-image: url('final.jpg');   /* Inferno default */
+  --bg-image: url('final.jpg');
   --primary-color: #ff4500;
   --glow-color: #ff9900;
   --soft-color: #ffcc66;
@@ -19,9 +15,6 @@
   --text-gradient-end: var(--glow-color);
 }
 
-/* =========================
-   BODY
-========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -32,9 +25,6 @@ body {
   overflow-x: hidden;
 }
 
-/* =========================
-   THEME SELECTOR OVERLAY
-========================= */
 #theme-overlay {
   position: fixed;
   inset: 0;
@@ -44,13 +34,7 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  color: white;
   text-align: center;
-}
-
-#theme-overlay h2 {
-  font-size: 2em;
-  margin-bottom: 1em;
 }
 
 .theme-btn {
@@ -60,20 +44,9 @@ body {
   border-radius: 10px;
   background: transparent;
   color: white;
-  font-size: 1.1em;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.theme-btn:hover {
-  background: white;
-  color: black;
-  transform: scale(1.05);
-}
-
-/* =========================
-   CANVAS
-========================= */
 canvas {
   position: fixed;
   inset: 0;
@@ -81,17 +54,12 @@ canvas {
   z-index: 0;
 }
 
-/* =========================
-   BUTTONS (FIXED TOP)
-========================= */
 .buttons {
   position: fixed;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 10px;
   z-index: 5;
 }
@@ -102,118 +70,48 @@ canvas {
   border-radius: 10px;
   color: white;
   text-decoration: none;
-  transition: all 0.3s ease;
 }
 
-.btn:hover {
-  background: var(--primary-color);
-  color: black;
-  box-shadow: 0 0 25px var(--glow-color);
-  transform: scale(1.04);
-}
-
-/* =========================
-   SECTION (CONTROL CENTER)
-========================= */
 section {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1;
   position: relative;
+  z-index: 1;
 }
 
-/* =========================
-   FIRE / TEXT GLOW
-========================= */
 .glow-text {
   font-size: 3em;
-  font-weight: bold;
-  text-align: center;
-  background: linear-gradient(90deg,
-    var(--text-gradient-start),
-    var(--text-gradient-end)
-  );
-  background-size: 200% 200%;
+  background: linear-gradient(90deg,var(--text-gradient-start),var(--text-gradient-end));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fireMove 1s infinite alternate;
-  text-shadow: 0 0 10px var(--glow-color);
-}
-
-@keyframes fireMove {
-  from {background-position:0% 50%;}
-  to {background-position:100% 50%;}
-}
-
-/* =========================
-   ROLLING TEXT
-========================= */
-.rolling-banner {
-  margin-top: 1.2in;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-align: center;
 }
 
 .rolling-banner span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: roll 15s linear infinite;
-  font-size: 1.6em;
-  color: var(--glow-color);
-  text-shadow: 0 0 20px var(--primary-color), 0 0 10px #000;
+  font-size: 1.5em;
 }
-
-@keyframes roll {
-  from {transform:translateX(0);}
-  to {transform:translateX(-100%);}
-}
-
-/* =========================
-   MOBILE FIX
-========================= */
-@media (max-width: 768px) {
-  .glow-text {font-size:2.2em;}
-  .rolling-banner {margin-top:0.7in;}
-}
-
-@media (max-width: 480px) {
-  canvas#fire {opacity:0.7;}
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- THEME OVERLAY -->
 <div id="theme-overlay">
   <h2>WanderAeon — your mode today</h2>
-  <div>
-    <button class="theme-btn" onclick="applyTheme('inferno')">Inferno</button>
-    <button class="theme-btn" onclick="applyTheme('echo')">Echo</button>
-    <button class="theme-btn" onclick="applyTheme('dark')">Dark</button>
-  </div>
+  <button class="theme-btn" onclick="applyTheme('inferno')">Inferno</button>
+  <button class="theme-btn" onclick="applyTheme('echo')">Echo</button>
+  <button class="theme-btn" onclick="applyTheme('dark')">Dark</button>
 </div>
 
-<!-- CANVAS -->
 <canvas id="bg"></canvas>
-<canvas id="fire"></canvas>
+<canvas id="fx"></canvas>
 
-<!-- TOP BUTTONS -->
 <div class="buttons">
-  <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
-  <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
-  <a class="btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
-  <a class="btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
-  <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
+  <a class="btn" href="#">YouTube</a>
+  <a class="btn" href="#">TikTok</a>
 </div>
 
-<!-- MAIN SECTION -->
 <section>
   <h1 class="glow-text">WanderAeon</h1>
   <div class="rolling-banner">
@@ -222,221 +120,101 @@ section {
 </section>
 
 <script>
-
-/* =========================
-   CANVAS: BACKGROUND EFFECTS
-========================= */
 const bg = document.getElementById("bg");
-const bctx = bg.getContext("2d");
-bg.width = innerWidth;
-bg.height = innerHeight;
+const fx = document.getElementById("fx");
+const b = bg.getContext("2d");
+const f = fx.getContext("2d");
+bg.width = fx.width = innerWidth;
+bg.height = fx.height = innerHeight;
 
-const fireCanvas = document.getElementById("fire");
-const fctx = fireCanvas.getContext("2d");
-fireCanvas.width = innerWidth;
-fireCanvas.height = innerHeight;
+let theme = "inferno";
+let embers=[], leaves=[], echoFX=[], smoke=[];
 
-/* =========================
-   PARTICLE ARRAYS
-========================= */
-let embers = [];
-let leaves = [];
-let smoke = [];
-let flames = [];
-
-/* =========================
-   INITIALIZE INFERNO EMBERS
-========================= */
-function initInferno() {
-  embers = [];
+/* ---------- Inferno (UNCHANGED) ---------- */
+function initInferno(){
+  embers=[];
   for(let i=0;i<180;i++)
-    embers.push({x:Math.random()*bg.width, y:Math.random()*bg.height, s:Math.random()*3+1});
+    embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
 }
 
-/* =========================
-   INITIALIZE ECHO LEAVES
-========================= */
-function initEcho() {
-  leaves = [];
-  for(let i=0;i<120;i++)
-    leaves.push({
-      x: Math.random()*bg.width,
-      y: Math.random()*bg.height,
-      s: Math.random()*6+3,
-      vx: (Math.random()-0.5)*1.5,
-      vy: Math.random()*0.5+0.2
-    });
-}
-
-/* =========================
-   INITIALIZE DARK SMOKE
-========================= */
-function initDark() {
-  smoke = [];
-  for(let i=0;i<100;i++)
-    smoke.push({
-      x: Math.random()*bg.width,
-      y: Math.random()*bg.height,
-      s: Math.random()*12+8,
-      vy: -(Math.random()*0.5+0.2),
-      a: Math.random()*0.5+0.3
-    });
-}
-
-/* =========================
-   FIRE TRAIL (Inferno only)
-========================= */
-function spawnFlames(x,y){
-  for(let i=0;i<5;i++)
-    flames.push({
+/* ---------- Echo ---------- */
+function spawnEcho(x,y){
+  for(let i=0;i<6;i++)
+    echoFX.push({
       x,y,
-      s:Math.random()*6+3,
+      r:Math.random()*4+2,
       a:1,
-      vx:(Math.random()-0.5)*2,
-      vy:Math.random()*-2-1
+      vx:(Math.random()-0.5)*1.2,
+      vy:(Math.random()-0.5)*1.2
     });
 }
 
-window.addEventListener("mousemove", e => spawnFlames(e.clientX, e.clientY));
-window.addEventListener("touchmove", e => {
-  let t = e.touches[0];
-  spawnFlames(t.clientX, t.clientY);
+/* ---------- Dark ---------- */
+function spawnDark(x,y){
+  for(let i=0;i<5;i++)
+    smoke.push({
+      x,y,
+      r:Math.random()*10+6,
+      a:0.6,
+      vx:(Math.random()-0.5)*0.6,
+      vy:(Math.random()-0.5)*0.6
+    });
+}
+
+addEventListener("mousemove",e=>{
+  if(theme==="echo") spawnEcho(e.clientX,e.clientY);
+  if(theme==="dark") spawnDark(e.clientX,e.clientY);
 });
 
-/* =========================
-   ANIMATE BACKGROUND BASED ON THEME
-========================= */
-let currentTheme = 'inferno';
+/* ---------- Animate ---------- */
+function animate(){
+  b.clearRect(0,0,bg.width,bg.height);
+  f.clearRect(0,0,fx.width,fx.height);
 
-function animateBG() {
-  bctx.clearRect(0,0,bg.width,bg.height);
-
-  if(currentTheme === 'inferno'){
+  if(theme==="inferno"){
     embers.forEach(e=>{
-      e.y += 0.6;
-      if(e.y > bg.height) e.y = 0;
-      bctx.fillStyle = "rgba(255,100,0,0.8)";
-      bctx.beginPath();
-      bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-      bctx.fill();
-    });
-  } else if(currentTheme === 'echo'){
-    leaves.forEach(l=>{
-      l.x += l.vx;
-      l.y += l.vy;
-      if(l.y>bg.height) l.y=0;
-      if(l.x>bg.width) l.x=0;
-      bctx.fillStyle = "rgba(46,204,113,0.8)";
-      bctx.beginPath();
-      bctx.arc(l.x,l.y,l.s,0,Math.PI*2);
-      bctx.fill();
-    });
-  } else if(currentTheme === 'dark'){
-    smoke.forEach(s=>{
-      s.y += s.vy;
-      if(s.y<0) s.y=bg.height;
-      bctx.globalAlpha = s.a;
-      bctx.fillStyle = "rgba(255,255,255,0.3)";
-      bctx.beginPath();
-      bctx.arc(s.x,s.y,s.s,0,Math.PI*2);
-      bctx.fill();
-      bctx.globalAlpha = 1;
+      e.y+=0.6; if(e.y>bg.height) e.y=0;
+      b.fillStyle="rgba(255,120,0,0.8)";
+      b.beginPath(); b.arc(e.x,e.y,e.s,0,Math.PI*2); b.fill();
     });
   }
 
-  requestAnimationFrame(animateBG);
-}
-animateBG();
-
-/* =========================
-   ANIMATE FIRE / PARTICLES
-========================= */
-function animateFire(){
-  fctx.clearRect(0,0,fireCanvas.width,fireCanvas.height);
-
-  if(currentTheme === 'inferno'){
-    for(let i=flames.length-1;i>=0;i--){
-      let p = flames[i];
-      p.x += p.vx; p.y += p.vy; p.a -= 0.03;
-      if(p.a <= 0) flames.splice(i,1);
+  if(theme==="echo"){
+    echoFX.forEach((p,i)=>{
+      p.x+=p.vx; p.y+=p.vy; p.a-=0.01;
+      if(p.a<=0) echoFX.splice(i,1);
       else{
-        fctx.globalAlpha = p.a;
-        fctx.fillStyle = "orange";
-        fctx.beginPath();
-        fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-        fctx.fill();
+        f.globalAlpha=p.a;
+        f.fillStyle="rgba(46,204,113,1)";
+        f.beginPath(); f.arc(p.x,p.y,p.r,0,Math.PI*2); f.fill();
       }
-    }
+    });
+    f.globalAlpha=1;
   }
 
-  requestAnimationFrame(animateFire);
+  if(theme==="dark"){
+    smoke.forEach((s,i)=>{
+      s.x+=s.vx; s.y+=s.vy; s.a-=0.005;
+      if(s.a<=0) smoke.splice(i,1);
+      else{
+        f.globalAlpha=s.a;
+        f.fillStyle="rgba(200,200,255,0.6)";
+        f.beginPath(); f.arc(s.x,s.y,s.r,0,Math.PI*2); f.fill();
+      }
+    });
+    f.globalAlpha=1;
+  }
+
+  requestAnimationFrame(animate);
 }
-animateFire();
+animate();
 
-/* =========================
-   APPLY THEME FUNCTION
-========================= */
-function applyTheme(theme){
-  const root = document.documentElement;
-  const overlay = document.getElementById("theme-overlay");
-  const glowText = document.querySelector(".glow-text");
-  const banner = document.querySelector(".rolling-banner span");
-
-  currentTheme = theme; // update current theme
-
-  if(theme === "inferno"){
-    root.style.setProperty('--bg-image', "url('final.jpg')");
-    root.style.setProperty('--primary-color', "#ff4500");
-    root.style.setProperty('--glow-color', "#ff9900");
-    root.style.setProperty('--soft-color', "#ffcc66");
-    root.style.setProperty('--text-gradient-start', "#ff4500");
-    root.style.setProperty('--text-gradient-end', "#ff9900");
-
-    glowText.textContent = "WanderAeon";
-    banner.textContent = "Inferno Aeon — Music born from fire and shadows 🔥";
-
-    initInferno();
-  }
-  else if(theme === "echo"){
-    root.style.setProperty('--bg-image', "url('echo.jpg')");
-    root.style.setProperty('--primary-color', "#013f69");
-    root.style.setProperty('--glow-color', "#2ecc71");
-    root.style.setProperty('--soft-color', "#2ecc71");
-    root.style.setProperty('--text-gradient-start', "#013f69");
-    root.style.setProperty('--text-gradient-end', "#2ecc71");
-
-    glowText.textContent = "Echo";
-    banner.textContent = "WanderAeon — Music beyond time";
-
-    initEcho();
-  }
-  else if(theme === "dark"){
-    root.style.setProperty('--bg-image', "url('dark.jpg')");
-    root.style.setProperty('--primary-color', "#000000");
-    root.style.setProperty('--glow-color', "#ffffff");
-    root.style.setProperty('--soft-color', "#888888");
-    root.style.setProperty('--text-gradient-start', "#000000");
-    root.style.setProperty('--text-gradient-end', "#ffffff");
-
-    glowText.textContent = "Dark";
-    banner.textContent = "wanderAeon — Not just heard, experienced";
-
-    initDark();
-  }
-
-  overlay.style.display = "none"; // hide theme selector
+function applyTheme(t){
+  theme=t;
+  document.getElementById("theme-overlay").style.display="none";
+  if(t==="inferno") initInferno();
 }
-
-/* =========================
-   WINDOW RESIZE
-========================= */
-window.addEventListener('resize', ()=>{
-  bg.width = window.innerWidth;
-  bg.height = window.innerHeight;
-  fireCanvas.width = window.innerWidth;
-  fireCanvas.height = window.innerHeight;
-});
-
+initInferno();
 </script>
 
 </body>
