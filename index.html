@@ -1,268 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderAeon — Inferno</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WanderAeon – Inferno</title>
 
 <style>
-
-/* =========================
-   🔥 INFERNO VARIABLES
-========================= */
-:root {
-  --bg-image: url('final.jpg');
-  --fire-main: #ff4500;
-  --fire-glow: #ff9900;
-  --fire-soft: #ffcc66;
-}
-
-/* =========================
-   BODY
-========================= */
-body {
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   font-family: Arial, sans-serif;
-  color: white;
-  background: var(--bg-image) no-repeat center center fixed;
-  background-size: cover;
-  filter: contrast(1.2) brightness(1.05);
-  overflow-x: hidden;
+  background: #000;
 }
 
-/* =========================
-   INTRO
-========================= */
-#intro {
-  position: fixed;
+/* ===== BACKGROUND ===== */
+#scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: url("background.jpg") center/96% no-repeat;
+}
+
+/* dark vignette */
+#scene::after {
+  content: "";
+  position: absolute;
   inset: 0;
-  background: black;
-  z-index: 9999;
-  animation: introFade 3s ease forwards;
-}
-
-@keyframes introFade {
-  0% {opacity:1;}
-  70% {opacity:1;}
-  100% {opacity:0; visibility:hidden;}
-}
-
-/* =========================
-   CANVAS
-========================= */
-canvas {
-  position: fixed;
-  inset: 0;
+  background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.85));
   pointer-events: none;
-  z-index: 0;
 }
 
-/* =========================
-   BUTTONS (FIXED TOP)
-========================= */
-.buttons {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  z-index: 5;
+/* ===== EMBERS ===== */
+.ember {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,80,30,0.9);
+  box-shadow: 0 0 10px rgba(255,60,20,0.9);
+  transition: transform 0.15s linear;
 }
 
-.btn {
-  padding: 10px 16px;
-  border: 2px solid var(--fire-main);
-  border-radius: 10px;
-  color: white;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  background: var(--fire-main);
-  color: black;
-  box-shadow: 0 0 25px var(--fire-glow);
-  transform: scale(1.04);
-}
-
-/* =========================
-   SECTION (CONTROL CENTER)
-========================= */
-section {
-  min-height: 100vh;
+/* ===== CONTENT ===== */
+.content {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1;
-  position: relative;
-}
-
-/* =========================
-   FIRE TEXT
-========================= */
-.glow-text {
-  font-size: 3em;
-  font-weight: bold;
-  text-align: center;
-  background: linear-gradient(90deg,
-    var(--fire-main),
-    var(--fire-glow),
-    var(--fire-soft)
-  );
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: fireMove 1s infinite alternate;
-  text-shadow: 0 0 10px var(--fire-glow);
-}
-
-@keyframes fireMove {
-  from {background-position:0% 50%;}
-  to {background-position:100% 50%;}
-}
-
-/* =========================
-   ROLLING TEXT
-========================= */
-.rolling-banner {
-  margin-top: 1.2in;
-  width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
+  z-index: 5;
+  color: #fff;
   text-align: center;
 }
 
-.rolling-banner span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: roll 15s linear infinite;
-  font-size: 1.6em;
-  color: var(--fire-glow);
-  text-shadow: 0 0 20px var(--fire-main), 0 0 10px #000;
+h1 {
+  font-size: 3rem;
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(255,80,40,0.6);
 }
 
-@keyframes roll {
-  from {transform:translateX(0);}
-  to {transform:translateX(-100%);}
+p {
+  margin-top: 10px;
+  opacity: 0.85;
+  letter-spacing: 1px;
 }
 
-/* =========================
-   MOBILE FIX
-========================= */
+/* ===== BUTTON ===== */
+.btn {
+  margin-top: 30px;
+  padding: 14px 34px;
+  border-radius: 40px;
+  border: 1px solid rgba(255,120,80,0.6);
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  box-shadow: 0 0 15px rgba(255,80,40,0.4);
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  box-shadow: 0 0 30px rgba(255,120,60,0.9);
+  letter-spacing: 4px;
+}
+
+/* ===== MOBILE LIMIT ===== */
 @media (max-width: 768px) {
-  .glow-text {font-size:2.2em;}
-  .rolling-banner {margin-top:0.7in;}
+  h1 { font-size: 2.2rem; }
 }
-
-/* =========================
-   MOBILE FIRE TRAIL
-========================= */
-@media (max-width: 480px) {
-  canvas#fire {opacity:0.7;}
-}
-
 </style>
 </head>
 
 <body>
 
-<div id="intro"></div>
-
-<canvas id="bg"></canvas>
-<canvas id="fire"></canvas>
-
-<div class="buttons">
-  <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
-  <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
-  <a class="btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
-  <a class="btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
-  <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
+<div id="scene">
+  <div class="content">
+    <h1>WANDERAEON</h1>
+    <p>Inferno Awakens</p>
+    <button class="btn">ENTER</button>
+  </div>
 </div>
 
-<section>
-  <h1 class="glow-text">WanderAeon</h1>
-  <div class="rolling-banner">
-    <span>Inferno Aeon — Music born from fire and shadows 🔥</span>
-  </div>
-</section>
-
 <script>
+const scene = document.getElementById("scene");
+const EMBER_COUNT = window.innerWidth < 768 ? 22 : 40;
+const embers = [];
 
-/* =========================
-   BACKGROUND EMBERS
-========================= */
-const bg = document.getElementById("bg");
-const bctx = bg.getContext("2d");
-bg.width = innerWidth;
-bg.height = innerHeight;
+for (let i = 0; i < EMBER_COUNT; i++) {
+  const e = document.createElement("div");
+  e.className = "ember";
+  e.x = Math.random() * window.innerWidth;
+  e.y = Math.random() * window.innerHeight;
+  e.style.left = e.x + "px";
+  e.style.top = e.y + "px";
+  scene.appendChild(e);
+  embers.push(e);
+}
 
-let embers=[];
-for(let i=0;i<180;i++)
-  embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
+/* ===== DESKTOP MOUSE ===== */
+document.addEventListener("mousemove", (ev) => {
+  const mx = (ev.clientX / window.innerWidth - 0.5) * 20;
+  const my = (ev.clientY / window.innerHeight - 0.5) * 20;
 
-function animateBG(){
-  bctx.clearRect(0,0,bg.width,bg.height);
-  embers.forEach(e=>{
-    e.y+=0.6;
-    if(e.y>bg.height) e.y=0;
-    bctx.fillStyle="rgba(255,100,0,0.8)";
-    bctx.beginPath();
-    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-    bctx.fill();
+  embers.forEach((e, i) => {
+    e.style.transform = `translate(${mx + i % 5}px, ${my + i % 3}px)`;
   });
-  requestAnimationFrame(animateBG);
-}
-animateBG();
-
-/* =========================
-   FIRE TRAIL (DESKTOP + MOBILE)
-========================= */
-const fire=document.getElementById("fire");
-const fctx=fire.getContext("2d");
-fire.width=innerWidth;
-fire.height=innerHeight;
-
-let flames=[];
-function spawn(x,y){
-  for(let i=0;i<5;i++)
-    flames.push({
-      x,y,
-      s:Math.random()*6+3,
-      a:1,
-      vx:(Math.random()-0.5)*2,
-      vy:Math.random()*-2-1
-    });
-}
-
-window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-window.addEventListener("touchmove",e=>{
-  let t=e.touches[0];
-  spawn(t.clientX,t.clientY);
 });
 
-function animateFire(){
-  fctx.clearRect(0,0,fire.width,fire.height);
-  for(let i=flames.length-1;i>=0;i--){
-    let p=flames[i];
-    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
-    if(p.a<=0) flames.splice(i,1);
-    else{
-      fctx.globalAlpha=p.a;
-      fctx.fillStyle="orange";
-      fctx.beginPath();
-      fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-      fctx.fill();
-    }
-  }
-  fctx.globalAlpha=1;
-  requestAnimationFrame(animateFire);
-}
-animateFire();
+/* ===== SCROLL ===== */
+document.addEventListener("wheel", (ev) => {
+  const s = ev.deltaY * 0.05;
+  embers.forEach((e, i) => {
+    e.style.transform = `translateY(${-s + i % 4}px)`;
+  });
+});
 
+/* ===== MOBILE TOUCH ===== */
+document.addEventListener("touchmove", (ev) => {
+  const t = ev.touches[0];
+  const tx = (t.clientX / window.innerWidth - 0.5) * 15;
+  const ty = (t.clientY / window.innerHeight - 0.5) * 15;
+
+  embers.forEach((e, i) => {
+    e.style.transform = `translate(${tx + i % 4}px, ${ty + i % 3}px)`;
+  });
+});
 </script>
 
 </body>
