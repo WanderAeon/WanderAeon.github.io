@@ -6,6 +6,10 @@
 <title>WanderAeon — Inferno</title>
 
 <style>
+
+/* =========================
+   🔥 INFERNO VARIABLES
+========================= */
 :root {
   --bg-image: url('final.jpg');
   --fire-main: #ff4500;
@@ -13,22 +17,22 @@
   --fire-soft: #ffcc66;
 }
 
-/* ================= BODY ================= */
+/* =========================
+   BODY
+========================= */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   color: white;
   background: var(--bg-image) no-repeat center center fixed;
   background-size: cover;
+  filter: contrast(1.2) brightness(1.05);
   overflow-x: hidden;
 }
 
-/* Desktop background slight shrink */
-@media (min-width: 769px) {
-  body { background-size: 96% auto; }
-}
-
-/* ================= INTRO ================= */
+/* =========================
+   INTRO
+========================= */
 #intro {
   position: fixed;
   inset: 0;
@@ -36,23 +40,26 @@ body {
   z-index: 9999;
   animation: introFade 3s ease forwards;
 }
+
 @keyframes introFade {
   0% {opacity:1;}
   70% {opacity:1;}
   100% {opacity:0; visibility:hidden;}
 }
 
-/* ================= CANVAS ================= */
+/* =========================
+   CANVAS
+========================= */
 canvas {
   position: fixed;
   inset: 0;
   pointer-events: none;
+  z-index: 0;
 }
 
-#bg { z-index: 1; }
-#fire { z-index: 2; }
-
-/* ================= BUTTONS ================= */
+/* =========================
+   BUTTONS (FIXED TOP)
+========================= */
 .buttons {
   position: fixed;
   top: 10px;
@@ -60,8 +67,9 @@ canvas {
   transform: translateX(-50%);
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
-  z-index: 10;
+  z-index: 5;
 }
 
 .btn {
@@ -70,29 +78,36 @@ canvas {
   border-radius: 10px;
   color: white;
   text-decoration: none;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
+
 .btn:hover {
   background: var(--fire-main);
   color: black;
-  box-shadow: 0 0 20px var(--fire-glow);
+  box-shadow: 0 0 25px var(--fire-glow);
+  transform: scale(1.04);
 }
 
-/* ================= SECTION ================= */
+/* =========================
+   SECTION (CONTROL CENTER)
+========================= */
 section {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
   position: relative;
-  z-index: 5;
 }
 
-/* ================= FIRE TEXT ================= */
+/* =========================
+   FIRE TEXT
+========================= */
 .glow-text {
   font-size: 3em;
   font-weight: bold;
+  text-align: center;
   background: linear-gradient(90deg,
     var(--fire-main),
     var(--fire-glow),
@@ -102,41 +117,54 @@ section {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: fireMove 1s infinite alternate;
-  text-shadow: 0 0 15px var(--fire-glow);
+  text-shadow: 0 0 10px var(--fire-glow);
 }
+
 @keyframes fireMove {
   from {background-position:0% 50%;}
   to {background-position:100% 50%;}
 }
 
-/* ================= ROLLING TEXT ================= */
+/* =========================
+   ROLLING TEXT
+========================= */
 .rolling-banner {
-  margin-top: 1in;
+  margin-top: 1.2in;
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-align: center;
 }
+
 .rolling-banner span {
   display: inline-block;
   padding-left: 100%;
   animation: roll 15s linear infinite;
   font-size: 1.6em;
   color: var(--fire-glow);
+  text-shadow: 0 0 20px var(--fire-main), 0 0 10px #000;
 }
+
 @keyframes roll {
   from {transform:translateX(0);}
   to {transform:translateX(-100%);}
 }
 
-/* ================= MOBILE ================= */
+/* =========================
+   MOBILE FIX
+========================= */
 @media (max-width: 768px) {
-  .glow-text { font-size: 2.2em; }
-  .rolling-banner { margin-top: 0.7in; }
+  .glow-text {font-size:2.2em;}
+  .rolling-banner {margin-top:0.7in;}
 }
+
+/* =========================
+   MOBILE FIRE TRAIL
+========================= */
 @media (max-width: 480px) {
-  #fire { opacity: 0.7; }
+  canvas#fire {opacity:0.7;}
 }
+
 </style>
 </head>
 
@@ -163,30 +191,25 @@ section {
 </section>
 
 <script>
-const isMobile = innerWidth <= 768;
 
-/* ===== BACKGROUND EMBERS ===== */
+/* =========================
+   BACKGROUND EMBERS
+========================= */
 const bg = document.getElementById("bg");
 const bctx = bg.getContext("2d");
 bg.width = innerWidth;
 bg.height = innerHeight;
 
-let embers = [];
-let count = isMobile ? 120 : 180;
-for(let i=0;i<count;i++){
-  embers.push({
-    x: Math.random()*bg.width,
-    y: Math.random()*bg.height,
-    s: Math.random()*3+1
-  });
-}
+let embers=[];
+for(let i=0;i<180;i++)
+  embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
 
 function animateBG(){
   bctx.clearRect(0,0,bg.width,bg.height);
   embers.forEach(e=>{
-    e.y += 0.6;
+    e.y+=0.6;
     if(e.y>bg.height) e.y=0;
-    bctx.fillStyle="rgba(255,120,0,0.8)";
+    bctx.fillStyle="rgba(255,100,0,0.8)";
     bctx.beginPath();
     bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
     bctx.fill();
@@ -195,16 +218,17 @@ function animateBG(){
 }
 animateBG();
 
-/* ===== FIRE TRAIL ===== */
-const fire = document.getElementById("fire");
-const fctx = fire.getContext("2d");
-fire.width = innerWidth;
-fire.height = innerHeight;
+/* =========================
+   FIRE TRAIL (DESKTOP + MOBILE)
+========================= */
+const fire=document.getElementById("fire");
+const fctx=fire.getContext("2d");
+fire.width=innerWidth;
+fire.height=innerHeight;
 
 let flames=[];
 function spawn(x,y){
-  let n = isMobile ? 3 : 5;
-  for(let i=0;i<n;i++){
+  for(let i=0;i<5;i++)
     flames.push({
       x,y,
       s:Math.random()*6+3,
@@ -212,14 +236,12 @@ function spawn(x,y){
       vx:(Math.random()-0.5)*2,
       vy:Math.random()*-2-1
     });
-  }
 }
 
-addEventListener("mousemove",e=>{
-  if(!isMobile) spawn(e.clientX,e.clientY);
-});
-addEventListener("touchmove",e=>{
-  spawn(e.touches[0].clientX,e.touches[0].clientY);
+window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
+window.addEventListener("touchmove",e=>{
+  let t=e.touches[0];
+  spawn(t.clientX,t.clientY);
 });
 
 function animateFire(){
@@ -240,6 +262,7 @@ function animateFire(){
   requestAnimationFrame(animateFire);
 }
 animateFire();
+
 </script>
 
 </body>
