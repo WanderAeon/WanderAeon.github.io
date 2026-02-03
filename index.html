@@ -8,13 +8,15 @@
 <style>
 
 /* =========================
-   🔥 INFERNO VARIABLES
+   🔥 THEME VARIABLES
 ========================= */
 :root {
-  --bg-image: url('final.jpg');
-  --fire-main: #ff4500;
-  --fire-glow: #ff9900;
-  --fire-soft: #ffcc66;
+  --bg-image: url('final.jpg');   /* Inferno default */
+  --primary-color: #ff4500;
+  --glow-color: #ff9900;
+  --soft-color: #ffcc66;
+  --text-gradient-start: var(--primary-color);
+  --text-gradient-end: var(--glow-color);
 }
 
 /* =========================
@@ -31,20 +33,43 @@ body {
 }
 
 /* =========================
-   INTRO
+   INTRO / THEME SELECTOR OVERLAY
 ========================= */
-#intro {
+#theme-overlay {
   position: fixed;
   inset: 0;
-  background: black;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   z-index: 9999;
-  animation: introFade 3s ease forwards;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
 }
 
-@keyframes introFade {
-  0% {opacity:1;}
-  70% {opacity:1;}
-  100% {opacity:0; visibility:hidden;}
+#theme-overlay h2 {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
+.theme-btn {
+  padding: 12px 20px;
+  margin: 10px;
+  border: 2px solid white;
+  border-radius: 10px;
+  background: transparent;
+  color: white;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+  background: white;
+  color: black;
+  transform: scale(1.05);
 }
 
 /* =========================
@@ -74,7 +99,7 @@ canvas {
 
 .btn {
   padding: 10px 16px;
-  border: 2px solid var(--fire-main);
+  border: 2px solid var(--primary-color);
   border-radius: 10px;
   color: white;
   text-decoration: none;
@@ -82,9 +107,9 @@ canvas {
 }
 
 .btn:hover {
-  background: var(--fire-main);
+  background: var(--primary-color);
   color: black;
-  box-shadow: 0 0 25px var(--fire-glow);
+  box-shadow: 0 0 25px var(--glow-color);
   transform: scale(1.04);
 }
 
@@ -102,22 +127,21 @@ section {
 }
 
 /* =========================
-   FIRE TEXT
+   FIRE / TEXT GLOW
 ========================= */
 .glow-text {
   font-size: 3em;
   font-weight: bold;
   text-align: center;
   background: linear-gradient(90deg,
-    var(--fire-main),
-    var(--fire-glow),
-    var(--fire-soft)
+    var(--text-gradient-start),
+    var(--text-gradient-end)
   );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: fireMove 1s infinite alternate;
-  text-shadow: 0 0 10px var(--fire-glow);
+  text-shadow: 0 0 10px var(--glow-color);
 }
 
 @keyframes fireMove {
@@ -141,8 +165,8 @@ section {
   padding-left: 100%;
   animation: roll 15s linear infinite;
   font-size: 1.6em;
-  color: var(--fire-glow);
-  text-shadow: 0 0 20px var(--fire-main), 0 0 10px #000;
+  color: var(--glow-color);
+  text-shadow: 0 0 20px var(--primary-color), 0 0 10px #000;
 }
 
 @keyframes roll {
@@ -158,9 +182,6 @@ section {
   .rolling-banner {margin-top:0.7in;}
 }
 
-/* =========================
-   MOBILE FIRE TRAIL
-========================= */
 @media (max-width: 480px) {
   canvas#fire {opacity:0.7;}
 }
@@ -170,11 +191,21 @@ section {
 
 <body>
 
-<div id="intro"></div>
+<!-- THEME OVERLAY -->
+<div id="theme-overlay">
+  <h2>WanderAeon — your mode today</h2>
+  <div>
+    <button class="theme-btn" onclick="applyTheme('inferno')">Inferno</button>
+    <button class="theme-btn" onclick="applyTheme('echo')">Echo</button>
+    <button class="theme-btn" onclick="applyTheme('dark')">Dark</button>
+  </div>
+</div>
 
+<!-- CANVAS -->
 <canvas id="bg"></canvas>
 <canvas id="fire"></canvas>
 
+<!-- TOP BUTTONS -->
 <div class="buttons">
   <a class="btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
   <a class="btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
@@ -183,6 +214,7 @@ section {
   <a class="btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
 </div>
 
+<!-- MAIN SECTION -->
 <section>
   <h1 class="glow-text">WanderAeon</h1>
   <div class="rolling-banner">
@@ -193,23 +225,23 @@ section {
 <script>
 
 /* =========================
-   BACKGROUND EMBERS
+   CANVAS: BACKGROUND EMBERS
 ========================= */
 const bg = document.getElementById("bg");
 const bctx = bg.getContext("2d");
 bg.width = innerWidth;
 bg.height = innerHeight;
 
-let embers=[];
+let embers = [];
 for(let i=0;i<180;i++)
-  embers.push({x:Math.random()*bg.width,y:Math.random()*bg.height,s:Math.random()*3+1});
+  embers.push({x:Math.random()*bg.width, y:Math.random()*bg.height, s:Math.random()*3+1});
 
 function animateBG(){
   bctx.clearRect(0,0,bg.width,bg.height);
   embers.forEach(e=>{
-    e.y+=0.6;
-    if(e.y>bg.height) e.y=0;
-    bctx.fillStyle="rgba(255,100,0,0.8)";
+    e.y += 0.6;
+    if(e.y > bg.height) e.y = 0;
+    bctx.fillStyle = "rgba(255,100,0,0.8)";
     bctx.beginPath();
     bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
     bctx.fill();
@@ -219,14 +251,14 @@ function animateBG(){
 animateBG();
 
 /* =========================
-   FIRE TRAIL (DESKTOP + MOBILE)
+   CANVAS: FIRE TRAIL
 ========================= */
-const fire=document.getElementById("fire");
-const fctx=fire.getContext("2d");
-fire.width=innerWidth;
-fire.height=innerHeight;
+const fire = document.getElementById("fire");
+const fctx = fire.getContext("2d");
+fire.width = innerWidth;
+fire.height = innerHeight;
 
-let flames=[];
+let flames = [];
 function spawn(x,y){
   for(let i=0;i<5;i++)
     flames.push({
@@ -238,30 +270,86 @@ function spawn(x,y){
     });
 }
 
-window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-window.addEventListener("touchmove",e=>{
-  let t=e.touches[0];
-  spawn(t.clientX,t.clientY);
+window.addEventListener("mousemove", e => spawn(e.clientX, e.clientY));
+window.addEventListener("touchmove", e => {
+  let t = e.touches[0];
+  spawn(t.clientX, t.clientY);
 });
 
 function animateFire(){
   fctx.clearRect(0,0,fire.width,fire.height);
   for(let i=flames.length-1;i>=0;i--){
-    let p=flames[i];
-    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
-    if(p.a<=0) flames.splice(i,1);
+    let p = flames[i];
+    p.x += p.vx; p.y += p.vy; p.a -= 0.03;
+    if(p.a <= 0) flames.splice(i,1);
     else{
-      fctx.globalAlpha=p.a;
-      fctx.fillStyle="orange";
+      fctx.globalAlpha = p.a;
+      fctx.fillStyle = "orange";
       fctx.beginPath();
       fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
       fctx.fill();
     }
   }
-  fctx.globalAlpha=1;
+  fctx.globalAlpha = 1;
   requestAnimationFrame(animateFire);
 }
 animateFire();
+
+/* =========================
+   THEME SWITCH FUNCTION
+========================= */
+function applyTheme(theme){
+  const root = document.documentElement;
+  const overlay = document.getElementById("theme-overlay");
+  const glowText = document.querySelector(".glow-text");
+  const banner = document.querySelector(".rolling-banner span");
+
+  if(theme === "inferno"){
+    root.style.setProperty('--bg-image', "url('final.jpg')");
+    root.style.setProperty('--primary-color', "#ff4500");
+    root.style.setProperty('--glow-color', "#ff9900");
+    root.style.setProperty('--soft-color', "#ffcc66");
+    root.style.setProperty('--text-gradient-start', "#ff4500");
+    root.style.setProperty('--text-gradient-end', "#ff9900");
+
+    glowText.textContent = "WanderAeon";
+    banner.textContent = "Inferno Aeon — Music born from fire and shadows 🔥";
+  }
+  else if(theme === "echo"){
+    root.style.setProperty('--bg-image', "url('echo.jpg')");
+    root.style.setProperty('--primary-color', "#013f69");
+    root.style.setProperty('--glow-color', "#2ecc71");
+    root.style.setProperty('--soft-color', "#2ecc71");
+    root.style.setProperty('--text-gradient-start', "#013f69");
+    root.style.setProperty('--text-gradient-end', "#2ecc71");
+
+    glowText.textContent = "Echo";
+    banner.textContent = "WanderAeon — Music beyond time";
+  }
+  else if(theme === "dark"){
+    root.style.setProperty('--bg-image', "url('dark.jpg')");
+    root.style.setProperty('--primary-color', "#000000");
+    root.style.setProperty('--glow-color', "#ffffff");
+    root.style.setProperty('--soft-color', "#888888");
+    root.style.setProperty('--text-gradient-start', "#000000");
+    root.style.setProperty('--text-gradient-end', "#ffffff");
+
+    glowText.textContent = "Dark";
+    banner.textContent = "wanderAeon — Not just heard, experienced";
+  }
+
+  overlay.style.display = "none"; // hide theme selector
+}
+
+/* =========================
+   WINDOW RESIZE
+========================= */
+window.addEventListener('resize', ()=>{
+  bg.width = window.innerWidth;
+  bg.height = window.innerHeight;
+  fire.width = window.innerWidth;
+  fire.height = window.innerHeight;
+});
 
 </script>
 
