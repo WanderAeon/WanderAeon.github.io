@@ -5,50 +5,32 @@
 <title>WanderAeon</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-body{
-  overflow:hidden;
-  background:#000;
-  color:#fff;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
+body{overflow:hidden;background:black;color:white;}
 
 canvas{
   position:fixed;
-  top:0;
-  left:0;
+  top:0;left:0;
   z-index:0;
 }
 
-.overlay{
+.screen{
   position:relative;
-  z-index:10;
+  z-index:5;
   height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:25px;
-}
-
-h1{
-  font-size:38px;
-  animation: floatText 6s ease-in-out infinite;
-}
-
-p{
-  opacity:0.8;
-}
-
-.buttons{
-  display:flex;
   gap:20px;
 }
+
+.hidden{display:none;}
+
+h1{font-size:40px;}
+p{opacity:0.85;}
+
+.buttons{display:flex;gap:20px;}
 
 button{
   padding:12px 28px;
@@ -56,23 +38,13 @@ button{
   border-radius:30px;
   font-size:16px;
   cursor:pointer;
-  transition:0.3s;
+  transition:.3s;
 }
+button:hover{transform:scale(1.1);}
 
-button:hover{
-  transform:scale(1.08);
-}
-
-@keyframes floatText{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-15px)}
-}
-
-/* Theme colors */
-.infernoBtn{background:#ff4500;color:#fff;}
+.infernoBtn{background:#ff4500;color:white;}
 .echoBtn{background:#013f69;color:#9dffb3;}
-.darkBtn{background:#000;color:#fff;border:1px solid #fff;}
-
+.darkBtn{background:black;color:white;border:1px solid white;}
 </style>
 </head>
 
@@ -80,114 +52,113 @@ button:hover{
 
 <canvas id="canvas"></canvas>
 
-<div class="overlay">
-  <h1 id="title">WanderAeon</h1>
-  <p id="tagline">Music beyond time.</p>
-
-  <p>WanderAeon - your mode today (select one)</p>
+<!-- MODE SELECTION -->
+<div class="screen" id="selectScreen">
+  <h1>WanderAeon</h1>
+  <p>WanderAeon – your mode today (select one)</p>
 
   <div class="buttons">
-    <button class="infernoBtn" onclick="setTheme('inferno')">Inferno</button>
-    <button class="echoBtn" onclick="setTheme('echo')">Echo</button>
-    <button class="darkBtn" onclick="setTheme('dark')">Dark</button>
+    <button class="infernoBtn" onclick="startTheme('inferno')">Inferno</button>
+    <button class="echoBtn" onclick="startTheme('echo')">Echo</button>
+    <button class="darkBtn" onclick="startTheme('dark')">Dark</button>
   </div>
+</div>
+
+<!-- THEME EXPERIENCE -->
+<div class="screen hidden" id="themeScreen">
+  <h1 id="themeTitle">WanderAeon</h1>
+  <p id="themeText"></p>
 </div>
 
 <script>
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-let particles = [];
-let theme = "inferno";
-let mouse = {x:null,y:null};
-
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-window.addEventListener("resize",()=>{
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-});
+window.onresize=()=>{
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+};
+
+let particles=[], theme="", mouse={x:null,y:null};
 
 window.addEventListener("mousemove",e=>{
-  mouse.x = e.x;
-  mouse.y = e.y;
+  mouse.x=e.x;
+  mouse.y=e.y;
 });
 
 function Particle(){
-  this.x = Math.random()*canvas.width;
-  this.y = Math.random()*canvas.height;
-  this.size = Math.random()*3+1;
-  this.speedY = Math.random()*1+0.5;
-  this.speedX = Math.random()*1-0.5;
+  this.x=Math.random()*canvas.width;
+  this.y=Math.random()*canvas.height;
+  this.size=Math.random()*3+1;
+  this.vx=Math.random()*1-0.5;
+  this.vy=Math.random()*1+0.3;
 }
 
-function initParticles(count){
+function init(count){
   particles=[];
-  for(let i=0;i<count;i++){
-    particles.push(new Particle());
-  }
+  for(let i=0;i<count;i++) particles.push(new Particle());
 }
 
-function draw(){
+function animate(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   particles.forEach(p=>{
-    if(theme==="inferno"){
-      ctx.fillStyle = "rgba(255,80,0,0.8)";
-    }
-    if(theme==="echo"){
-      ctx.fillStyle = "rgba(120,255,180,0.8)";
-    }
-    if(theme==="dark"){
-      ctx.fillStyle = "rgba(200,200,255,0.6)";
-    }
+    if(theme==="inferno") ctx.fillStyle="rgba(255,80,0,0.9)";
+    if(theme==="echo") ctx.fillStyle="rgba(120,255,180,0.85)";
+    if(theme==="dark") ctx.fillStyle="rgba(200,200,255,0.6)";
 
     ctx.beginPath();
     ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
     ctx.fill();
 
-    p.y -= p.speedY;
-    p.x += p.speedX;
+    let dx=p.x-mouse.x;
+    let dy=p.y-mouse.y;
+    let dist=Math.sqrt(dx*dx+dy*dy);
 
-    if(mouse.x){
-      let dx = p.x - mouse.x;
-      let dy = p.y - mouse.y;
-      let dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < 100){
-        p.x += dx/10;
-        p.y += dy/10;
-      }
+    if(dist<120){
+      p.x+=dx/8;
+      p.y+=dy/8;
     }
 
-    if(p.y < 0) p.y = canvas.height;
-    if(p.x < 0) p.x = canvas.width;
-    if(p.x > canvas.width) p.x = 0;
+    p.y-=p.vy;
+    p.x+=p.vx;
+
+    if(p.y<0)p.y=canvas.height;
+    if(p.x<0)p.x=canvas.width;
+    if(p.x>canvas.width)p.x=0;
   });
 
-  requestAnimationFrame(draw);
+  requestAnimationFrame(animate);
 }
 
-function setTheme(t){
-  theme = t;
+function startTheme(t){
+  theme=t;
+
+  document.getElementById("selectScreen").classList.add("hidden");
+  document.getElementById("themeScreen").classList.remove("hidden");
 
   if(t==="inferno"){
-    document.getElementById("tagline").innerText="Music beyond time.";
-    initParticles(180);
+    document.body.style.background="#000";
+    document.getElementById("themeText").innerText="Music beyond time.";
+    init(220);
   }
 
   if(t==="echo"){
-    document.getElementById("tagline").innerText="Music beyond time.";
-    initParticles(140);
+    document.body.style.background="#021f2e";
+    document.getElementById("themeText").innerText="Music beyond time.";
+    init(160);
   }
 
   if(t==="dark"){
-    document.getElementById("tagline").innerText="Not just heard, experienced.";
-    initParticles(120);
+    document.body.style.background="#000";
+    document.getElementById("themeText").innerText="Not just heard, experienced.";
+    init(130);
   }
 }
 
-initParticles(180);
-draw();
+animate();
 </script>
 
 </body>
