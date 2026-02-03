@@ -2,163 +2,254 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>WanderAeon</title>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>WanderAeon — Inferno</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI;}
-body{overflow:hidden;background:black;color:white;}
+:root{
+  --bg-image:url('final.jpg');
+  --main:#ff4500;
+  --glow:#ff9900;
+  --soft:#ffcc66;
+}
 
+/* BODY */
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  color:white;
+  background:var(--bg-image) no-repeat center center fixed;
+  background-size:cover;
+}
+
+/* CANVAS */
 canvas{
   position:fixed;
-  top:0;left:0;
+  inset:0;
+  pointer-events:none;
   z-index:0;
 }
 
-.screen{
-  position:relative;
+/* BUTTONS */
+.buttons{
+  position:fixed;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:10px;
   z-index:5;
+}
+
+.btn{
+  padding:10px 16px;
+  border:2px solid var(--main);
+  border-radius:10px;
+  color:white;
+  text-decoration:none;
+  cursor:pointer;
+  background:transparent;
+  transition:.3s;
+}
+.btn:hover{
+  background:var(--main);
+  color:black;
+  box-shadow:0 0 20px var(--glow);
+}
+
+/* CENTER */
+section{
   height:100vh;
   display:flex;
   flex-direction:column;
-  align-items:center;
   justify-content:center;
-  gap:20px;
+  align-items:center;
+  position:relative;
+  z-index:2;
 }
 
-.hidden{display:none;}
-
-h1{font-size:40px;}
-p{opacity:0.85;}
-
-.buttons{display:flex;gap:20px;}
-
-button{
-  padding:12px 28px;
-  border:none;
-  border-radius:30px;
-  font-size:16px;
-  cursor:pointer;
-  transition:.3s;
+/* FIRE TEXT */
+.glow-text{
+  font-size:3em;
+  font-weight:bold;
+  background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
+  background-size:200% 200%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:fire 1s infinite alternate;
+  text-shadow:0 0 15px var(--glow);
 }
-button:hover{transform:scale(1.1);}
 
-.infernoBtn{background:#ff4500;color:white;}
-.echoBtn{background:#013f69;color:#9dffb3;}
-.darkBtn{background:black;color:white;border:1px solid white;}
+@keyframes fire{
+  from{background-position:0% 50%;}
+  to{background-position:100% 50%;}
+}
+
+/* ROLLING */
+.rolling{
+  margin-top:30px;
+  width:100%;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.rolling span{
+  display:inline-block;
+  padding-left:100%;
+  animation:roll 15s linear infinite;
+  font-size:1.6em;
+  color:var(--glow);
+  text-shadow:0 0 20px var(--main);
+}
+@keyframes roll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-100%);}
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .glow-text{font-size:2.2em;}
+}
 </style>
 </head>
 
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="embers"></canvas>
+<canvas id="fire"></canvas>
 
-<!-- MODE SELECTION -->
-<div class="screen" id="selectScreen">
-  <h1>WanderAeon</h1>
-  <p>WanderAeon – your mode today (select one)</p>
+<div class="buttons">
+  <button class="btn" onclick="setTheme('inferno')">Inferno</button>
+  <button class="btn" onclick="setTheme('echo')">Echo</button>
+  <button class="btn" onclick="setTheme('dark')">Dark</button>
+</div>
 
-  <div class="buttons">
-    <button class="infernoBtn" onclick="startTheme('inferno')">Inferno</button>
-    <button class="echoBtn" onclick="startTheme('echo')">Echo</button>
-    <button class="darkBtn" onclick="startTheme('dark')">Dark</button>
+<section>
+  <h1 class="glow-text" id="title">WanderAeon</h1>
+  <div class="rolling">
+    <span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
   </div>
-</div>
-
-<!-- THEME EXPERIENCE -->
-<div class="screen hidden" id="themeScreen">
-  <h1 id="themeTitle">WanderAeon</h1>
-  <p id="themeText"></p>
-</div>
+</section>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+/* DPR FIX */
+const dpr=window.devicePixelRatio||1;
 
-window.onresize=()=>{
-  canvas.width=innerWidth;
-  canvas.height=innerHeight;
-};
+/* EMBERS */
+const bg=document.getElementById("embers");
+const bctx=bg.getContext("2d");
 
-let particles=[], theme="", mouse={x:null,y:null};
+function resize(){
+  bg.width=innerWidth*dpr;
+  bg.height=innerHeight*dpr;
+  bg.style.width=innerWidth+"px";
+  bg.style.height=innerHeight+"px";
+  bctx.setTransform(dpr,0,0,dpr,0,0);
 
-window.addEventListener("mousemove",e=>{
-  mouse.x=e.x;
-  mouse.y=e.y;
-});
+  fire.width=bg.width;
+  fire.height=bg.height;
+  fire.style.width=bg.style.width;
+  fire.style.height=bg.style.height;
+  fctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.onresize=resize;
 
-function Particle(){
-  this.x=Math.random()*canvas.width;
-  this.y=Math.random()*canvas.height;
-  this.size=Math.random()*3+1;
-  this.vx=Math.random()*1-0.5;
-  this.vy=Math.random()*1+0.3;
+let embers=[];
+function initEmbers(count){
+  embers=[];
+  for(let i=0;i<count;i++)
+    embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3+1});
 }
 
-function init(count){
-  particles=[];
-  for(let i=0;i<count;i++) particles.push(new Particle());
-}
-
-function animate(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    if(theme==="inferno") ctx.fillStyle="rgba(255,80,0,0.9)";
-    if(theme==="echo") ctx.fillStyle="rgba(120,255,180,0.85)";
-    if(theme==="dark") ctx.fillStyle="rgba(200,200,255,0.6)";
-
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-    ctx.fill();
-
-    let dx=p.x-mouse.x;
-    let dy=p.y-mouse.y;
-    let dist=Math.sqrt(dx*dx+dy*dy);
-
-    if(dist<120){
-      p.x+=dx/8;
-      p.y+=dy/8;
-    }
-
-    p.y-=p.vy;
-    p.x+=p.vx;
-
-    if(p.y<0)p.y=canvas.height;
-    if(p.x<0)p.x=canvas.width;
-    if(p.x>canvas.width)p.x=0;
+function animateBG(){
+  bctx.clearRect(0,0,innerWidth,innerHeight);
+  embers.forEach(e=>{
+    e.y+=0.6;
+    if(e.y>innerHeight)e.y=0;
+    bctx.fillStyle="rgba(255,120,0,.8)";
+    bctx.beginPath();
+    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
+    bctx.fill();
   });
-
-  requestAnimationFrame(animate);
+  requestAnimationFrame(animateBG);
 }
 
-function startTheme(t){
-  theme=t;
+/* FIRE MOUSE */
+const fire=document.getElementById("fire");
+const fctx=fire.getContext("2d");
+let flames=[];
 
-  document.getElementById("selectScreen").classList.add("hidden");
-  document.getElementById("themeScreen").classList.remove("hidden");
+function spawn(x,y){
+  for(let i=0;i<5;i++)
+    flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-0.5)*2,vy:Math.random()*-2-1});
+}
+
+window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
+window.addEventListener("touchmove",e=>{
+  e.preventDefault();
+  const t=e.touches[0];
+  spawn(t.clientX,t.clientY);
+},{passive:false});
+
+function animateFire(){
+  fctx.clearRect(0,0,innerWidth,innerHeight);
+  for(let i=flames.length-1;i>=0;i--){
+    let p=flames[i];
+    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
+    if(p.a<=0)flames.splice(i,1);
+    else{
+      fctx.globalAlpha=p.a;
+      fctx.fillStyle="orange";
+      fctx.beginPath();
+      fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+      fctx.fill();
+    }
+  }
+  fctx.globalAlpha=1;
+  requestAnimationFrame(animateFire);
+}
+
+/* THEMES */
+function setTheme(t){
+  document.documentElement.style.setProperty('--bg-image', t==="inferno" ? "url('final.jpg')" : "none");
 
   if(t==="inferno"){
-    document.body.style.background="#000";
-    document.getElementById("themeText").innerText="Music beyond time.";
-    init(220);
+    document.documentElement.style.setProperty('--main','#ff4500');
+    document.documentElement.style.setProperty('--glow','#ff9900');
+    document.documentElement.style.setProperty('--soft','#ffcc66');
+    document.body.style.backgroundImage="url('final.jpg')";
+    tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
+    initEmbers(180);
   }
 
   if(t==="echo"){
+    document.documentElement.style.setProperty('--main','#013f69');
+    document.documentElement.style.setProperty('--glow','#7dffb0');
+    document.documentElement.style.setProperty('--soft','#bfffe0');
     document.body.style.background="#021f2e";
-    document.getElementById("themeText").innerText="Music beyond time.";
-    init(160);
+    tagline.innerText="WanderAeon — Music beyond time.";
+    initEmbers(120);
   }
 
   if(t==="dark"){
+    document.documentElement.style.setProperty('--main','#ffffff');
+    document.documentElement.style.setProperty('--glow','#999');
+    document.documentElement.style.setProperty('--soft','#666');
     document.body.style.background="#000";
-    document.getElementById("themeText").innerText="Not just heard, experienced.";
-    init(130);
+    tagline.innerText="WanderAeon — Not just heard, experienced.";
+    initEmbers(90);
   }
 }
 
-animate();
+/* START */
+resize();
+initEmbers(180);
+animateBG();
+animateFire();
 </script>
 
 </body>
