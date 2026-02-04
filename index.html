@@ -21,12 +21,8 @@ html, body {
   font-family: Arial, sans-serif;
   color:white;
   background: url('final.jpg') no-repeat center center;
-  background-size: cover;   /* full screen cover */
+  background-size: cover;
   min-height: 100vh;
-}
-
-/* FIX for desktop / laptop: auto-fit full screen */
-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -207,7 +203,7 @@ function resize(){
   bctx.setTransform(dpr,0,0,dpr,0,0);
   fctx.setTransform(dpr,0,0,dpr,0,0);
 
-  // BACKGROUND AUTO FIT
+  // BACKGROUND AUTO FIT FULL SCREEN
   document.body.style.backgroundSize = innerWidth + "px " + innerHeight + "px";
 }
 window.onresize=resize;
@@ -271,17 +267,22 @@ function setTheme(t){
     setVars('#ff4500','#ff9900','#ffcc66');
     tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
     initEmbers(180);
+    document.body.style.background = "url('final.jpg') no-repeat center center";
   }
   if(t==="echo"){
     setVars('#013f69','#7dffb0','#bfffe0');
     tagline.innerText="WanderAeon — Music beyond time.";
     initEmbers(120);
+    document.body.style.background = "url('echo.jpg') no-repeat center center";
   }
   if(t==="dark"){
     setVars('#ffffff','#999','#666');
     tagline.innerText="WanderAeon — Not just heard, experienced.";
     initEmbers(90);
+    document.body.style.background = "url('dark.jpg') no-repeat center center";
   }
+
+  document.body.style.backgroundSize = innerWidth + "px " + innerHeight + "px";
 }
 
 function setVars(a,b,c){
