@@ -2,243 +2,283 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>WanderAeon</title>
 
 <style>
 :root{
---main:#ff4500;
---glow:#ff9900;
---soft:#ffcc66;
---bg:url('final.jpg');
+  --main:#ff4500;
+  --glow:#ff9900;
+  --soft:#ffcc66;
 }
 
 html,body{
-margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial,sans-serif;
-color:white;
-background:var(--bg) center/cover no-repeat fixed;
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  color:white;
+  background:url('final.jpg') center center no-repeat;
+  background-size:cover;
 }
 
-/* canvas */
+/* 📱 Mobile cinematic fix */
+@media(max-width:768px){
+  body{ background-position:center top; }
+}
+
 canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:0;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
 }
 
-/* theme buttons */
+/* THEME BUTTONS */
 .theme-buttons{
-position:fixed;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:12px;
-z-index:5;
+  position:fixed;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:12px;
+  z-index:5;
 }
 
 .theme-btn{
-padding:10px 18px;
-color:white;
-background:rgba(0,0,0,.4);
-border-radius:12px;
-border:2px solid transparent;
-cursor:pointer;
-animation:rainbow 2.5s linear infinite;
+  padding:10px 18px;
+  font-size:15px;
+  color:white;
+  background:rgba(0,0,0,.4);
+  border-radius:12px;
+  border:2px solid transparent;
+  cursor:pointer;
+  animation:rainbow 2.5s linear infinite;
 }
 
 @keyframes rainbow{
-0%{border-color:red}
-25%{border-color:yellow}
-50%{border-color:lime}
-75%{border-color:cyan}
-100%{border-color:red}
+  0%{border-color:red;box-shadow:0 0 10px red;}
+  25%{border-color:yellow;box-shadow:0 0 10px yellow;}
+  50%{border-color:lime;box-shadow:0 0 10px lime;}
+  75%{border-color:cyan;box-shadow:0 0 10px cyan;}
+  100%{border-color:red;box-shadow:0 0 10px red;}
 }
 
-/* social */
+.theme-btn:hover{ transform:scale(1.08); }
+
+/* SOCIAL BUTTONS AS IMAGES */
 .social-buttons{
-position:fixed;
-top:65px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-justify-content:center;
-z-index:5;
+  position:fixed;
+  bottom:12%;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:15px;
+  z-index:5;
 }
 
-.social-btn{
-padding:9px 14px;
-border:2px solid var(--main);
-border-radius:10px;
-color:white;
-text-decoration:none;
+.social-buttons a img{
+  width:50px;
+  height:50px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.6);
+  padding:8px;
+  cursor:pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.social-btn:hover{
-background:var(--main);
-color:black;
+.social-buttons a img:hover{
+  transform:scale(1.2);
+  box-shadow:0 0 15px orange;
 }
 
-/* center */
+/* CENTER SECTION */
 section{
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:2;
-position:relative;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:2;
 }
 
-/* glow text */
-.glow{
-font-size:3em;
-background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:fire 1.5s infinite alternate;
+.glow-text{
+  font-size:3em;
+  font-weight:bold;
+  background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
+  background-size:200% 200%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:fire 1s infinite alternate;
+  text-shadow:0 0 15px var(--glow);
 }
 
 @keyframes fire{
-from{background-position:0%}
-to{background-position:100%}
+  from{background-position:0% 50%;}
+  to{background-position:100% 50%;}
 }
 
-/* rolling */
-.roll{
-margin-top:30px;
-overflow:hidden;
-white-space:nowrap;
-width:100%;
+.rolling{
+  margin-top:30px;
+  width:100%;
+  overflow:hidden;
+  white-space:nowrap;
 }
 
-.roll span{
-display:inline-block;
-padding-left:100%;
-animation:roll 14s linear infinite;
-color:var(--glow);
-font-size:1.6em;
+.rolling span{
+  display:inline-block;
+  padding-left:100%;
+  animation:roll 15s linear infinite;
+  font-size:1.6em;
+  color:var(--glow);
+  text-shadow:0 0 20px var(--main);
 }
 
 @keyframes roll{
-from{transform:translateX(0)}
-to{transform:translateX(-100%)}
+  from{transform:translateX(0);}
+  to{transform:translateX(-100%);}
 }
 
 @media(max-width:768px){
-.glow{font-size:2.2em}
+  .glow-text{font-size:2.2em;}
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="c"></canvas>
+<canvas id="embers"></canvas>
+<canvas id="fire"></canvas>
 
 <div class="theme-buttons">
-<button class="theme-btn" onclick="theme('inferno')">Inferno</button>
-<button class="theme-btn" onclick="theme('echo')">Echo</button>
-<button class="theme-btn" onclick="theme('dark')">Dark</button>
+  <button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
+  <button class="theme-btn" onclick="setTheme('echo')">Echo</button>
+  <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
+<!-- SOCIAL BUTTONS AS IMAGES -->
 <div class="social-buttons">
-<a class="social-btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
-<a class="social-btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
-<a class="social-btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
-<a class="social-btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
-<a class="social-btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
+  <a href="https://www.youtube.com/@WanderAeon" target="_blank">
+    <img src="youtube.png" alt="YouTube">
+  </a>
+  <a href="https://www.tiktok.com/@wanderaeon" target="_blank">
+    <img src="tiktok.png" alt="TikTok">
+  </a>
+  <a href="https://soundcloud.com/wanderaeon" target="_blank">
+    <img src="soundcloud.png" alt="SoundCloud">
+  </a>
+  <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">
+    <img src="facebook.png" alt="Facebook">
+  </a>
+  <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">
+    <img src="whatsapp.png" alt="WhatsApp">
+  </a>
 </div>
 
 <section>
-<h1 class="glow">WanderAeon</h1>
-<div class="roll">
-<span id="text">Inferno Aeon — Music born from fire and shadows 🔥</span>
-</div>
+  <h1 class="glow-text">WanderAeon</h1>
+  <div class="rolling">
+    <span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
+  </div>
 </section>
 
 <script>
-const root=document.documentElement
+const bg=document.getElementById("embers");
+const fire=document.getElementById("fire");
+const bctx=bg.getContext("2d");
+const fctx=fire.getContext("2d");
 
-function theme(t){
-if(t==="inferno"){
-root.style.setProperty('--main','#ff4500')
-root.style.setProperty('--glow','#ff9900')
-root.style.setProperty('--soft','#ffcc66')
-root.style.setProperty('--bg',"url('final.jpg')")
-text.innerText="Inferno Aeon — Music born from fire and shadows 🔥"
+function resize(){
+  bg.width=fire.width=innerWidth;
+  bg.height=fire.height=innerHeight;
 }
-if(t==="echo"){
-root.style.setProperty('--main','#013f69')
-root.style.setProperty('--glow','#7dffb0')
-root.style.setProperty('--soft','#bfffe0')
-root.style.setProperty('--bg',"url('echo.jpg')")
-text.innerText="WanderAeon — Music beyond time."
+window.onresize=resize;
+
+/* EMBERS */
+let embers=[];
+function initEmbers(n){
+  embers=[];
+  for(let i=0;i<n;i++)
+    embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3+1});
 }
-if(t==="dark"){
-root.style.setProperty('--main','#ffffff')
-root.style.setProperty('--glow','#aaa')
-root.style.setProperty('--soft','#666')
-root.style.setProperty('--bg',"url('dark.jpg')")
-text.innerText="WanderAeon — Not just heard, experienced."
-}
+
+function animateBG(){
+  bctx.clearRect(0,0,innerWidth,innerHeight);
+  embers.forEach(e=>{
+    e.y+=0.6;
+    if(e.y>innerHeight)e.y=0;
+    bctx.fillStyle="rgba(255,120,0,.8)";
+    bctx.beginPath();
+    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
+    bctx.fill();
+  });
+  requestAnimationFrame(animateBG);
 }
 
 /* FIRE MOUSE */
-const canvas=document.getElementById("c")
-const ctx=canvas.getContext("2d")
-
-function resize(){
-canvas.width=innerWidth
-canvas.height=innerHeight
-}
-resize()
-window.onresize=resize
-
-let flames=[]
-
+let flames=[];
 function spawn(x,y){
-for(let i=0;i<6;i++){
-flames.push({
-x,y,
-vx:(Math.random()-0.5)*2,
-vy:Math.random()*-2-1,
-s:Math.random()*6+3,
-a:1
-})
-}
+  for(let i=0;i<5;i++)
+    flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-0.5)*2,vy:Math.random()*-2-1});
 }
 
-window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY))
+window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 window.addEventListener("touchmove",e=>{
-const t=e.touches[0]
-spawn(t.clientX,t.clientY)
-},{passive:true})
+  const t=e.touches[0];
+  spawn(t.clientX,t.clientY);
+},{passive:true});
 
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height)
-for(let i=flames.length-1;i>=0;i--){
-let f=flames[i]
-f.x+=f.vx
-f.y+=f.vy
-f.a-=0.03
-if(f.a<=0){flames.splice(i,1);continue}
-ctx.globalAlpha=f.a
-ctx.fillStyle="orange"
-ctx.beginPath()
-ctx.arc(f.x,f.y,f.s,0,Math.PI*2)
-ctx.fill()
+function animateFire(){
+  fctx.clearRect(0,0,innerWidth,innerHeight);
+  for(let i=flames.length-1;i>=0;i--){
+    let p=flames[i];
+    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
+    if(p.a<=0)flames.splice(i,1);
+    else{
+      fctx.globalAlpha=p.a;
+      fctx.fillStyle="orange";
+      fctx.beginPath();
+      fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+      fctx.fill();
+    }
+  }
+  fctx.globalAlpha=1;
+  requestAnimationFrame(animateFire);
 }
-ctx.globalAlpha=1
-requestAnimationFrame(animate)
+
+/* THEMES */
+function setTheme(t){
+  if(t==="inferno"){
+    setVars('#ff4500','#ff9900','#ffcc66');
+    document.body.style.backgroundImage="url('final.jpg')";
+    tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
+    initEmbers(180);
+  }
+  if(t==="echo"){
+    setVars('#013f69','#7dffb0','#bfffe0');
+    document.body.style.backgroundImage="url('echo.jpg')";
+    tagline.innerText="WanderAeon — Music beyond time.";
+    initEmbers(120);
+  }
+  if(t==="dark"){
+    setVars('#ffffff','#999','#666');
+    document.body.style.backgroundImage="url('dark.jpg')";
+    tagline.innerText="WanderAeon — Not just heard, experienced.";
+    initEmbers(90);
+  }
 }
-animate()
+
+function setVars(a,b,c){
+  document.documentElement.style.setProperty('--main',a);
+  document.documentElement.style.setProperty('--glow',b);
+  document.documentElement.style.setProperty('--soft',c);
+}
+
+resize();
+initEmbers(180);
+animateBG();
+animateFire();
 </script>
 
 </body>
