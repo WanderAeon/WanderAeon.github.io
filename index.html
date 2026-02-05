@@ -1,162 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon</title>
 
 <style>
-html,body{margin:0;height:100%;overflow:hidden;font-family:Arial}
+:root{
+--main:#ff4500;
+--glow:#ff9900;
+--soft:#ffcc66;
+--bg:url('final.jpg');
+}
 
-#bg{
-position:fixed;
+html,body{
+margin:0;
 width:100%;
 height:100%;
-background-size:cover;
-background-position:center;
-transition:1s;
-z-index:-2;
+overflow:hidden;
+font-family:Arial,sans-serif;
+color:white;
+background:var(--bg) center/cover no-repeat fixed;
 }
 
+/* canvas */
 canvas{
 position:fixed;
-z-index:-1;
+inset:0;
+pointer-events:none;
+z-index:0;
 }
 
-.center{
-position:absolute;
-top:5%;
-width:100%;
+/* theme buttons */
+.theme-buttons{
+position:fixed;
+top:10px;
+left:50%;
+transform:translateX(-50%);
 display:flex;
-justify-content:center;
 gap:12px;
+z-index:5;
 }
 
-.btn{
-padding:12px 22px;
-border-radius:14px;
-border:2px solid #00ffd5;
-background:rgba(0,0,0,.6);
+.theme-btn{
+padding:10px 18px;
 color:white;
+background:rgba(0,0,0,.4);
+border-radius:12px;
+border:2px solid transparent;
 cursor:pointer;
+animation:rainbow 2.5s linear infinite;
 }
 
-.icons{
-position:absolute;
-bottom:12%;
-width:100%;
+@keyframes rainbow{
+0%{border-color:red}
+25%{border-color:yellow}
+50%{border-color:lime}
+75%{border-color:cyan}
+100%{border-color:red}
+}
+
+/* social */
+.social-buttons{
+position:fixed;
+top:65px;
+left:50%;
+transform:translateX(-50%);
 display:flex;
+gap:10px;
+flex-wrap:wrap;
 justify-content:center;
-gap:16px;
+z-index:5;
 }
 
-.icons img{
-width:42px;
-cursor:pointer;
-transition:.3s;
+.social-btn{
+padding:9px 14px;
+border:2px solid var(--main);
+border-radius:10px;
+color:white;
+text-decoration:none;
 }
 
-.icons img:hover{transform:scale(1.2)}
+.social-btn:hover{
+background:var(--main);
+color:black;
+}
 
-.title{
-position:absolute;
-bottom:22%;
+/* center */
+section{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:2;
+position:relative;
+}
+
+/* glow text */
+.glow{
+font-size:3em;
+background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+animation:fire 1.5s infinite alternate;
+}
+
+@keyframes fire{
+from{background-position:0%}
+to{background-position:100%}
+}
+
+/* rolling */
+.roll{
+margin-top:30px;
+overflow:hidden;
+white-space:nowrap;
 width:100%;
-text-align:center;
-color:#ff9a00;
-font-size:34px;
-text-shadow:0 0 15px orange;
 }
 
-@media(max-width:600px){
-.title{font-size:26px}
-.icons img{width:36px}
+.roll span{
+display:inline-block;
+padding-left:100%;
+animation:roll 14s linear infinite;
+color:var(--glow);
+font-size:1.6em;
+}
+
+@keyframes roll{
+from{transform:translateX(0)}
+to{transform:translateX(-100%)}
+}
+
+@media(max-width:768px){
+.glow{font-size:2.2em}
 }
 </style>
 </head>
 
 <body>
 
-<div id="bg"></div>
 <canvas id="c"></canvas>
 
-<div class="center">
-<div class="btn" onclick="setTheme('inferno')">Inferno</div>
-<div class="btn" onclick="setTheme('echo')">Echo</div>
-<div class="btn" onclick="setTheme('dark')">Dark</div>
+<div class="theme-buttons">
+<button class="theme-btn" onclick="theme('inferno')">Inferno</button>
+<button class="theme-btn" onclick="theme('echo')">Echo</button>
+<button class="theme-btn" onclick="theme('dark')">Dark</button>
 </div>
 
-<div class="title">WanderAeon</div>
-
-<div class="icons">
-<a href="https://youtube.com" target="_blank"><img src="youtube.png"></a>
-<a href="https://tiktok.com" target="_blank"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com" target="_blank"><img src="soundcloud.png"></a>
-<a href="https://facebook.com" target="_blank"><img src="facebook.png"></a>
-<a href="https://wa.me/0000000000" target="_blank"><img src="whatsapp.png"></a>
+<div class="social-buttons">
+<a class="social-btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
+<a class="social-btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
+<a class="social-btn" href="https://soundcloud.com/wanderaeon" target="_blank">SoundCloud</a>
+<a class="social-btn" href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">Facebook</a>
+<a class="social-btn" href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">WhatsApp</a>
 </div>
+
+<section>
+<h1 class="glow">WanderAeon</h1>
+<div class="roll">
+<span id="text">Inferno Aeon — Music born from fire and shadows 🔥</span>
+</div>
+</section>
 
 <script>
-const bg=document.getElementById("bg")
+const root=document.documentElement
 
-function setTheme(t){
-if(t=="inferno") bg.style.backgroundImage="url('final.jpg')"
-if(t=="echo") bg.style.backgroundImage="url('echo.jpg')"
-if(t=="dark") bg.style.backgroundImage="url('dark.jpg')"
+function theme(t){
+if(t==="inferno"){
+root.style.setProperty('--main','#ff4500')
+root.style.setProperty('--glow','#ff9900')
+root.style.setProperty('--soft','#ffcc66')
+root.style.setProperty('--bg',"url('final.jpg')")
+text.innerText="Inferno Aeon — Music born from fire and shadows 🔥"
 }
-setTheme("inferno")
+if(t==="echo"){
+root.style.setProperty('--main','#013f69')
+root.style.setProperty('--glow','#7dffb0')
+root.style.setProperty('--soft','#bfffe0')
+root.style.setProperty('--bg',"url('echo.jpg')")
+text.innerText="WanderAeon — Music beyond time."
+}
+if(t==="dark"){
+root.style.setProperty('--main','#ffffff')
+root.style.setProperty('--glow','#aaa')
+root.style.setProperty('--soft','#666')
+root.style.setProperty('--bg',"url('dark.jpg')")
+text.innerText="WanderAeon — Not just heard, experienced."
+}
+}
 
+/* FIRE MOUSE */
 const canvas=document.getElementById("c")
 const ctx=canvas.getContext("2d")
-resize()
-window.onresize=resize
-
-let particles=[]
-for(let i=0;i<120;i++)
-particles.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,v:1+Math.random()*2})
 
 function resize(){
 canvas.width=innerWidth
 canvas.height=innerHeight
 }
+resize()
+window.onresize=resize
 
-let mouse={x:null,y:null}
+let flames=[]
 
-window.onmousemove=e=>{
-mouse.x=e.x
-mouse.y=e.y
+function spawn(x,y){
+for(let i=0;i<6;i++){
+flames.push({
+x,y,
+vx:(Math.random()-0.5)*2,
+vy:Math.random()*-2-1,
+s:Math.random()*6+3,
+a:1
+})
+}
 }
 
-window.ontouchmove=e=>{
-mouse.x=e.touches[0].clientX
-mouse.y=e.touches[0].clientY
-}
+window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY))
+window.addEventListener("touchmove",e=>{
+const t=e.touches[0]
+spawn(t.clientX,t.clientY)
+},{passive:true})
 
-function draw(){
+function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height)
-
-particles.forEach(p=>{
-p.y+=p.v
-if(p.y>canvas.height) p.y=0
-
-let dx=p.x-mouse.x
-let dy=p.y-mouse.y
-let dist=Math.sqrt(dx*dx+dy*dy)
-
-if(dist<80){
-p.x+=dx/5
-p.y+=dy/5
-}
-
+for(let i=flames.length-1;i>=0;i--){
+let f=flames[i]
+f.x+=f.vx
+f.y+=f.vy
+f.a-=0.03
+if(f.a<=0){flames.splice(i,1);continue}
+ctx.globalAlpha=f.a
 ctx.fillStyle="orange"
 ctx.beginPath()
-ctx.arc(p.x,p.y,2,0,Math.PI*2)
+ctx.arc(f.x,f.y,f.s,0,Math.PI*2)
 ctx.fill()
-})
-
-requestAnimationFrame(draw)
 }
-draw()
+ctx.globalAlpha=1
+requestAnimationFrame(animate)
+}
+animate()
 </script>
 
 </body>
