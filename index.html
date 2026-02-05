@@ -1,38 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>WanderAeon</title>
 
 <style>
-html,body{
-margin:0;
-padding:0;
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial, sans-serif;
-}
+html,body{margin:0;height:100%;overflow:hidden;font-family:Arial}
 
 #bg{
 position:fixed;
-top:0;
-left:0;
 width:100%;
 height:100%;
 background-size:cover;
 background-position:center;
-background-repeat:no-repeat;
 transition:1s;
 z-index:-2;
 }
 
 canvas{
 position:fixed;
-top:0;
-left:0;
 z-index:-1;
 }
 
@@ -43,17 +30,15 @@ width:100%;
 display:flex;
 justify-content:center;
 gap:12px;
-flex-wrap:wrap;
 }
 
 .btn{
 padding:12px 22px;
 border-radius:14px;
 border:2px solid #00ffd5;
-background:rgba(0,0,0,0.5);
+background:rgba(0,0,0,.6);
 color:white;
 cursor:pointer;
-font-size:16px;
 }
 
 .icons{
@@ -62,22 +47,16 @@ bottom:12%;
 width:100%;
 display:flex;
 justify-content:center;
-gap:18px;
+gap:16px;
 }
 
 .icons img{
-width:46px;
-height:46px;
-border-radius:12px;
-background:rgba(0,0,0,0.6);
-padding:8px;
+width:42px;
 cursor:pointer;
 transition:.3s;
 }
 
-.icons img:hover{
-transform:scale(1.2);
-}
+.icons img:hover{transform:scale(1.2)}
 
 .title{
 position:absolute;
@@ -85,14 +64,13 @@ bottom:22%;
 width:100%;
 text-align:center;
 color:#ff9a00;
-font-size:36px;
-font-weight:bold;
+font-size:34px;
 text-shadow:0 0 15px orange;
 }
 
 @media(max-width:600px){
-.title{font-size:26px;}
-.icons img{width:38px;height:38px;}
+.title{font-size:26px}
+.icons img{width:36px}
 }
 </style>
 </head>
@@ -111,22 +89,21 @@ text-shadow:0 0 15px orange;
 <div class="title">WanderAeon</div>
 
 <div class="icons">
-<a href="#"><img src="youtube.png"></a>
-<a href="#"><img src="tiktok.png"></a>
-<a href="#"><img src="soundcloud.png"></a>
-<a href="#"><img src="facebook.png"></a>
-<a href="#"><img src="whatsapp.png"></a>
+<a href="https://youtube.com" target="_blank"><img src="youtube.png"></a>
+<a href="https://tiktok.com" target="_blank"><img src="tiktok.png"></a>
+<a href="https://soundcloud.com" target="_blank"><img src="soundcloud.png"></a>
+<a href="https://facebook.com" target="_blank"><img src="facebook.png"></a>
+<a href="https://wa.me/0000000000" target="_blank"><img src="whatsapp.png"></a>
 </div>
 
 <script>
 const bg=document.getElementById("bg")
 
 function setTheme(t){
-if(t==="inferno") bg.style.backgroundImage="url('final.jpg')"
-if(t==="echo") bg.style.backgroundImage="url('echo.jpg')"
-if(t==="dark") bg.style.backgroundImage="url('dark.jpg')"
+if(t=="inferno") bg.style.backgroundImage="url('final.jpg')"
+if(t=="echo") bg.style.backgroundImage="url('echo.jpg')"
+if(t=="dark") bg.style.backgroundImage="url('dark.jpg')"
 }
-
 setTheme("inferno")
 
 const canvas=document.getElementById("c")
@@ -134,25 +111,49 @@ const ctx=canvas.getContext("2d")
 resize()
 window.onresize=resize
 
-let p=[]
-for(let i=0;i<80;i++)
-p.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,v:1+Math.random()*2})
+let particles=[]
+for(let i=0;i<120;i++)
+particles.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,v:1+Math.random()*2})
 
 function resize(){
 canvas.width=innerWidth
 canvas.height=innerHeight
 }
 
+let mouse={x:null,y:null}
+
+window.onmousemove=e=>{
+mouse.x=e.x
+mouse.y=e.y
+}
+
+window.ontouchmove=e=>{
+mouse.x=e.touches[0].clientX
+mouse.y=e.touches[0].clientY
+}
+
 function draw(){
 ctx.clearRect(0,0,canvas.width,canvas.height)
+
+particles.forEach(p=>{
+p.y+=p.v
+if(p.y>canvas.height) p.y=0
+
+let dx=p.x-mouse.x
+let dy=p.y-mouse.y
+let dist=Math.sqrt(dx*dx+dy*dy)
+
+if(dist<80){
+p.x+=dx/5
+p.y+=dy/5
+}
+
 ctx.fillStyle="orange"
-p.forEach(o=>{
-o.y+=o.v
-if(o.y>canvas.height) o.y=0
 ctx.beginPath()
-ctx.arc(o.x,o.y,2,0,Math.PI*2)
+ctx.arc(p.x,p.y,2,0,Math.PI*2)
 ctx.fill()
 })
+
 requestAnimationFrame(draw)
 }
 draw()
