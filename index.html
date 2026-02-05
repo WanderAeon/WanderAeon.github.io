@@ -12,24 +12,26 @@
   --soft:#ffcc66;
 }
 
-/* ================= BODY & BACKGROUND ================= */
-html, body {
+html,body{
   margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
-  font-family: Arial, sans-serif;
+  font-family:Arial,sans-serif;
   color:white;
-  background: url('final.jpg') no-repeat center center;
-  background-size: cover;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+
+  background:url('final.jpg') center center no-repeat;
+  background-size:cover;
 }
 
-/* ================= CANVAS ================= */
+/* 📱 Mobile cinematic fix (no portrait squeeze) */
+@media(max-width:768px){
+  body{
+    background-position:center top;
+  }
+}
+
+/* CANVAS */
 canvas{
   position:fixed;
   inset:0;
@@ -37,7 +39,7 @@ canvas{
   z-index:0;
 }
 
-/* ================= THEME BUTTONS ================= */
+/* THEME BUTTONS */
 .theme-buttons{
   position:fixed;
   top:10px;
@@ -56,23 +58,20 @@ canvas{
   border-radius:12px;
   border:2px solid transparent;
   cursor:pointer;
-  position:relative;
   animation:rainbow 2.5s linear infinite;
 }
 
 @keyframes rainbow{
-  0%{border-color:red; box-shadow:0 0 10px red;}
-  25%{border-color:yellow; box-shadow:0 0 10px yellow;}
-  50%{border-color:lime; box-shadow:0 0 10px lime;}
-  75%{border-color:cyan; box-shadow:0 0 10px cyan;}
-  100%{border-color:red; box-shadow:0 0 10px red;}
+  0%{border-color:red;box-shadow:0 0 10px red;}
+  25%{border-color:yellow;box-shadow:0 0 10px yellow;}
+  50%{border-color:lime;box-shadow:0 0 10px lime;}
+  75%{border-color:cyan;box-shadow:0 0 10px cyan;}
+  100%{border-color:red;box-shadow:0 0 10px red;}
 }
 
-.theme-btn:hover{
-  transform:scale(1.08);
-}
+.theme-btn:hover{transform:scale(1.08);}
 
-/* ================= SOCIAL BUTTONS ================= */
+/* SOCIAL */
 .social-buttons{
   position:fixed;
   top:65px;
@@ -82,7 +81,6 @@ canvas{
   gap:10px;
   z-index:5;
   flex-wrap:wrap;
-  justify-content:center;
 }
 
 .social-btn{
@@ -101,18 +99,16 @@ canvas{
   box-shadow:0 0 18px var(--glow);
 }
 
-/* ================= CENTER ================= */
+/* CENTER */
 section{
   height:100vh;
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  position:relative;
   z-index:2;
 }
 
-/* ================= GLOW TEXT ================= */
 .glow-text{
   font-size:3em;
   font-weight:bold;
@@ -129,7 +125,6 @@ section{
   to{background-position:100% 50%;}
 }
 
-/* ================= ROLLING ================= */
 .rolling{
   margin-top:30px;
   width:100%;
@@ -162,14 +157,12 @@ section{
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
-<!-- THEME BUTTONS -->
 <div class="theme-buttons">
   <button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
   <button class="theme-btn" onclick="setTheme('echo')">Echo</button>
   <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
-<!-- SOCIAL BUTTONS -->
 <div class="social-buttons">
   <a class="social-btn" href="https://www.youtube.com/@WanderAeon" target="_blank">YouTube</a>
   <a class="social-btn" href="https://www.tiktok.com/@wanderaeon" target="_blank">TikTok</a>
@@ -186,29 +179,18 @@ section{
 </section>
 
 <script>
-const dpr=window.devicePixelRatio||1;
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
 const fctx=fire.getContext("2d");
 
-/* ================== RESIZE ================== */
 function resize(){
-  [bg,fire].forEach(c=>{
-    c.width=innerWidth*dpr;
-    c.height=innerHeight*dpr;
-    c.style.width=innerWidth+"px";
-    c.style.height=innerHeight+"px";
-  });
-  bctx.setTransform(dpr,0,0,dpr,0,0);
-  fctx.setTransform(dpr,0,0,dpr,0,0);
-
-  // BACKGROUND AUTO FIT FULL SCREEN
-  document.body.style.backgroundSize = innerWidth + "px " + innerHeight + "px";
+  bg.width=fire.width=innerWidth;
+  bg.height=fire.height=innerHeight;
 }
 window.onresize=resize;
 
-/* ================= EMBERS ================= */
+/* EMBERS */
 let embers=[];
 function initEmbers(n){
   embers=[];
@@ -229,7 +211,7 @@ function animateBG(){
   requestAnimationFrame(animateBG);
 }
 
-/* ================= FIRE MOUSE ================= */
+/* FIRE MOUSE */
 let flames=[];
 function spawn(x,y){
   for(let i=0;i<5;i++)
@@ -238,17 +220,16 @@ function spawn(x,y){
 
 window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 window.addEventListener("touchmove",e=>{
-  e.preventDefault();
   const t=e.touches[0];
   spawn(t.clientX,t.clientY);
-},{passive:false});
+},{passive:true});
 
 function animateFire(){
   fctx.clearRect(0,0,innerWidth,innerHeight);
   for(let i=flames.length-1;i>=0;i--){
     let p=flames[i];
     p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
-    if(p.a<=0) flames.splice(i,1);
+    if(p.a<=0)flames.splice(i,1);
     else{
       fctx.globalAlpha=p.a;
       fctx.fillStyle="orange";
@@ -261,28 +242,26 @@ function animateFire(){
   requestAnimationFrame(animateFire);
 }
 
-/* ================= THEMES ================= */
+/* THEMES */
 function setTheme(t){
   if(t==="inferno"){
     setVars('#ff4500','#ff9900','#ffcc66');
+    document.body.style.backgroundImage="url('final.jpg')";
     tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
     initEmbers(180);
-    document.body.style.background = "url('final.jpg') no-repeat center center";
   }
   if(t==="echo"){
     setVars('#013f69','#7dffb0','#bfffe0');
+    document.body.style.backgroundImage="url('echo.jpg')";
     tagline.innerText="WanderAeon — Music beyond time.";
     initEmbers(120);
-    document.body.style.background = "url('echo.jpg') no-repeat center center";
   }
   if(t==="dark"){
     setVars('#ffffff','#999','#666');
+    document.body.style.backgroundImage="url('dark.jpg')";
     tagline.innerText="WanderAeon — Not just heard, experienced.";
     initEmbers(90);
-    document.body.style.background = "url('dark.jpg') no-repeat center center";
   }
-
-  document.body.style.backgroundSize = innerWidth + "px " + innerHeight + "px";
 }
 
 function setVars(a,b,c){
@@ -291,7 +270,6 @@ function setVars(a,b,c){
   document.documentElement.style.setProperty('--soft',c);
 }
 
-/* ================= START ================= */
 resize();
 initEmbers(180);
 animateBG();
