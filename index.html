@@ -66,15 +66,14 @@ canvas{
 
 .theme-btn:hover{ transform:scale(1.08); }
 
-/* ✅ SOCIAL BUTTONS — LEFT SIDE VERTICAL (ONLY CHANGE) */
+/* SOCIAL BUTTONS */
 .social-buttons{
   position:fixed;
-  left:15px;
-  top:50%;
-  transform:translateY(-50%);
+  bottom:12%;
+  left:50%;
+  transform:translateX(-50%);
   display:flex;
-  flex-direction:column;
-  gap:16px;
+  gap:15px;
   z-index:5;
 }
 
@@ -85,7 +84,7 @@ canvas{
   background:rgba(0,0,0,0.6);
   padding:8px;
   cursor:pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition:.3s;
 }
 
 .social-buttons a img:hover{
@@ -132,7 +131,6 @@ section{
   animation:roll 15s linear infinite;
   font-size:1.6em;
   color:var(--glow);
-  text-shadow:0 0 20px var(--main);
 }
 
 @keyframes roll{
@@ -140,8 +138,34 @@ section{
   to{transform:translateX(-100%);}
 }
 
-@media(max-width:768px){
-  .glow-text{font-size:2.2em;}
+/* 🎬 YOUTUBE ROW */
+.video-row{
+  position:absolute;
+  bottom:160px;
+  width:100%;
+  display:flex;
+  gap:20px;
+  padding:20px;
+  overflow-x:auto;
+  z-index:4;
+}
+
+.video-row iframe{
+  min-width:320px;
+  height:180px;
+  border-radius:18px;
+  border:none;
+  box-shadow:0 0 20px rgba(255,150,0,.6);
+}
+
+/* 🎵 SOUNDCLOUD PLAYER */
+.soundcloud-player{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  z-index:20;
+  box-shadow:0 0 25px rgba(255,140,0,.8);
 }
 </style>
 </head>
@@ -157,7 +181,6 @@ section{
   <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
-<!-- SOCIAL ICONS LEFT -->
 <div class="social-buttons">
   <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
   <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
@@ -172,6 +195,20 @@ section{
     <span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
   </div>
 </section>
+
+<!-- 🎬 YouTube cinematic scroll -->
+<div class="video-row">
+  <iframe src="https://www.youtube.com/embed/H9HPTlYHkjQ"></iframe>
+  <iframe src="https://www.youtube.com/embed/twd-aJLq30U"></iframe>
+  <iframe src="https://www.youtube.com/embed/VQXMUNpGjjQ"></iframe>
+</div>
+
+<!-- 🎵 SoundCloud sticky player -->
+<div class="soundcloud-player">
+<iframe width="100%" height="90" scrolling="no" frameborder="no" allow="autoplay"
+src="https://w.soundcloud.com/player/?url=https://soundcloud.com/wanderaeon/before-the-return">
+</iframe>
+</div>
 
 <script>
 const bg=document.getElementById("embers");
@@ -212,10 +249,6 @@ function spawn(x,y){
 }
 
 window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-window.addEventListener("touchmove",e=>{
-  const t=e.touches[0];
-  spawn(t.clientX,t.clientY);
-},{passive:true});
 
 function animateFire(){
   fctx.clearRect(0,0,innerWidth,innerHeight);
@@ -237,29 +270,20 @@ function animateFire(){
 
 function setTheme(t){
   if(t==="inferno"){
-    setVars('#ff4500','#ff9900','#ffcc66');
     document.body.style.backgroundImage="url('final.jpg')";
     tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
     initEmbers(180);
   }
   if(t==="echo"){
-    setVars('#013f69','#7dffb0','#bfffe0');
     document.body.style.backgroundImage="url('echo.jpg')";
     tagline.innerText="WanderAeon — Music beyond time.";
     initEmbers(120);
   }
   if(t==="dark"){
-    setVars('#ffffff','#999','#666');
     document.body.style.backgroundImage="url('dark.jpg')";
     tagline.innerText="WanderAeon — Not just heard, experienced.";
     initEmbers(90);
   }
-}
-
-function setVars(a,b,c){
-  document.documentElement.style.setProperty('--main',a);
-  document.documentElement.style.setProperty('--glow',b);
-  document.documentElement.style.setProperty('--soft',c);
 }
 
 resize();
