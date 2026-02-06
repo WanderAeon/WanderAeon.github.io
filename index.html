@@ -2,159 +2,146 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon</title>
 
 <style>
 :root{
-  --main:#ff4500;
-  --glow:#ff9900;
-  --soft:#ffcc66;
+--main:#ff4500;
+--glow:#ff9900;
+--soft:#ffcc66;
 }
 
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family:Arial,sans-serif;
-  color:white;
-  background:url('final.jpg') center center no-repeat;
-  background-size:cover;
-}
-
-@media(max-width:768px){
-  body{ background-position:center top; }
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+font-family:Arial;
+color:white;
+background:url('final.jpg') center/cover no-repeat;
 }
 
 canvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:0;
 }
 
 /* THEME BUTTONS */
 .theme-buttons{
-  position:fixed;
-  top:10px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  gap:12px;
-  z-index:6;
+position:fixed;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:12px;
+z-index:5;
 }
 
 .theme-btn{
-  padding:10px 18px;
-  font-size:15px;
-  color:white;
-  background:rgba(0,0,0,.4);
-  border-radius:12px;
-  cursor:pointer;
-  animation:rainbow 2.5s linear infinite;
+padding:10px 18px;
+background:rgba(0,0,0,.6);
+border-radius:12px;
+color:white;
+border:2px solid orange;
+cursor:pointer;
 }
 
-@keyframes rainbow{
-  0%{box-shadow:0 0 10px red;}
-  50%{box-shadow:0 0 10px yellow;}
-  100%{box-shadow:0 0 10px red;}
+/* DROPDOWN SOCIAL */
+.social-panel{
+position:fixed;
+left:10px;
+top:40%;
+z-index:5;
 }
 
-/* LEFT SOCIAL BAR */
-.social-bar{
-  position:fixed;
-  left:15px;
-  top:50%;
-  transform:translateY(-50%);
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  z-index:6;
+.social-btn{
+background:#ff9800;
+color:black;
+padding:12px 14px;
+border-radius:12px;
+cursor:pointer;
+box-shadow:0 0 15px orange;
+font-weight:bold;
 }
 
-.social-bar img{
-  width:48px;
-  height:48px;
-  padding:8px;
-  background:rgba(0,0,0,.6);
-  border-radius:12px;
-  transition:.3s;
+.social-icons{
+margin-top:12px;
+display:flex;
+flex-direction:column;
+gap:12px;
+opacity:0;
+transform:translateX(-40px);
+pointer-events:none;
+transition:.4s;
 }
 
-.social-bar img:hover{
-  transform:scale(1.2);
-  box-shadow:0 0 15px orange;
+.social-icons img{
+width:46px;
+padding:8px;
+border-radius:12px;
+background:rgba(0,0,0,.7);
+cursor:pointer;
 }
 
-/* CENTER HERO */
+.social-panel:hover .social-icons,
+.social-panel.active .social-icons{
+opacity:1;
+transform:translateX(0);
+pointer-events:auto;
+}
+
+/* CENTER */
 section{
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:2;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:2;
+position:relative;
 }
 
 .glow-text{
-  font-size:3em;
-  background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:fire 1s infinite alternate;
+font-size:3em;
+font-weight:bold;
+background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
+-webkit-background-clip:text;
+color:transparent;
+animation:fire 1.5s infinite alternate;
 }
 
 @keyframes fire{
-  from{background-position:0% 50%;}
-  to{background-position:100% 50%;}
+from{background-position:0%}
+to{background-position:100%}
 }
 
-.rolling{
-  margin-top:25px;
-  width:100%;
-  overflow:hidden;
+/* VIDEO + MUSIC */
+.media-area{
+position:absolute;
+bottom:8%;
+width:90%;
+max-width:800px;
+display:flex;
+flex-direction:column;
+gap:12px;
 }
 
-.rolling span{
-  display:inline-block;
-  padding-left:100%;
-  animation:roll 15s linear infinite;
-  font-size:1.5em;
-  color:var(--glow);
+iframe{
+border-radius:12px;
+width:100%;
+height:200px;
 }
 
-@keyframes roll{
-  to{transform:translateX(-100%);}
+/* MOBILE FIX */
+@media(max-width:768px){
+iframe{height:160px;}
+.glow-text{font-size:2.2em;}
 }
 
-/* YOUTUBE FEATURE */
-.video-box{
-  position:fixed;
-  right:20px;
-  bottom:120px;
-  width:340px;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 0 25px var(--glow);
-  z-index:6;
-}
-
-.video-box iframe{
-  width:100%;
-  height:190px;
-  border:none;
-}
-
-/* SOUNDCLOUD */
-.soundcloud{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  z-index:10;
-  box-shadow:0 -5px 25px var(--glow);
-}
+/* EMBERS */
 </style>
 </head>
 
@@ -169,38 +156,31 @@ section{
 <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
-<!-- LEFT SOCIAL -->
-<div class="social-bar">
+<!-- SOCIAL DROPDOWN -->
+<div class="social-panel" onclick="this.classList.toggle('active')">
+<div class="social-btn">☰ Social</div>
+<div class="social-icons">
 <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
 <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
 <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
 <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
 <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
 </div>
+</div>
 
 <section>
 <h1 class="glow-text">WanderAeon</h1>
-<div class="rolling">
-<span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
+
+<div class="media-area">
+
+<!-- YouTube -->
+<iframe src="https://www.youtube.com/embed/H9HPTlYHkjQ" allowfullscreen></iframe>
+
+<!-- SoundCloud -->
+<iframe src="https://w.soundcloud.com/player/?url=https://soundcloud.com/wanderaeon/before-the-return&auto_play=false"></iframe>
+
 </div>
 </section>
-
-<!-- YOUTUBE FEATURED -->
-<div class="video-box">
-<iframe src="https://www.youtube.com/embed/H9HPTlYHkjQ" allowfullscreen></iframe>
-</div>
-
-<!-- SOUNDCLOUD PLAYER -->
-<div class="soundcloud">
-<iframe 
-width="100%" 
-height="90" 
-scrolling="no" 
-frameborder="no" 
-allow="autoplay"
-src="https://w.soundcloud.com/player/?url=https://soundcloud.com/wanderaeon/before-the-return">
-</iframe>
-</div>
 
 <script>
 const bg=document.getElementById("embers");
@@ -209,90 +189,66 @@ const bctx=bg.getContext("2d");
 const fctx=fire.getContext("2d");
 
 function resize(){
-  bg.width=fire.width=innerWidth;
-  bg.height=fire.height=innerHeight;
+bg.width=fire.width=innerWidth;
+bg.height=fire.height=innerHeight;
 }
-window.onresize=resize;
+resize(); window.onresize=resize;
 
+/* EMBERS */
 let embers=[];
-function initEmbers(n){
-  embers=[];
-  for(let i=0;i<n;i++)
-    embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3+1});
-}
+for(let i=0;i<150;i++)
+embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3});
 
 function animateBG(){
-  bctx.clearRect(0,0,innerWidth,innerHeight);
-  embers.forEach(e=>{
-    e.y+=0.6;
-    if(e.y>innerHeight)e.y=0;
-    bctx.fillStyle="rgba(255,120,0,.8)";
-    bctx.beginPath();
-    bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-    bctx.fill();
-  });
-  requestAnimationFrame(animateBG);
+bctx.clearRect(0,0,innerWidth,innerHeight);
+embers.forEach(e=>{
+e.y+=0.5;
+if(e.y>innerHeight)e.y=0;
+bctx.fillStyle="rgba(255,140,0,.8)";
+bctx.beginPath();
+bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
+bctx.fill();
+});
+requestAnimationFrame(animateBG);
 }
 
+/* FIRE TRAIL */
 let flames=[];
 function spawn(x,y){
-  for(let i=0;i<5;i++)
-    flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-0.5)*2,vy:Math.random()*-2-1});
+for(let i=0;i<5;i++)
+flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-.5)*2,vy:-Math.random()*2});
 }
 
-window.addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-window.addEventListener("touchmove",e=>{
-  const t=e.touches[0];
-  spawn(t.clientX,t.clientY);
+addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
+addEventListener("touchmove",e=>{
+const t=e.touches[0];
+spawn(t.clientX,t.clientY);
 },{passive:true});
 
 function animateFire(){
-  fctx.clearRect(0,0,innerWidth,innerHeight);
-  for(let i=flames.length-1;i>=0;i--){
-    let p=flames[i];
-    p.x+=p.vx; p.y+=p.vy; p.a-=0.03;
-    if(p.a<=0)flames.splice(i,1);
-    else{
-      fctx.globalAlpha=p.a;
-      fctx.fillStyle="orange";
-      fctx.beginPath();
-      fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-      fctx.fill();
-    }
-  }
-  fctx.globalAlpha=1;
-  requestAnimationFrame(animateFire);
+fctx.clearRect(0,0,innerWidth,innerHeight);
+for(let i=flames.length-1;i>=0;i--){
+let p=flames[i];
+p.x+=p.vx;p.y+=p.vy;p.a-=.03;
+if(p.a<=0)flames.splice(i,1);
+else{
+fctx.globalAlpha=p.a;
+fctx.fillStyle="orange";
+fctx.beginPath();
+fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+fctx.fill();
+}
+}
+fctx.globalAlpha=1;
+requestAnimationFrame(animateFire);
 }
 
 function setTheme(t){
-  if(t==="inferno"){
-    setVars('#ff4500','#ff9900','#ffcc66');
-    document.body.style.backgroundImage="url('final.jpg')";
-    tagline.innerText="Inferno Aeon — Music born from fire and shadows 🔥";
-    initEmbers(180);
-  }
-  if(t==="echo"){
-    setVars('#013f69','#7dffb0','#bfffe0');
-    document.body.style.backgroundImage="url('echo.jpg')";
-    tagline.innerText="WanderAeon — Music beyond time.";
-    initEmbers(120);
-  }
-  if(t==="dark"){
-    setVars('#ffffff','#999','#666');
-    document.body.style.backgroundImage="url('dark.jpg')";
-    tagline.innerText="WanderAeon — Not just heard, experienced.";
-    initEmbers(90);
-  }
+if(t=="inferno")document.body.style.backgroundImage="url('final.jpg')";
+if(t=="echo")document.body.style.backgroundImage="url('echo.jpg')";
+if(t=="dark")document.body.style.backgroundImage="url('dark.jpg')";
 }
 
-function setVars(a,b,c){
-  document.documentElement.style.setProperty('--main',a);
-  document.documentElement.style.setProperty('--glow',b);
-  document.documentElement.style.setProperty('--soft',c);
-}
-
-resize();
-initEmbers(180);
 animateBG();
 animateFire();
 </script>
