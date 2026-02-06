@@ -23,7 +23,7 @@ html,body{
   background-size:cover;
 }
 
-/* 📱 Mobile cinematic fix */
+/* Mobile cinematic fix */
 @media(max-width:768px){
   body{ background-position:center top; }
 }
@@ -35,7 +35,7 @@ canvas{
   z-index:0;
 }
 
-/* THEME BUTTONS */
+/* Theme Buttons */
 .theme-buttons{
   position:fixed;
   top:10px;
@@ -67,7 +67,7 @@ canvas{
 
 .theme-btn:hover{ transform:scale(1.08); }
 
-/* SOCIAL BUTTONS AS IMAGES */
+/* Social Buttons as Images */
 .social-buttons{
   position:fixed;
   bottom:12%;
@@ -143,6 +143,45 @@ section{
 @media(max-width:768px){
   .glow-text{font-size:2.2em;}
 }
+
+/* Bottom SoundCloud Player */
+#music-player{
+  position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:20;
+  border-radius:12px;
+  box-shadow:0 0 15px orange;
+}
+
+/* YouTube Scrollable Videos Row */
+.youtube-row{
+  display:flex;
+  overflow-x:auto;
+  gap:12px;
+  padding:15px;
+  scroll-behavior:smooth;
+  position:fixed;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+}
+
+.youtube-row iframe{
+  flex:0 0 auto;
+  width:320px;
+  height:180px;
+  border-radius:12px;
+  box-shadow:0 0 15px orange;
+  transition:transform 0.3s;
+}
+
+.youtube-row iframe:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 25px yellow;
+}
 </style>
 </head>
 
@@ -159,21 +198,11 @@ section{
 
 <!-- SOCIAL BUTTONS AS IMAGES -->
 <div class="social-buttons">
-  <a href="https://www.youtube.com/@WanderAeon" target="_blank">
-    <img src="youtube.png" alt="YouTube">
-  </a>
-  <a href="https://www.tiktok.com/@wanderaeon" target="_blank">
-    <img src="tiktok.png" alt="TikTok">
-  </a>
-  <a href="https://soundcloud.com/wanderaeon" target="_blank">
-    <img src="soundcloud.png" alt="SoundCloud">
-  </a>
-  <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank">
-    <img src="facebook.png" alt="Facebook">
-  </a>
-  <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank">
-    <img src="whatsapp.png" alt="WhatsApp">
-  </a>
+  <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png" alt="YouTube"></a>
+  <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png" alt="TikTok"></a>
+  <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png" alt="SoundCloud"></a>
+  <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png" alt="Facebook"></a>
+  <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png" alt="WhatsApp"></a>
 </div>
 
 <section>
@@ -182,6 +211,20 @@ section{
     <span id="tagline">Inferno Aeon — Music born from fire and shadows 🔥</span>
   </div>
 </section>
+
+<!-- YouTube Scrollable Videos -->
+<div class="youtube-row">
+  <iframe src="https://www.youtube.com/embed/VIDEO_ID1" frameborder="0" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/VIDEO_ID2" frameborder="0" allowfullscreen></iframe>
+  <iframe src="https://www.youtube.com/embed/VIDEO_ID3" frameborder="0" allowfullscreen></iframe>
+</div>
+
+<!-- SoundCloud Player -->
+<div id="music-player">
+  <iframe width="300" height="80" scrolling="no" frameborder="0"
+    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/YOUR_TRACK_ID&color=%23ff4500&auto_play=false">
+  </iframe>
+</div>
 
 <script>
 const bg=document.getElementById("embers");
