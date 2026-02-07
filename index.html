@@ -22,6 +22,52 @@ color:white;
 background:url('final.jpg') center/cover no-repeat;
 }
 
+/* ===== CINEMATIC INTRO ===== */
+
+#intro{
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:9999;
+animation:fadeOut 2s ease 4s forwards;
+}
+
+#intro h1{
+font-size:3.5em;
+color:orange;
+text-shadow:0 0 40px orange,0 0 80px red;
+opacity:0;
+animation:titleReveal 2s ease 2s forwards;
+}
+
+.spark{
+width:8px;
+height:8px;
+background:orange;
+border-radius:50%;
+box-shadow:0 0 30px orange,0 0 80px red;
+animation:sparkBlast 3s ease forwards;
+}
+
+@keyframes sparkBlast{
+from{transform:scale(1)}
+to{transform:scale(180);opacity:0}
+}
+
+@keyframes titleReveal{
+to{opacity:1;transform:scale(1.15)}
+}
+
+@keyframes fadeOut{
+to{opacity:0;pointer-events:none}
+}
+
+/* ===== CANVAS ===== */
+
 canvas{
 position:fixed;
 inset:0;
@@ -29,7 +75,8 @@ pointer-events:none;
 z-index:0;
 }
 
-/* THEME BUTTONS */
+/* ===== THEME BUTTONS ===== */
+
 .theme-buttons{
 position:fixed;
 top:10px;
@@ -49,11 +96,12 @@ border:2px solid orange;
 cursor:pointer;
 }
 
-/* 🔥 SOCIAL DROPDOWN CLEAN */
+/* ===== SOCIAL DROPDOWN ===== */
+
 .social-panel{
 position:fixed;
-left:12px;
-top:22%;
+left:10px;
+top:25%;
 z-index:5;
 }
 
@@ -86,13 +134,15 @@ background:rgba(0,0,0,.7);
 cursor:pointer;
 }
 
+.social-panel:hover .social-icons,
 .social-panel.active .social-icons{
 opacity:1;
 transform:translateX(0);
 pointer-events:auto;
 }
 
-/* CENTER */
+/* ===== CENTER ===== */
+
 section{
 height:100vh;
 display:flex;
@@ -125,6 +175,12 @@ to{background-position:100%}
 
 <body>
 
+<!-- CINEMATIC INTRO -->
+<div id="intro">
+<div class="spark"></div>
+<h1>WanderAeon</h1>
+</div>
+
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
@@ -135,8 +191,8 @@ to{background-position:100%}
 </div>
 
 <!-- SOCIAL DROPDOWN -->
-<div class="social-panel" id="socialBox">
-<div class="social-btn" onclick="toggleSocial()">☰ Social</div>
+<div class="social-panel" onclick="this.classList.toggle('active')">
+<div class="social-btn">☰ Social</div>
 <div class="social-icons">
 <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
 <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
@@ -160,11 +216,11 @@ function resize(){
 bg.width=fire.width=innerWidth;
 bg.height=fire.height=innerHeight;
 }
-resize(); window.onresize=resize;
+resize(); onresize=resize;
 
 /* EMBERS */
 let embers=[];
-for(let i=0;i<150;i++)
+for(let i=0;i<160;i++)
 embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3});
 
 function animateBG(){
@@ -211,23 +267,11 @@ fctx.globalAlpha=1;
 requestAnimationFrame(animateFire);
 }
 
-/* THEME */
+/* THEMES */
 function setTheme(t){
 if(t=="inferno")document.body.style.backgroundImage="url('final.jpg')";
 if(t=="echo")document.body.style.backgroundImage="url('echo.jpg')";
 if(t=="dark")document.body.style.backgroundImage="url('dark.jpg')";
-}
-
-/* 🚀 AUTO HIDE SOCIAL */
-let timer;
-function toggleSocial(){
-const box=document.getElementById("socialBox");
-box.classList.toggle("active");
-
-clearTimeout(timer);
-if(box.classList.contains("active")){
-timer=setTimeout(()=>box.classList.remove("active"),2000);
-}
 }
 
 animateBG();
