@@ -6,23 +6,15 @@
 <title>WanderAeon</title>
 
 <style>
-:root{
---main:#ff4500;
---glow:#ff9900;
---soft:#ffcc66;
-}
-
-html,body{
+body{
 margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial;
+background:#000;
 color:white;
-background:url('final.jpg') center/cover no-repeat;
+font-family:Arial,Helvetica,sans-serif;
+overflow-x:hidden;
 }
 
-/* INTRO FIRE PORTAL */
+/* FIRE INTRO */
 #intro{
 position:fixed;
 inset:0;
@@ -30,235 +22,150 @@ background:black;
 display:flex;
 align-items:center;
 justify-content:center;
-z-index:999;
-animation:fadeOut 4s forwards;
+z-index:9999;
+animation:fadeOut 4s forwards 4s;
 }
 
 .portal{
-width:40px;
-height:40px;
+width:220px;
+height:220px;
 border-radius:50%;
-background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 30px #ff6a00,0 0 120px orange;
-animation:expand 4s forwards;
+background:radial-gradient(circle,#ffae00,#ff3c00,#000);
+box-shadow:0 0 80px #ff5a00;
+animation:spin 4s linear infinite, grow 4s forwards;
 }
 
-@keyframes expand{
-0%{transform:scale(0);opacity:0}
-30%{opacity:1}
-100%{transform:scale(60);opacity:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes grow{to{transform:scale(15)}}
+@keyframes fadeOut{to{opacity:0;visibility:hidden}}
+
+#main{padding-top:60px;text-align:center}
+
+/* LOGO GLOW */
+.logo{
+font-size:48px;
+font-weight:bold;
+animation:glow 2s infinite alternate;
 }
 
-@keyframes fadeOut{
-0%,80%{opacity:1}
-100%{opacity:0;pointer-events:none}
+@keyframes glow{
+from{text-shadow:0 0 10px #ff5500;}
+to{text-shadow:0 0 40px #ffae00;}
 }
 
-/* CANVAS */
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:0;
+/* SMOKE REVEAL */
+.smoke{
+animation:smoke 3s ease-out;
 }
 
-/* THEME BUTTONS */
-.theme-buttons{
-position:fixed;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:12px;
-z-index:5;
-}
-
-.theme-btn{
-padding:10px 18px;
-background:rgba(0,0,0,.6);
-border-radius:12px;
-color:white;
-border:2px solid orange;
-cursor:pointer;
+@keyframes smoke{
+from{filter:blur(20px);opacity:0}
+to{filter:blur(0);opacity:1}
 }
 
 /* SOCIAL DROPDOWN */
-.social-panel{
+#socialBox{
 position:fixed;
 left:10px;
-top:20%;
-z-index:5;
+top:40%;
+z-index:1000;
 }
 
-.social-btn{
-background:#ff9800;
-color:black;
-padding:12px 14px;
-border-radius:12px;
+#toggle{
+background:#ff5500;
+border:none;
+color:white;
+padding:12px;
+border-radius:50%;
 cursor:pointer;
-box-shadow:0 0 15px orange;
-font-weight:bold;
+font-size:18px;
 }
 
-.social-icons{
-margin-top:12px;
-display:flex;
+#icons{
+margin-top:10px;
+display:none;
 flex-direction:column;
-gap:12px;
-opacity:0;
-transform:translateX(-40px);
-pointer-events:none;
-transition:.4s;
+gap:10px;
 }
 
-.social-icons img{
-width:46px;
-padding:8px;
+#icons a{
+background:#111;
+padding:10px;
+border-radius:50%;
+text-decoration:none;
+color:white;
+box-shadow:0 0 10px #ff5500;
+}
+
+/* YOUTUBE SLIDER */
+.slider{
+display:flex;
+gap:15px;
+overflow-x:auto;
+padding:20px;
+max-width:100%;
+}
+
+.slider iframe{
+width:260px;
+height:150px;
 border-radius:12px;
-background:rgba(0,0,0,.7);
-cursor:pointer;
+box-shadow:0 0 15px #ff5500;
 }
 
-.social-panel:hover .social-icons,
-.social-panel.active .social-icons{
-opacity:1;
-transform:translateX(0);
-pointer-events:auto;
-}
-
-/* CENTER */
-section{
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-position:relative;
-z-index:2;
-}
-
-.glow-text{
-font-size:3em;
-font-weight:bold;
-background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
--webkit-background-clip:text;
-color:transparent;
-animation:fire 1.5s infinite alternate;
-}
-
-@keyframes fire{
-from{background-position:0%}
-to{background-position:100%}
-}
-
-@media(max-width:768px){
-.glow-text{font-size:2.2em;}
+/* MOBILE */
+@media(max-width:600px){
+.logo{font-size:34px}
+.slider iframe{width:200px;height:120px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔥 FIRE PORTAL INTRO -->
 <div id="intro">
   <div class="portal"></div>
 </div>
 
-<canvas id="embers"></canvas>
-<canvas id="fire"></canvas>
-
-<div class="theme-buttons">
-<button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
-<button class="theme-btn" onclick="setTheme('echo')">Echo</button>
-<button class="theme-btn" onclick="setTheme('dark')">Dark</button>
-</div>
-
-<!-- SOCIAL DROPDOWN -->
-<div class="social-panel" onclick="this.classList.toggle('active')">
-<div class="social-btn">☰ Social</div>
-<div class="social-icons">
-<a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
-<a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
-<a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
-<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
+<div id="socialBox">
+<button id="toggle">☰</button>
+<div id="icons">
+<a href="#">YT</a>
+<a href="#">SC</a>
+<a href="#">IG</a>
+<a href="#">FB</a>
 </div>
 </div>
 
-<section>
-<h1 class="glow-text">WanderAeon</h1>
-</section>
+<div id="main">
+<div class="logo smoke">WanderAeon</div>
+
+<h2 class="smoke">Enter the Inferno Universe</h2>
+
+<div class="slider">
+<iframe src="https://www.youtube.com/embed/H9HPTlYHkjQ"></iframe>
+<iframe src="https://www.youtube.com/embed/twd-aJLq30U"></iframe>
+<iframe src="https://www.youtube.com/embed/VQXMUNpGjjQ"></iframe>
+</div>
+
+</div>
 
 <script>
-const bg=document.getElementById("embers");
-const fire=document.getElementById("fire");
-const bctx=bg.getContext("2d");
-const fctx=fire.getContext("2d");
+const toggle=document.getElementById("toggle");
+const icons=document.getElementById("icons");
 
-function resize(){
-bg.width=fire.width=innerWidth;
-bg.height=fire.height=innerHeight;
-}
-resize(); window.onresize=resize;
+let hideTimer;
 
-/* EMBERS */
-let embers=[];
-for(let i=0;i<150;i++)
-embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3});
-
-function animateBG(){
-bctx.clearRect(0,0,innerWidth,innerHeight);
-embers.forEach(e=>{
-e.y+=0.5;
-if(e.y>innerHeight)e.y=0;
-bctx.fillStyle="rgba(255,140,0,.8)";
-bctx.beginPath();
-bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-bctx.fill();
-});
-requestAnimationFrame(animateBG);
+function showIcons(){
+icons.style.display="flex";
+clearTimeout(hideTimer);
+hideTimer=setTimeout(()=>icons.style.display="none",3000);
 }
 
-/* FIRE TRAIL */
-let flames=[];
-function spawn(x,y){
-for(let i=0;i<5;i++)
-flames.push({x,y,s:Math.random()*6+3,a:1,vx:(Math.random()-.5)*2,vy:-Math.random()*2});
-}
+toggle.onclick=showIcons;
 
-addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-addEventListener("touchmove",e=>{
-const t=e.touches[0];
-spawn(t.clientX,t.clientY);
-},{passive:true});
-
-function animateFire(){
-fctx.clearRect(0,0,innerWidth,innerHeight);
-for(let i=flames.length-1;i>=0;i--){
-let p=flames[i];
-p.x+=p.vx;p.y+=p.vy;p.a-=.03;
-if(p.a<=0)flames.splice(i,1);
-else{
-fctx.globalAlpha=p.a;
-fctx.fillStyle="orange";
-fctx.beginPath();
-fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-fctx.fill();
-}
-}
-fctx.globalAlpha=1;
-requestAnimationFrame(animateFire);
-}
-
-/* THEMES */
-function setTheme(t){
-if(t=="inferno")document.body.style.backgroundImage="url('final.jpg')";
-if(t=="echo")document.body.style.backgroundImage="url('echo.jpg')";
-if(t=="dark")document.body.style.backgroundImage="url('dark.jpg')";
-}
-
-animateBG();
-animateFire();
+// auto first show then hide
+setTimeout(showIcons,1000);
 </script>
 
 </body>
