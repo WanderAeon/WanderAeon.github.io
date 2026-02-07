@@ -108,7 +108,13 @@ canvas{
   opacity:0;
   transform:translateX(-40px);
   pointer-events:none;
-  transition:.4s;
+  transition:.4s, transform .4s;
+}
+
+.social-icons.show{
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
 }
 
 .social-icons img{
@@ -258,18 +264,19 @@ function setTheme(t){
   if(t=="dark") document.body.style.backgroundImage="url('dark.jpg')";
 }
 
-/* 🔥 SOCIAL ICONS AUTO HIDE AFTER 3s */
+/* 🔥 SOCIAL ICONS SHOW & AUTO HIDE */
 const socialPanel = document.getElementById("socialPanel");
 const socialIcons = document.getElementById("socialIcons");
+let hideTimeout;
 
-socialPanel.addEventListener("click", ()=>{
-  socialPanel.classList.toggle("active");
-  if(socialPanel.classList.contains("active")){
-    setTimeout(()=>{
-      socialPanel.classList.remove("active");
-    },3000); // 3 seconds
-  }
-});
+function showSocial(){
+  socialIcons.classList.add("show");
+  clearTimeout(hideTimeout);
+  hideTimeout = setTimeout(()=>{ socialIcons.classList.remove("show"); },3000);
+}
+
+socialPanel.addEventListener("click", showSocial);
+socialPanel.addEventListener("touchstart", showSocial); // mobile touch
 
 animateBG();
 animateFire();
