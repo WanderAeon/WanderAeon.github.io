@@ -31,78 +31,52 @@ display:flex;
 align-items:center;
 justify-content:center;
 z-index:999;
-animation:fadeOut 3s forwards;
+animation:fadeOut 4s forwards;
 }
 
 .portal{
-width:35px;
-height:35px;
-border-radius:50%;
+width:40px;height:40px;border-radius:50%;
 background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 20px orange;
-animation:expand 3s forwards;
+box-shadow:0 0 40px orange,0 0 140px red;
+animation:expand 4s forwards;
 }
 
 @keyframes expand{
 0%{transform:scale(0)}
-100%{transform:scale(50);opacity:0}
+100%{transform:scale(60);opacity:0}
 }
-
 @keyframes fadeOut{
-80%{opacity:1}
+0%,80%{opacity:1}
 100%{opacity:0;pointer-events:none}
 }
 
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-z-index:0;
-}
+canvas{position:fixed;inset:0;pointer-events:none}
 
-/* THEME */
-.theme-buttons{
-position:fixed;
-top:10px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:10px;
-z-index:5;
-}
-
-.theme-btn{
-padding:8px 14px;
-border-radius:12px;
-background:rgba(0,0,0,.6);
-border:2px solid orange;
-color:white;
-cursor:pointer;
-}
-
-/* SOCIAL */
+/* SOCIAL PANEL */
 .social-panel{
 position:fixed;
-left:10px;
-top:20%;
+left:15px;
+top:25%;
 z-index:5;
-transform:scale(1.25); /* ✅ 1.25x SIZE */
-transform-origin:left top;
+transform:scale(1.25);
 }
 
-.social-btn img{
-width:55px;
+.social-btn{
+background:#ff9800;
+padding:14px;
+border-radius:14px;
 cursor:pointer;
-filter:drop-shadow(0 0 12px orange);
+box-shadow:0 0 18px orange;
+font-weight:bold;
 }
 
 .social-icons{
-margin-top:10px;
+margin-top:14px;
 display:flex;
 flex-direction:column;
-gap:10px;
+gap:12px;
 opacity:0;
-transform:translateX(-30px);
+transform:translateX(-40px);
 pointer-events:none;
 transition:.4s;
 }
@@ -114,20 +88,21 @@ pointer-events:auto;
 }
 
 .social-icons img{
-width:44px;
+width:46px;
+padding:8px;
 border-radius:12px;
 background:rgba(0,0,0,.7);
-padding:6px;
+cursor:pointer;
 }
 
-/* LOGO */
+/* CENTER LOGO */
 section{
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-position:relative;
 z-index:2;
+position:relative;
 }
 
 .glow-text{
@@ -136,7 +111,8 @@ font-weight:bold;
 background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
 -webkit-background-clip:text;
 color:transparent;
-animation:fire 1.5s infinite alternate,pulse 2s infinite;
+animation:fire 1.5s infinite alternate;
+text-shadow:0 0 20px orange;
 }
 
 @keyframes fire{
@@ -144,13 +120,8 @@ from{background-position:0%}
 to{background-position:100%}
 }
 
-@keyframes pulse{
-0%,100%{text-shadow:0 0 10px orange}
-50%{text-shadow:0 0 40px orange}
-}
-
 @media(max-width:768px){
-.glow-text{font-size:2.1em;}
+.glow-text{font-size:2.2em;}
 }
 </style>
 </head>
@@ -160,25 +131,18 @@ to{background-position:100%}
 <div id="intro"><div class="portal"></div></div>
 
 <canvas id="embers"></canvas>
+<canvas id="fire"></canvas>
 
-<div class="theme-buttons">
-<button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
-<button class="theme-btn" onclick="setTheme('echo')">Echo</button>
-<button class="theme-btn" onclick="setTheme('dark')">Dark</button>
-</div>
-
-<!-- SOCIAL MENU -->
-<div class="social-panel" id="socialPanel">
-<div class="social-btn">
-<img src="SM.gif" alt="Menu">
-</div>
+<!-- SOCIAL -->
+<div class="social-panel">
+<div class="social-btn" id="socialBtn">☰ Social</div>
 
 <div class="social-icons" id="socialIcons">
-<img src="youtube.png">
-<img src="tiktok.png">
-<img src="soundcloud.png">
-<img src="facebook.png">
-<img src="whatsapp.png">
+<a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
+<a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
+<a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
+<a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
+<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
 </div>
 </div>
 
@@ -187,110 +151,90 @@ to{background-position:100%}
 </section>
 
 <script>
-const canvas=document.getElementById("embers");
-const ctx=canvas.getContext("2d");
+const bg=document.getElementById("embers");
+const fire=document.getElementById("fire");
+const bctx=bg.getContext("2d");
+const fctx=fire.getContext("2d");
 
 function resize(){
-canvas.width=innerWidth;
-canvas.height=innerHeight;
+bg.width=fire.width=innerWidth;
+bg.height=fire.height=innerHeight;
 }
-resize();
-onresize=resize;
+resize(); onresize=resize;
 
 /* EMBERS */
-let isMobile=innerWidth<800;
-let count=isMobile?50:120;
 let embers=[];
+for(let i=0;i<160;i++)
+embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3});
 
-for(let i=0;i<count;i++)
-embers.push({
-x:Math.random()*innerWidth,
-y:Math.random()*innerHeight,
-s:Math.random()*2+1
+function animateBG(){
+bctx.clearRect(0,0,innerWidth,innerHeight);
+embers.forEach(e=>{
+e.y+=0.6;
+if(e.y>innerHeight)e.y=0;
+bctx.fillStyle="rgba(255,140,0,.8)";
+bctx.beginPath();
+bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
+bctx.fill();
 });
+requestAnimationFrame(animateBG);
+}
 
 /* FIRE TRAIL */
 let flames=[];
-
 function spawn(x,y){
-let amount=isMobile?2:6;
-for(let i=0;i<amount;i++){
+for(let i=0;i<6;i++)
 flames.push({
-x,y,
-s:Math.random()*(isMobile?4:7)+2,
-a:1,
-vx:(Math.random()-.5)*(isMobile?1:2),
-vy:-Math.random()*(isMobile?1.2:2.5)
+x,y,s:Math.random()*6+3,a:1,
+vx:(Math.random()-.5)*2,
+vy:-Math.random()*2.5
 });
 }
-}
 
-addEventListener("mousemove",e=>{
-if(!isMobile) spawn(e.clientX,e.clientY);
-});
-
+addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 addEventListener("touchmove",e=>{
-const t=e.touches[0];
+let t=e.touches[0];
 spawn(t.clientX,t.clientY);
 },{passive:true});
 
-/* LOOP */
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-/* embers */
-embers.forEach(e=>{
-e.y+=0.4;
-if(e.y>canvas.height)e.y=0;
-ctx.fillStyle="rgba(255,140,0,.7)";
-ctx.beginPath();
-ctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-ctx.fill();
-});
-
-/* fire */
-ctx.globalCompositeOperation="lighter";
-flames.forEach((p,i)=>{
+function animateFire(){
+fctx.clearRect(0,0,innerWidth,innerHeight);
+for(let i=flames.length-1;i>=0;i--){
+let p=flames[i];
 p.x+=p.vx;
 p.y+=p.vy;
-p.a-=isMobile?.06:.035;
-
-if(p.a<=0) flames.splice(i,1);
+p.a-=.03;
+if(p.a<=0)flames.splice(i,1);
 else{
-ctx.globalAlpha=p.a;
-ctx.fillStyle="orange";
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-ctx.fill();
+fctx.globalAlpha=p.a;
+fctx.fillStyle="orange";
+fctx.beginPath();
+fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
+fctx.fill();
 }
-});
-ctx.globalAlpha=1;
-ctx.globalCompositeOperation="source-over";
-
-requestAnimationFrame(animate);
 }
-animate();
-
-/* THEMES */
-function setTheme(t){
-if(t=="inferno")document.body.style.backgroundImage="url('final.jpg')";
-if(t=="echo")document.body.style.backgroundImage="url('echo.jpg')";
-if(t=="dark")document.body.style.backgroundImage="url('dark.jpg')";
+fctx.globalAlpha=1;
+requestAnimationFrame(animateFire);
 }
 
 /* SOCIAL AUTO HIDE */
-const panel=document.getElementById("socialPanel");
+const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
 
-function showSocial(){
+function showIcons(){
 icons.classList.add("show");
 clearTimeout(timer);
 timer=setTimeout(()=>icons.classList.remove("show"),3000);
 }
 
-panel.addEventListener("click",showSocial);
-panel.addEventListener("touchstart",showSocial);
+btn.onclick=showIcons;
+btn.onmouseenter=showIcons;
+icons.onmouseenter=()=>clearTimeout(timer);
+icons.onmouseleave=()=>timer=setTimeout(()=>icons.classList.remove("show"),3000);
+
+animateBG();
+animateFire();
 </script>
 
 </body>
