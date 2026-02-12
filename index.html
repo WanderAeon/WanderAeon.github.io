@@ -28,8 +28,8 @@ position:fixed;
 inset:0;
 background:black;
 display:flex;
-align-items:center;
 justify-content:center;
+align-items:center;
 z-index:999;
 animation:fadeOut 4s forwards;
 }
@@ -37,7 +37,7 @@ animation:fadeOut 4s forwards;
 .portal{
 width:40px;height:40px;border-radius:50%;
 background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 40px orange,0 0 140px red;
+box-shadow:0 0 40px orange,0 0 150px red;
 animation:expand 4s forwards;
 }
 
@@ -50,7 +50,12 @@ animation:expand 4s forwards;
 100%{opacity:0;pointer-events:none}
 }
 
-canvas{position:fixed;inset:0;pointer-events:none}
+/* CANVAS */
+canvas{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
 
 /* SOCIAL PANEL */
 .social-panel{
@@ -61,13 +66,10 @@ z-index:5;
 transform:scale(1.25);
 }
 
-.social-btn{
-background:#ff9800;
-padding:14px;
-border-radius:14px;
+.social-btn img{
+width:60px;
 cursor:pointer;
-box-shadow:0 0 18px orange;
-font-weight:bold;
+filter:drop-shadow(0 0 12px orange);
 }
 
 .social-icons{
@@ -92,7 +94,6 @@ width:46px;
 padding:8px;
 border-radius:12px;
 background:rgba(0,0,0,.7);
-cursor:pointer;
 }
 
 /* CENTER LOGO */
@@ -101,8 +102,8 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-z-index:2;
 position:relative;
+z-index:2;
 }
 
 .glow-text{
@@ -112,7 +113,7 @@ background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
 -webkit-background-clip:text;
 color:transparent;
 animation:fire 1.5s infinite alternate;
-text-shadow:0 0 20px orange;
+text-shadow:0 0 25px orange;
 }
 
 @keyframes fire{
@@ -135,7 +136,10 @@ to{background-position:100%}
 
 <!-- SOCIAL -->
 <div class="social-panel">
-<div class="social-btn" id="socialBtn">☰ Social</div>
+
+<div class="social-btn" id="socialBtn">
+<img src="SM.gif">
+</div>
 
 <div class="social-icons" id="socialIcons">
 <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
@@ -144,6 +148,7 @@ to{background-position:100%}
 <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
 <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
 </div>
+
 </div>
 
 <section>
@@ -162,32 +167,32 @@ bg.height=fire.height=innerHeight;
 }
 resize(); onresize=resize;
 
-/* EMBERS */
+/* EMBERS (lightweight) */
 let embers=[];
-for(let i=0;i<160;i++)
-embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*3});
+for(let i=0;i<120;i++)
+embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
 
 function animateBG(){
 bctx.clearRect(0,0,innerWidth,innerHeight);
-embers.forEach(e=>{
-e.y+=0.6;
+for(let e of embers){
+e.y+=0.5;
 if(e.y>innerHeight)e.y=0;
-bctx.fillStyle="rgba(255,140,0,.8)";
+bctx.fillStyle="rgba(255,150,0,.7)";
 bctx.beginPath();
 bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
 bctx.fill();
-});
+}
 requestAnimationFrame(animateBG);
 }
 
 /* FIRE TRAIL */
 let flames=[];
 function spawn(x,y){
-for(let i=0;i<6;i++)
+for(let i=0;i<4;i++)
 flames.push({
-x,y,s:Math.random()*6+3,a:1,
-vx:(Math.random()-.5)*2,
-vy:-Math.random()*2.5
+x,y,s:Math.random()*5+2,a:1,
+vx:(Math.random()-.5)*1.5,
+vy:-Math.random()*2
 });
 }
 
@@ -203,7 +208,7 @@ for(let i=flames.length-1;i>=0;i--){
 let p=flames[i];
 p.x+=p.vx;
 p.y+=p.vy;
-p.a-=.03;
+p.a-=.04;
 if(p.a<=0)flames.splice(i,1);
 else{
 fctx.globalAlpha=p.a;
