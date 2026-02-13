@@ -1,126 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 <title>WanderAeon</title>
 
 <style>
+*{margin:0;padding:0}
 html,body{
-margin:0;
 width:100%;
 height:100%;
 overflow:hidden;
-font-family:Arial;
 background:black;
+font-family:Arial;
 touch-action:none;
 }
 
-#intro{
-position:fixed;
-inset:0;
-background:black;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999;
-animation:introFade 4s forwards;
-}
-
-.portal{
-width:50px;height:50px;border-radius:50%;
-background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 40px orange,0 0 150px red;
-animation:expand 4s forwards;
-}
-
-@keyframes expand{
-to{transform:scale(60);opacity:0}
-}
-@keyframes introFade{
-0%,80%{opacity:1}
-100%{opacity:0;pointer-events:none}
-}
-
+/* BACKGROUND */
 #bg{
 position:fixed;
 inset:0;
-background:url('final.jpg') center/cover no-repeat;
-filter:brightness(.6);
+background:url("final.jpg") center/cover no-repeat;
+z-index:0;
 }
 
+/* CANVAS */
 canvas{
 position:fixed;
 inset:0;
+z-index:1;
 pointer-events:none;
 }
 
+/* LOGO */
 #logo{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-font-size:clamp(42px,8vw,80px);
+font-size:clamp(40px,8vw,80px);
 color:#ff9b00;
-text-shadow:0 0 20px orange,0 0 70px red;
+text-shadow:0 0 25px orange,0 0 80px red;
+z-index:3;
 animation:pulse 2s infinite;
-z-index:2;
 }
-
 @keyframes pulse{
-50%{transform:translate(-50%,-50%) scale(1.07);}
+50%{transform:translate(-50%,-50%) scale(1.08);}
 }
 
-/* VISITOR */
-#visitor{
+/* THEMES */
+#themes{
 position:fixed;
-top:12px;
-right:12px;
-padding:8px 14px;
-border-radius:14px;
-border:2px solid orange;
-color:#ffc266;
-background:rgba(0,0,0,.7);
-box-shadow:0 0 15px orange;
+top:10px;
+left:50%;
+transform:translateX(-50%);
+display:flex;
+gap:10px;
 z-index:4;
 }
 
+.theme{
+padding:10px 18px;
+border-radius:14px;
+border:2px solid orange;
+background:rgba(0,0,0,.6);
+color:white;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 0 15px orange;
+}
+
 /* SOCIAL */
-.social-panel{
+.social{
 position:fixed;
-left:18px;
+left:15px;
 bottom:20px;
 z-index:4;
 }
 
-.social-btn img{width:62px;cursor:pointer;}
+.social img{width:60px;cursor:pointer;}
 
-.social-icons{
+.icons{
 display:flex;
 gap:10px;
 margin-top:10px;
 opacity:0;
-pointer-events:none;
 transition:.4s;
+pointer-events:none;
 }
 
-.social-icons.show{
+.icons.show{
 opacity:1;
 pointer-events:auto;
 }
 
-.social-icons img{
+.icons img{
 width:44px;
+background:rgba(0,0,0,.6);
 padding:6px;
 border-radius:12px;
-background:rgba(0,0,0,.6);
 }
 </style>
 </head>
 
 <body>
 
-<div id="intro"><div class="portal"></div></div>
 <div id="bg"></div>
 
 <canvas id="fire"></canvas>
@@ -128,115 +112,118 @@ background:rgba(0,0,0,.6);
 
 <div id="logo">WanderAeon</div>
 
-<div id="visitor">🔥 Visitors: <span id="count">0</span></div>
-
-<div class="social-panel">
-<div class="social-btn" id="socialBtn">
-<img src="SM.gif">
+<div id="themes">
+<div class="theme" onclick="setBg('final.jpg')">Inferno</div>
+<div class="theme" onclick="setBg('echo.jpg')">Echo</div>
+<div class="theme" onclick="setBg('dark.jpg')">Dark</div>
 </div>
-<div class="social-icons" id="socialIcons">
-<a href="https://www.youtube.com/@WanderAeon"><img src="youtube.png"></a>
-<a href="https://www.tiktok.com/@wanderaeon"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com/wanderaeon"><img src="soundcloud.png"></a>
-<a href="https://www.facebook.com/profile.php?id=61584853409975"><img src="facebook.png"></a>
-<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U"><img src="whatsapp.png"></a>
+
+<div class="social">
+<img src="SM.gif" id="btn">
+<div class="icons" id="icons">
+<img src="youtube.png">
+<img src="tiktok.png">
+<img src="soundcloud.png">
+<img src="facebook.png">
+<img src="whatsapp.png">
 </div>
 </div>
 
 <script>
-/* VISITORS */
-let v=localStorage.getItem("vis")||0;
-v++; localStorage.setItem("vis",v);
-count.textContent=v;
+/* THEME SWITCH */
+function setBg(img){
+document.getElementById("bg").style.background=
+`url(${img}) center/cover no-repeat`;
+}
 
 /* SOCIAL */
-const btn=document.getElementById("socialBtn");
-const icons=document.getElementById("socialIcons");
-let timer;
-function show(){
+const btn=document.getElementById("btn");
+const icons=document.getElementById("icons");
+let t;
+btn.onclick=()=>{
 icons.classList.add("show");
-clearTimeout(timer);
-timer=setTimeout(()=>icons.classList.remove("show"),3000);
-}
-btn.onclick=show;
-btn.onmouseenter=show;
+clearTimeout(t);
+t=setTimeout(()=>icons.classList.remove("show"),3000);
+};
 
 /* CANVAS SETUP */
 const fire=document.getElementById("fire");
-const fctx=fire.getContext("2d");
+const f=fire.getContext("2d");
 const trail=document.getElementById("trail");
-const tctx=trail.getContext("2d");
+const tr=trail.getContext("2d");
 
 function resize(){
 fire.width=trail.width=innerWidth;
 fire.height=trail.height=innerHeight;
 }
-resize(); addEventListener("resize",resize);
+resize(); onresize=resize;
 
-/* REAL FLAME PARTICLES */
+/* REAL FIRE */
 let flames=[];
-function spawnFire(x,y){
+
+function spawn(x,y){
 for(let i=0;i<6;i++){
 flames.push({
 x,y,
 vx:(Math.random()-.5)*1.5,
 vy:-Math.random()*3,
 life:1,
-size:Math.random()*6+4
+s:Math.random()*6+4
 });
 }
 }
 
-function animateFire(){
-fctx.clearRect(0,0,fire.width,fire.height);
+function drawFire(){
+f.clearRect(0,0,fire.width,fire.height);
 for(let i=flames.length-1;i>=0;i--){
 let p=flames[i];
 p.x+=p.vx;
 p.y+=p.vy;
 p.life-=.03;
 if(p.life<=0){flames.splice(i,1);continue;}
-fctx.globalAlpha=p.life;
-let g=fctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.size);
-g.addColorStop(0,"#fff3");
-g.addColorStop(.3,"orange");
+
+f.globalAlpha=p.life;
+let g=f.createRadialGradient(p.x,p.y,0,p.x,p.y,p.s);
+g.addColorStop(0,"#fff8");
+g.addColorStop(.4,"orange");
 g.addColorStop(1,"red");
-fctx.fillStyle=g;
-fctx.beginPath();
-fctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-fctx.fill();
+f.fillStyle=g;
+f.beginPath();
+f.arc(p.x,p.y,p.s,0,Math.PI*2);
+f.fill();
 }
-fctx.globalAlpha=1;
-requestAnimationFrame(animateFire);
+f.globalAlpha=1;
+requestAnimationFrame(drawFire);
 }
 
 /* TRAIL */
-function spawnTrail(x,y){
-tctx.fillStyle="rgba(255,160,0,.35)";
-tctx.beginPath();
-tctx.arc(x,y,10,0,Math.PI*2);
-tctx.fill();
+function fade(){
+tr.fillStyle="rgba(0,0,0,.18)";
+tr.fillRect(0,0,trail.width,trail.height);
+requestAnimationFrame(fade);
 }
 
-function fadeTrail(){
-tctx.fillStyle="rgba(0,0,0,.15)";
-tctx.fillRect(0,0,trail.width,trail.height);
-requestAnimationFrame(fadeTrail);
+function trailDot(x,y){
+tr.fillStyle="rgba(255,160,0,.5)";
+tr.beginPath();
+tr.arc(x,y,10,0,Math.PI*2);
+tr.fill();
 }
 
-/* EVENTS DESKTOP + MOBILE */
-function handleMove(x,y){
-spawnFire(x,y);
-spawnTrail(x,y);
+/* EVENTS */
+function move(x,y){
+spawn(x,y);
+trailDot(x,y);
 }
 
-addEventListener("mousemove",e=>handleMove(e.clientX,e.clientY));
+addEventListener("mousemove",e=>move(e.clientX,e.clientY));
 addEventListener("touchmove",e=>{
 let t=e.touches[0];
-handleMove(t.clientX,t.clientY);
+move(t.clientX,t.clientY);
 },{passive:true});
 
-animateFire();
-fadeTrail();
+drawFire();
+fade();
 </script>
 
 </body>
