@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WanderAeon</title>
 
 <style>
 body{
 margin:0;
-background:black;
 overflow:hidden;
-font-family:Arial,Helvetica,sans-serif;
+background:black;
+font-family:Arial;
 }
 
 #bg{
@@ -18,42 +18,56 @@ position:fixed;
 width:100%;
 height:100%;
 background:url('final.jpg') center/cover no-repeat;
-filter:brightness(0.6);
+filter:brightness(0.55);
 }
 
-/* FIRE INTRO */
-#fireIntro{
-position:fixed;
-width:100%;
-height:100%;
-background:radial-gradient(circle,#ff6a00,#000);
-animation:fireOut 2.5s forwards;
-z-index:10;
-}
-
-@keyframes fireOut{
-0%{opacity:1;}
-100%{opacity:0;visibility:hidden;}
-}
-
-/* LOGO TEXT */
+/* LOGO */
 #logo{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 font-size:70px;
-color:#ff8c00;
-text-shadow:0 0 25px orange,0 0 60px red;
+color:#ff9500;
+text-shadow:0 0 20px orange,0 0 60px red;
 animation:pulse 2s infinite;
 }
 
 @keyframes pulse{
-0%,100%{transform:translate(-50%,-50%) scale(1);}
-50%{transform:translate(-50%,-50%) scale(1.05);}
+50%{transform:translate(-50%,-50%) scale(1.06);}
 }
 
-/* VISITOR BOX */
+/* SMOKE */
+.smoke{
+position:absolute;
+bottom:-200px;
+width:300px;
+height:300px;
+background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);
+animation:smokeMove 14s linear infinite;
+}
+
+@keyframes smokeMove{
+0%{transform:translateY(0) translateX(0);}
+100%{transform:translateY(-1200px) translateX(200px);}
+}
+
+/* SPARKS */
+.spark{
+position:absolute;
+width:4px;
+height:4px;
+background:orange;
+border-radius:50%;
+animation:sparkFly 1s linear forwards;
+}
+
+@keyframes sparkFly{
+0%{opacity:1;transform:translate(0,0);}
+100%{opacity:0;transform:translate(var(--x),var(--y));}
+}
+
+/* VISITOR */
 #visitorBox{
 position:fixed;
 top:15px;
@@ -61,18 +75,16 @@ right:15px;
 border:2px solid orange;
 padding:8px 14px;
 color:#ffb347;
-font-size:14px;
 border-radius:12px;
 box-shadow:0 0 15px orange;
-background:rgba(0,0,0,0.6);
+background:rgba(0,0,0,0.7);
 }
 
-/* SOCIAL PANEL */
+/* SOCIAL */
 .social-panel{
 position:fixed;
 bottom:20px;
 left:20px;
-z-index:5;
 }
 
 .social-btn img{
@@ -85,12 +97,8 @@ display:flex;
 gap:10px;
 margin-top:10px;
 opacity:0;
+transition:.4s;
 pointer-events:none;
-transition:0.4s;
-}
-
-.social-icons img{
-width:45px;
 }
 
 .social-icons.show{
@@ -98,61 +106,107 @@ opacity:1;
 pointer-events:auto;
 }
 
-/* MOBILE FIX */
+.social-icons img{
+width:45px;
+}
+
+/* MOUSE GLOW */
+.trail{
+position:absolute;
+width:12px;
+height:12px;
+background:orange;
+border-radius:50%;
+pointer-events:none;
+box-shadow:0 0 20px orange;
+opacity:0.8;
+animation:fade 0.6s forwards;
+}
+
+@keyframes fade{
+to{opacity:0;transform:scale(2);}
+}
+
 @media(max-width:600px){
 #logo{font-size:45px;}
-.social-btn img{width:55px;}
-.social-icons img{width:40px;}
 }
 </style>
 </head>
 
 <body>
 
-<div id="fireIntro"></div>
 <div id="bg"></div>
 
 <div id="logo">WanderAeon</div>
 
-<div id="visitorBox">
-🔥 Visitors: <span id="count">0</span>
-</div>
+<div id="visitorBox">🔥 Visitors: <span id="count">0</span></div>
 
-<!-- SOCIAL DROPDOWN -->
 <div class="social-panel">
-
 <div class="social-btn" id="socialBtn">
 <img src="SM.gif">
 </div>
 
 <div class="social-icons" id="socialIcons">
-<a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
-<a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
-<a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
-<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
+<a href="https://www.youtube.com/@WanderAeon"><img src="youtube.png"></a>
+<a href="https://www.tiktok.com/@wanderaeon"><img src="tiktok.png"></a>
+<a href="https://soundcloud.com/wanderaeon"><img src="soundcloud.png"></a>
+<a href="https://www.facebook.com/profile.php?id=61584853409975"><img src="facebook.png"></a>
+<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U"><img src="whatsapp.png"></a>
 </div>
-
 </div>
 
 <script>
-let count = localStorage.getItem("visits") || 0;
-count++;
-localStorage.setItem("visits",count);
-document.getElementById("count").innerText = count;
+/* VISITOR */
+let v = localStorage.getItem("vis") || 0;
+v++;
+localStorage.setItem("vis",v);
+count.innerText=v;
 
-const btn = document.getElementById("socialBtn");
-const icons = document.getElementById("socialIcons");
-let timer;
+/* SOCIAL AUTO HIDE */
+const btn=document.getElementById("socialBtn");
+const icons=document.getElementById("socialIcons");
+let t;
 
-function showIcons(){
+function show(){
 icons.classList.add("show");
-clearTimeout(timer);
-timer=setTimeout(()=>icons.classList.remove("show"),3000);
+clearTimeout(t);
+t=setTimeout(()=>icons.classList.remove("show"),3000);
+}
+btn.onclick=show;
+btn.onmouseenter=show;
+
+/* SMOKE CREATE */
+for(let i=0;i<6;i++){
+let s=document.createElement("div");
+s.className="smoke";
+s.style.left=Math.random()*100+"%";
+s.style.animationDelay=i*3+"s";
+document.body.appendChild(s);
 }
 
-btn.addEventListener("click",showIcons);
-btn.addEventListener("mouseenter",showIcons);
+/* SPARKS LOOP */
+setInterval(()=>{
+for(let i=0;i<6;i++){
+let sp=document.createElement("div");
+sp.className="spark";
+sp.style.left=50+"%";
+sp.style.top=50+"%";
+sp.style.setProperty("--x",(Math.random()*400-200)+"px");
+sp.style.setProperty("--y",(-Math.random()*300)+"px");
+document.body.appendChild(sp);
+setTimeout(()=>sp.remove(),1000);
+}
+},400);
+
+/* MOUSE TRAIL */
+document.addEventListener("mousemove",e=>{
+let t=document.createElement("div");
+t.className="trail";
+t.style.left=e.pageX+"px";
+t.style.top=e.pageY+"px";
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),600);
+});
 </script>
 
 </body>
