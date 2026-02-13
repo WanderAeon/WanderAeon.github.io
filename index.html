@@ -22,7 +22,7 @@ color:white;
 background:url('final.jpg') center/cover no-repeat;
 }
 
-/* INTRO */
+/* INTRO CINEMATIC */
 #intro{
 position:fixed;
 inset:0;
@@ -30,21 +30,38 @@ background:black;
 display:flex;
 justify-content:center;
 align-items:center;
+flex-direction:column;
 z-index:999;
-animation:fadeOut 4s forwards;
+animation:fadeOut 5s forwards;
 }
 
 .portal{
-width:40px;height:40px;border-radius:50%;
+width:60px;height:60px;border-radius:50%;
 background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 40px orange,0 0 150px red;
+box-shadow:0 0 60px orange,0 0 200px red;
 animation:expand 4s forwards;
+}
+
+.intro-text{
+font-size:3em;
+font-weight:bold;
+color:transparent;
+background:linear-gradient(90deg,#ff4500,#ffd27d,#ff4500);
+-webkit-background-clip:text;
+opacity:0;
+animation:textReveal 2s 2.5s forwards;
+text-shadow:0 0 40px orange;
 }
 
 @keyframes expand{
 0%{transform:scale(0)}
-100%{transform:scale(60);opacity:0}
+100%{transform:scale(50);opacity:0}
 }
+
+@keyframes textReveal{
+to{opacity:1}
+}
+
 @keyframes fadeOut{
 0%,80%{opacity:1}
 100%{opacity:0;pointer-events:none}
@@ -79,7 +96,7 @@ font-weight:bold;
 box-shadow:0 0 12px orange;
 }
 
-/* SOCIAL PANEL */
+/* SOCIAL */
 .social-panel{
 position:fixed;
 left:15px;
@@ -122,6 +139,7 @@ background:rgba(0,0,0,.7);
 section{
 height:100vh;
 display:flex;
+flex-direction:column;
 justify-content:center;
 align-items:center;
 position:relative;
@@ -129,13 +147,13 @@ z-index:2;
 }
 
 .glow-text{
-font-size:3em;
+font-size:3.2em;
 font-weight:bold;
 background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
 -webkit-background-clip:text;
 color:transparent;
-animation:fire 1.5s infinite alternate;
-text-shadow:0 0 25px orange;
+animation:fire 1.5s infinite alternate, pulse 2s infinite;
+text-shadow:0 0 30px orange;
 }
 
 @keyframes fire{
@@ -143,29 +161,40 @@ from{background-position:0%}
 to{background-position:100%}
 }
 
+@keyframes pulse{
+50%{text-shadow:0 0 60px orange}
+}
+
+/* VISITOR */
+.counter{
+margin-top:15px;
+font-size:1.1em;
+opacity:.85;
+}
+
 @media(max-width:768px){
-.glow-text{font-size:2.2em;}
+.glow-text{font-size:2.3em;}
 }
 </style>
 </head>
 
 <body>
 
-<div id="intro"><div class="portal"></div></div>
+<div id="intro">
+<div class="portal"></div>
+<div class="intro-text">WanderAeon</div>
+</div>
 
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
-<!-- THEME BUTTONS -->
 <div class="theme-buttons">
 <button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
 <button class="theme-btn" onclick="setTheme('echo')">Echo</button>
 <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
 </div>
 
-<!-- SOCIAL -->
 <div class="social-panel">
-
 <div class="social-btn" id="socialBtn">
 <img src="SM.gif">
 </div>
@@ -177,11 +206,11 @@ to{background-position:100%}
 <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
 <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
 </div>
-
 </div>
 
 <section>
 <h1 class="glow-text">WanderAeon</h1>
+<div class="counter" id="visitorCount"></div>
 </section>
 
 <script>
@@ -258,7 +287,7 @@ if(t=="echo") document.body.style.backgroundImage="url('echo.jpg')";
 if(t=="dark") document.body.style.backgroundImage="url('dark.jpg')";
 }
 
-/* SOCIAL AUTO HIDE */
+/* SOCIAL */
 const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
@@ -271,8 +300,12 @@ timer=setTimeout(()=>icons.classList.remove("show"),3000);
 
 btn.onclick=showIcons;
 btn.onmouseenter=showIcons;
-icons.onmouseenter=()=>clearTimeout(timer);
-icons.onmouseleave=()=>timer=setTimeout(()=>icons.classList.remove("show"),3000);
+
+/* VISITOR COUNTER (local demo) */
+let count=localStorage.getItem("visits")||0;
+count++;
+localStorage.setItem("visits",count);
+document.getElementById("visitorCount").innerText="🔥 Visitors: "+count;
 
 animateBG();
 animateFire();
