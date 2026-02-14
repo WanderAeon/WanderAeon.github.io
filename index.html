@@ -33,113 +33,36 @@ align-items:center;
 z-index:999;
 animation:fadeOut 4s forwards;
 }
-
 .portal{
 width:40px;height:40px;border-radius:50%;
 background:radial-gradient(circle,#fff,#ff6a00,#000);
 box-shadow:0 0 40px orange,0 0 150px red;
 animation:expand 4s forwards;
 }
-
-@keyframes expand{
-0%{transform:scale(0)}
-100%{transform:scale(60);opacity:0}
-}
-@keyframes fadeOut{
-0%,80%{opacity:1}
-100%{opacity:0;pointer-events:none}
-}
+@keyframes expand{0%{transform:scale(0)}100%{transform:scale(60);opacity:0}}
+@keyframes fadeOut{0%,80%{opacity:1}100%{opacity:0;pointer-events:none}}
 
 /* CANVAS */
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-}
+canvas{position:fixed;inset:0;pointer-events:none}
 
-/* VISITOR LOG — PERFECTED */
+/* VISITOR LOG */
 .visitor-box{
 position:fixed;
-bottom:18px;
-right:18px;
-z-index:10;
-padding:8px 12px;
-border:1.5px solid orange;
-border-radius:10px;
+right:12px;
+bottom:12px;
+padding:10px 14px;
+border:2px solid orange;
+border-radius:14px;
 background:rgba(0,0,0,.65);
-box-shadow:0 0 12px orange;
+box-shadow:0 0 15px orange;
+font-size:14px;
 text-align:center;
-font-weight:bold;
-font-size:13px;
-min-width:120px;
+z-index:20;
 }
-
 .visitor-box span{
 display:block;
 color:#ffb347;
-margin-top:2px;
-font-size:14px;
-}
-
-/* THEME BUTTONS */
-.theme-buttons{
-position:fixed;
-top:12px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:12px;
-z-index:6;
-}
-
-.theme-btn{
-padding:10px 18px;
-background:rgba(0,0,0,.6);
-border-radius:12px;
-border:2px solid orange;
-color:white;
-cursor:pointer;
-font-weight:bold;
-box-shadow:0 0 12px orange;
-}
-
-/* SOCIAL PANEL */
-.social-panel{
-position:fixed;
-left:15px;
-top:25%;
-z-index:5;
-transform:scale(1.25);
-}
-
-.social-btn img{
-width:60px;
-cursor:pointer;
-filter:drop-shadow(0 0 12px orange);
-}
-
-.social-icons{
-margin-top:14px;
-display:flex;
-flex-direction:column;
-gap:12px;
-opacity:0;
-transform:translateX(-40px);
-pointer-events:none;
-transition:.4s;
-}
-
-.social-icons.show{
-opacity:1;
-transform:translateX(0);
-pointer-events:auto;
-}
-
-.social-icons img{
-width:46px;
-padding:8px;
-border-radius:12px;
-background:rgba(0,0,0,.7);
+font-size:16px;
 }
 
 /* CENTER LOGO */
@@ -148,10 +71,9 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-position:relative;
 z-index:2;
+position:relative;
 }
-
 .glow-text{
 font-size:3em;
 font-weight:bold;
@@ -161,14 +83,10 @@ color:transparent;
 animation:fire 1.5s infinite alternate;
 text-shadow:0 0 25px orange;
 }
-
-@keyframes fire{
-from{background-position:0%}
-to{background-position:100%}
-}
+@keyframes fire{from{background-position:0%}to{background-position:100%}}
 
 @media(max-width:768px){
-.glow-text{font-size:2.2em;}
+.glow-text{font-size:2.2em}
 }
 </style>
 </head>
@@ -179,43 +97,20 @@ to{background-position:100%}
 
 <!-- VISITOR LOG -->
 <div class="visitor-box">
-Live Visitors
-<span>33</span>
-Total Visitors
-<span>600</span>
+Live
+<span id="liveCount">0</span>
+Total
+<span id="totalCount">0</span>
 </div>
 
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
-<!-- THEME BUTTONS -->
-<div class="theme-buttons">
-<button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
-<button class="theme-btn" onclick="setTheme('echo')">Echo</button>
-<button class="theme-btn" onclick="setTheme('dark')">Dark</button>
-</div>
-
-<!-- SOCIAL -->
-<div class="social-panel">
-
-<div class="social-btn" id="socialBtn">
-<img src="SM.gif">
-</div>
-
-<div class="social-icons" id="socialIcons">
-<a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
-<a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
-<a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
-<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
-</div>
-
-</div>
-
 <section>
 <h1 class="glow-text">WanderAeon</h1>
 </section>
 
+<!-- FIRE + EMBERS -->
 <script>
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
@@ -226,19 +121,18 @@ function resize(){
 bg.width=fire.width=innerWidth;
 bg.height=fire.height=innerHeight;
 }
-resize(); onresize=resize;
+resize();onresize=resize;
 
-/* EMBERS */
 let embers=[];
-for(let i=0;i<120;i++)
+for(let i=0;i<140;i++)
 embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
 
 function animateBG(){
 bctx.clearRect(0,0,innerWidth,innerHeight);
 for(let e of embers){
-e.y+=0.5;
+e.y+=0.4;
 if(e.y>innerHeight)e.y=0;
-bctx.fillStyle="rgba(255,150,0,.7)";
+bctx.fillStyle="rgba(255,150,0,.6)";
 bctx.beginPath();
 bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
 bctx.fill();
@@ -246,13 +140,12 @@ bctx.fill();
 requestAnimationFrame(animateBG);
 }
 
-/* FIRE TRAIL */
 let flames=[];
 function spawn(x,y){
-for(let i=0;i<4;i++)
+for(let i=0;i<3;i++)
 flames.push({
-x,y,s:Math.random()*5+2,a:1,
-vx:(Math.random()-.5)*1.5,
+x,y,s:Math.random()*6+2,a:1,
+vx:(Math.random()-.5)*1.2,
 vy:-Math.random()*2
 });
 }
@@ -267,9 +160,7 @@ function animateFire(){
 fctx.clearRect(0,0,innerWidth,innerHeight);
 for(let i=flames.length-1;i>=0;i--){
 let p=flames[i];
-p.x+=p.vx;
-p.y+=p.vy;
-p.a-=.04;
+p.x+=p.vx;p.y+=p.vy;p.a-=.04;
 if(p.a<=0)flames.splice(i,1);
 else{
 fctx.globalAlpha=p.a;
@@ -283,31 +174,39 @@ fctx.globalAlpha=1;
 requestAnimationFrame(animateFire);
 }
 
-/* THEMES */
-function setTheme(t){
-if(t=="inferno") document.body.style.backgroundImage="url('final.jpg')";
-if(t=="echo") document.body.style.backgroundImage="url('echo.jpg')";
-if(t=="dark") document.body.style.backgroundImage="url('dark.jpg')";
-}
-
-/* SOCIAL AUTO HIDE */
-const btn=document.getElementById("socialBtn");
-const icons=document.getElementById("socialIcons");
-let timer;
-
-function showIcons(){
-icons.classList.add("show");
-clearTimeout(timer);
-timer=setTimeout(()=>icons.classList.remove("show"),3000);
-}
-
-btn.onclick=showIcons;
-btn.onmouseenter=showIcons;
-icons.onmouseenter=()=>clearTimeout(timer);
-icons.onmouseleave=()=>timer=setTimeout(()=>icons.classList.remove("show"),3000);
-
 animateBG();
 animateFire();
+</script>
+
+<!-- FIREBASE REALTIME VISITORS -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyDI3SSJh4RzJ33kzxwWQyKrpp_0FXT-gGE",
+ authDomain: "visitorlog-87a3b.firebaseapp.com",
+ projectId: "visitorlog-87a3b",
+ storageBucket: "visitorlog-87a3b.firebasestorage.app",
+ messagingSenderId: "306691719387",
+ appId: "1:306691719387:web:822a62c9e9bdb3ab6d0cfe"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const totalRef = ref(db,"totalVisitors");
+const liveRef = ref(db,"liveVisitors");
+
+runTransaction(totalRef,n=>(n||0)+1);
+runTransaction(liveRef,n=>(n||0)+1);
+
+window.addEventListener("beforeunload",()=>{
+runTransaction(liveRef,n=>Math.max((n||1)-1,0));
+});
+
+onValue(totalRef,s=>document.getElementById("totalCount").innerText=s.val()||0);
+onValue(liveRef,s=>document.getElementById("liveCount").innerText=s.val()||0);
 </script>
 
 </body>
