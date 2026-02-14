@@ -1,141 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WanderAeon</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WanderAeon | Cinematic Universe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 :root{
---main:#ff4500;
---glow:#ff9900;
---soft:#ffcc66;
+    --main: #ff4500;
+    --glow: #ff9900;
+    --soft: #ffcc66;
+    --cyber-cyan: #00f2ff; /* Added for futuristic touch */
 }
 
-html,body{
-margin:0;
-width:100%;
-height:100%;
-overflow:hidden;
-font-family:Arial;
-color:white;
-background:url('final.jpg') center/cover no-repeat;
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Allow vertical scroll for the story */
+    font-family: 'Inter', sans-serif;
+    color: white;
+    background: #050505 url('final.jpg') center/cover no-repeat fixed;
+    scroll-behavior: smooth;
 }
 
-/* INTRO */
-#intro{
-position:fixed;
-inset:0;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:999;
-animation:fadeOut 4s forwards;
+/* INTRO PORTAL */
+#intro {
+    position: fixed;
+    inset: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    animation: fadeOut 3s forwards 1s; /* Adjusted timing */
 }
-.portal{
-width:40px;height:40px;border-radius:50%;
-background:radial-gradient(circle,#fff,#ff6a00,#000);
-box-shadow:0 0 40px orange,0 0 150px red;
-animation:expand 4s forwards;
+.portal {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: radial-gradient(circle, #fff, var(--main), #000);
+    box-shadow: 0 0 40px orange, 0 0 150px red;
+    animation: expand 3s forwards;
 }
-@keyframes expand{
-0%{transform:scale(0)}
-100%{transform:scale(60);opacity:0}
+@keyframes expand { 0% { transform: scale(0) } 100% { transform: scale(80); opacity: 0 } }
+@keyframes fadeOut { 0%, 80% { opacity: 1 } 100% { opacity: 0; pointer-events: none } }
+
+/* CANVAS (Background FX) */
+canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+
+/* THEME BUTTONS - More Modern Look */
+.theme-buttons {
+    position: fixed; top: 20px; right: 20px;
+    display: flex; gap: 10px; z-index: 10;
 }
-@keyframes fadeOut{
-0%,80%{opacity:1}
-100%{opacity:0;pointer-events:none}
+.theme-btn {
+    padding: 8px 15px; background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px); border: 1px solid var(--glow);
+    color: white; border-radius: 5px; cursor: pointer;
+    font-family: 'Orbitron', sans-serif; font-size: 10px;
+    letter-spacing: 1px; transition: 0.3s;
+}
+.theme-btn:hover { background: var(--main); box-shadow: 0 0 15px var(--main); }
+
+/* SOCIAL PANEL */
+.social-panel { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); z-index: 10; }
+.social-btn img { width: 50px; cursor: pointer; transition: 0.3s; filter: drop-shadow(0 0 10px var(--glow)); }
+.social-btn:hover img { transform: scale(1.1); }
+.social-icons {
+    margin-top: 20px; display: flex; flex-direction: column; gap: 15px;
+    opacity: 0; transform: translateX(-50px); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.social-icons.show { opacity: 1; transform: translateX(0); }
+.social-icons img { width: 35px; padding: 10px; border-radius: 50%; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
+
+/* MAIN CONTENT */
+section {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative; z-index: 2; text-align: center; padding: 20px;
 }
 
-/* CANVAS */
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
+.glow-text {
+    font-family: 'Orbitron', sans-serif; font-size: 5em; font-weight: bold;
+    letter-spacing: 10px; text-transform: uppercase;
+    background: linear-gradient(90deg, var(--main), var(--glow), var(--soft));
+    -webkit-background-clip: text; color: transparent;
+    text-shadow: 0 0 30px rgba(255, 69, 0, 0.5);
+    margin: 0;
 }
 
-/* THEME BUTTONS */
-.theme-buttons{
-position:fixed;
-top:12px;
-left:50%;
-transform:translateX(-50%);
-display:flex;
-gap:12px;
-z-index:6;
-}
-.theme-btn{
-padding:10px 18px;
-background:rgba(0,0,0,.6);
-border-radius:12px;
-border:2px solid orange;
-color:white;
-cursor:pointer;
-font-weight:bold;
-box-shadow:0 0 12px orange;
+.tagline {
+    font-size: 1.2em; letter-spacing: 5px; color: var(--soft);
+    margin-top: 10px; text-transform: uppercase; opacity: 0.8;
 }
 
-/* SOCIAL */
-.social-panel{
-position:fixed;
-left:15px;
-top:25%;
-z-index:5;
-transform:scale(1.25);
+/* NARRATIVE SECTION (The Intro you gave me) */
+.story-box {
+    max-width: 700px; margin-top: 50px; background: rgba(0,0,0,0.6);
+    padding: 30px; border-left: 3px solid var(--main);
+    backdrop-filter: blur(10px); line-height: 1.8;
 }
-.social-btn img{
-width:60px;
-cursor:pointer;
-filter:drop-shadow(0 0 12px orange);
-}
-.social-icons{
-margin-top:14px;
-display:flex;
-flex-direction:column;
-gap:12px;
-opacity:0;
-transform:translateX(-40px);
-pointer-events:none;
-transition:.4s;
-}
-.social-icons.show{
-opacity:1;
-transform:translateX(0);
-pointer-events:auto;
-}
-.social-icons img{
-width:46px;
-padding:8px;
-border-radius:12px;
-background:rgba(0,0,0,.7);
-}
-
-/* CENTER LOGO */
-section{
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-position:relative;
-z-index:2;
-}
-.glow-text{
-font-size:3em;
-font-weight:bold;
-background:linear-gradient(90deg,var(--main),var(--glow),var(--soft));
--webkit-background-clip:text;
-color:transparent;
-animation:fire 1.5s infinite alternate;
-text-shadow:0 0 25px orange;
-}
-@keyframes fire{
-from{background-position:0%}
-to{background-position:100%}
-}
+.story-box p { font-size: 1.1em; color: #ccc; margin-bottom: 15px; }
+.highlight { color: var(--glow); font-weight: bold; }
 
 @media(max-width:768px){
-.glow-text{font-size:2.2em;}
+    .glow-text { font-size: 2.5em; letter-spacing: 5px; }
+    .story-box { width: 90%; padding: 20px; }
 }
 </style>
 </head>
@@ -147,124 +117,101 @@ to{background-position:100%}
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
 
-<!-- THEME BUTTONS -->
 <div class="theme-buttons">
-<button class="theme-btn" onclick="setTheme('inferno')">Inferno</button>
-<button class="theme-btn" onclick="setTheme('echo')">Echo</button>
-<button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    <button class="theme-btn" onclick="setTheme('inferno')">INFERNO</button>
+    <button class="theme-btn" onclick="setTheme('echo')">ECHO</button>
+    <button class="theme-btn" onclick="setTheme('dark')">DARK</button>
 </div>
 
-<!-- SOCIAL -->
 <div class="social-panel">
-<div class="social-btn" id="socialBtn">
-<img src="SM.gif">
-</div>
-
-<div class="social-icons" id="socialIcons">
-<a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
-<a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
-<a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
-<a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
-<a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
-</div>
+    <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials"></div>
+    <div class="social-icons" id="socialIcons">
+        <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
+        <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
+        <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
+        <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
+        <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
+    </div>
 </div>
 
 <section>
-<h1 class="glow-text">WanderAeon</h1>
+    <h1 class="glow-text">WanderAeon</h1>
+    <p class="tagline">Not Just Heard — Experienced</p>
+
+    <div class="story-box">
+        <p>WanderAeon is a <span class="highlight">dark cinematic music universe</span> where sound meets story.</p>
+        <p>Blending dark rock, atmospheric pop, cyberpunk, and sci-fi elements, we are shaping a world of shadow, technology, and human emotion.</p>
+        <p>This is music for <span class="highlight">wanderers of time, thought, and identity</span>.</p>
+    </div>
 </section>
 
 <script>
+// (Saray puranay script functions yahan wese hi kaam karenge)
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
 const fctx=fire.getContext("2d");
 
 function resize(){
-bg.width=fire.width=innerWidth;
-bg.height=fire.height=innerHeight;
+    bg.width=fire.width=innerWidth;
+    bg.height=fire.height=innerHeight;
 }
 resize();
 onresize=resize;
 
-/* EMBERS */
 let embers=[];
 for(let i=0;i<120;i++)
-embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
+    embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
 
 function animateBG(){
-bctx.clearRect(0,0,innerWidth,innerHeight);
-for(let e of embers){
-e.y+=0.5;
-if(e.y>innerHeight)e.y=0;
-bctx.fillStyle="rgba(255,150,0,.7)";
-bctx.beginPath();
-bctx.arc(e.x,e.y,e.s,0,Math.PI*2);
-bctx.fill();
-}
-requestAnimationFrame(animateBG);
+    bctx.clearRect(0,0,innerWidth,innerHeight);
+    for(let e of embers){
+        e.y+=0.5;
+        if(e.y>innerHeight)e.y=0;
+        bctx.fillStyle="rgba(255,150,0,.7)";
+        bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill();
+    }
+    requestAnimationFrame(animateBG);
 }
 
-/* FIRE TRAIL */
 let flames=[];
 function spawn(x,y){
-for(let i=0;i<4;i++)
-flames.push({
-x,y,
-s:Math.random()*5+2,
-a:1,
-vx:(Math.random()-.5)*1.5,
-vy:-Math.random()*2
-});
+    for(let i=0;i<4;i++)
+    flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2});
 }
 
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-addEventListener("touchmove",e=>{
-let t=e.touches[0];
-spawn(t.clientX,t.clientY);
-},{passive:true});
+addEventListener("touchmove",e=>{ let t=e.touches[0]; spawn(t.clientX,t.clientY); },{passive:true});
 
 function animateFire(){
-fctx.clearRect(0,0,innerWidth,innerHeight);
-for(let i=flames.length-1;i>=0;i--){
-let p=flames[i];
-p.x+=p.vx;
-p.y+=p.vy;
-p.a-=.04;
-if(p.a<=0) flames.splice(i,1);
-else{
-fctx.globalAlpha=p.a;
-fctx.fillStyle="orange";
-fctx.beginPath();
-fctx.arc(p.x,p.y,p.s,0,Math.PI*2);
-fctx.fill();
-}
-}
-fctx.globalAlpha=1;
-requestAnimationFrame(animateFire);
+    fctx.clearRect(0,0,innerWidth,innerHeight);
+    for(let i=flames.length-1;i>=0;i--){
+        let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04;
+        if(p.a<=0) flames.splice(i,1);
+        else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); }
+    }
+    fctx.globalAlpha=1;
+    requestAnimationFrame(animateFire);
 }
 
-/* THEMES */
 function setTheme(t){
-if(t=="inferno") document.body.style.backgroundImage="url('final.jpg')";
-if(t=="echo") document.body.style.backgroundImage="url('echo.jpg')";
-if(t=="dark") document.body.style.backgroundImage="url('dark.jpg')";
+    if(t=="inferno") document.body.style.backgroundImage="url('final.jpg')";
+    if(t=="echo") document.body.style.backgroundImage="url('echo.jpg')";
+    if(t=="dark") document.body.style.backgroundImage="url('dark.jpg')";
 }
 
-/* SOCIAL AUTO HIDE */
 const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
 
 function showIcons(){
-icons.classList.add("show");
-clearTimeout(timer);
-timer=setTimeout(()=>icons.classList.remove("show"),3000);
+    icons.classList.add("show");
+    clearTimeout(timer);
+    timer=setTimeout(()=>icons.classList.remove("show"),4000);
 }
 
 btn.onclick=showIcons;
 btn.onmouseenter=showIcons;
-icons.onmouseenter=()=>clearTimeout(timer);
-icons.onmouseleave=()=>timer=setTimeout(()=>icons.classList.remove("show"),3000);
 
 animateBG();
 animateFire();
