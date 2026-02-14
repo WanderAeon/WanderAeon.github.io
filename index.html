@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Music Beyond Time</title>
+    <title>WanderAeon | Cinematic Universe</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
@@ -11,6 +11,8 @@
     --main: #ff4500;
     --glow: #ff9900;
     --soft: #ffcc66;
+    /* Cyber Colors for Intro */
+    --c1: #ff4500; --c2: #00f2ff; --c3: #ffcc00; --c4: #00ffaa;
 }
 
 html, body {
@@ -20,27 +22,47 @@ html, body {
     color: white;
     background: #050505 url('final.jpg') center/cover no-repeat fixed;
     scroll-behavior: smooth;
+    overflow-x: hidden;
 }
 
-/* INTRO PORTAL */
+/* --- NEW CINEMATIC ALPHABET INTRO --- */
 #intro {
     position: fixed; inset: 0; background: black;
     display: flex; justify-content: center; align-items: center; z-index: 999;
-    animation: fadeOut 3s forwards 1s;
+    animation: fadeOutBg 1s forwards 5s; /* Entire intro screen fades at 5s */
 }
-.portal {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: radial-gradient(circle, #fff, var(--main), #000);
-    box-shadow: 0 0 40px orange, 0 0 150px red;
-    animation: expand 3s forwards;
-}
-@keyframes expand { 0% { transform: scale(0) } 100% { transform: scale(80); opacity: 0 } }
-@keyframes fadeOut { 0%, 80% { opacity: 1 } 100% { opacity: 0; pointer-events: none } }
 
-/* CANVAS FX */
+#intro-container {
+    display: flex; gap: 5px;
+}
+
+.letter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.5rem; font-weight: bold;
+    opacity: 0; transform: scale(0.5);
+    display: inline-block;
+    animation: spawnLetter 0.5s forwards, moveToCorner 1.5s forwards 3.5s;
+}
+
+@keyframes spawnLetter {
+    0% { opacity: 0; transform: scale(0.5) blur(10px); }
+    100% { opacity: 1; transform: scale(1) blur(0); }
+}
+
+@keyframes moveToCorner {
+    100% { 
+        transform: translate(-40vw, -40vh) scale(0.3); 
+        opacity: 0; 
+    }
+}
+
+@keyframes fadeOutBg {
+    100% { opacity: 0; pointer-events: none; }
+}
+
+/* --- PREVIOUS STYLES PRESERVED --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-/* NAVIGATION & THEMES */
 .theme-buttons {
     position: fixed; top: 20px; right: 20px;
     display: flex; gap: 8px; z-index: 10;
@@ -54,7 +76,6 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 }
 .theme-btn:hover { background: var(--main); box-shadow: 0 0 15px var(--main); }
 
-/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); z-index: 10; }
 .social-btn img { width: 45px; cursor: pointer; transition: 0.3s; filter: drop-shadow(0 0 10px var(--glow)); }
 .social-icons {
@@ -64,14 +85,12 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .social-icons.show { opacity: 1; transform: translateX(0); }
 .social-icons img { width: 30px; padding: 10px; border-radius: 50%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); }
 
-/* SECTIONS */
 section {
     min-height: 100vh; display: flex; flex-direction: column;
     justify-content: center; align-items: center;
     position: relative; z-index: 2; text-align: center;
 }
 
-/* HERO */
 .glow-text {
     font-family: 'Orbitron', sans-serif; font-size: clamp(2.5em, 10vw, 5em);
     font-weight: bold; letter-spacing: 8px;
@@ -79,12 +98,12 @@ section {
     -webkit-background-clip: text; color: transparent;
     text-shadow: 0 0 30px rgba(255, 69, 0, 0.4);
 }
+
 .tagline {
     font-size: clamp(0.8em, 3vw, 1.2em); letter-spacing: 4px;
     color: var(--soft); margin-top: 10px; text-transform: uppercase;
 }
 
-/* SCROLL INDICATOR */
 .scroll-hint {
     position: absolute; bottom: 30px; cursor: pointer;
     text-decoration: none; color: white; transition: 0.3s;
@@ -100,7 +119,6 @@ section {
     margin: 0 auto; animation: bounce 2s infinite;
 }
 
-/* STORY BOX */
 .story-box {
     max-width: 700px; width: 85%;
     background: rgba(0,0,0,0.6); padding: 40px;
@@ -121,13 +139,17 @@ section {
 @media(max-width:768px){
     .story-box { padding: 25px; }
     .story-box p { font-size: 0.95em; }
+    .letter { font-size: 1.8rem; }
 }
 </style>
 </head>
 
 <body>
 
-<div id="intro"><div class="portal"></div></div>
+<div id="intro">
+    <div id="intro-container">
+        </div>
+</div>
 
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
@@ -152,7 +174,6 @@ section {
 <section id="home">
     <h1 class="glow-text">WanderAeon</h1>
     <p class="tagline">Not Just Heard — Experienced</p>
-    
     <a href="#about" class="scroll-hint">
         <span>ENTER THE VOID</span>
         <div class="arrow-down"></div>
@@ -161,14 +182,30 @@ section {
 
 <section id="about">
     <div class="story-box">
-        <p>WanderAeon is a <span class="highlight">dark cinematic music universe</span> where sound meets story, now at the very beginning of its journey.</p>
-        <p>Blending dark rock, atmospheric pop, cyberpunk, and sci-fi elements, WanderAeon is slowly shaping a world of shadow, technology, and human emotion.</p>
+        <p>WanderAeon is a <span class="highlight">dark cinematic music universe</span> where sound meets story.</p>
+        <p>Blending dark rock, atmospheric pop, cyberpunk, and sci-fi elements, WanderAeon is slowly shaping a world of shadow and technology.</p>
         <p>This is music for <span class="highlight">wanderers of time, thought, and identity</span>.</p>
         <a href="#home" class="back-to-top">▲ BACK TO TOP</a>
     </div>
 </section>
 
 <script>
+// --- INTRO LOGIC ---
+const text = "WanderAeon";
+const container = document.getElementById("intro-container");
+const colors = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "white", "var(--c1)", "var(--c2)", "var(--c3)", "white", "var(--c4)"];
+
+text.split("").forEach((char, i) => {
+    const span = document.createElement("span");
+    span.textContent = char;
+    span.className = "letter";
+    span.style.color = colors[i % colors.length];
+    span.style.animationDelay = `${i * 0.15}s, 3.5s`; // Entry delay, then move delay
+    span.style.textShadow = `0 0 15px ${colors[i % colors.length]}`;
+    container.appendChild(span);
+});
+
+// --- CANVAS FX (PRESERVED) ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
@@ -181,7 +218,6 @@ function resize(){
 resize();
 onresize=resize;
 
-// Particles
 let embers=[];
 for(let i=0;i<120;i++)
     embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
@@ -189,21 +225,18 @@ for(let i=0;i<120;i++)
 function animateBG(){
     bctx.clearRect(0,0,innerWidth,innerHeight);
     for(let e of embers){
-        e.y+=0.5;
-        if(e.y>innerHeight)e.y=0;
+        e.y+=0.5; if(e.y>innerHeight)e.y=0;
         bctx.fillStyle="rgba(255,150,0,.7)";
         bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill();
     }
     requestAnimationFrame(animateBG);
 }
 
-// Fire Trail
 let flames=[];
 function spawn(x,y){
     for(let i=0;i<4;i++)
     flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2});
 }
-
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 addEventListener("touchmove",e=>{ let t=e.touches[0]; spawn(t.clientX,t.clientY); },{passive:true});
 
@@ -218,24 +251,20 @@ function animateFire(){
     requestAnimationFrame(animateFire);
 }
 
-// Themes
 function setTheme(t){
     const images = {'inferno': 'final.jpg', 'echo': 'echo.jpg', 'dark': 'dark.jpg'};
     document.body.style.backgroundImage=`url('${images[t]}')`;
 }
 
-// Social Toggle
 const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
-
 function showIcons(){
     icons.classList.add("show");
     clearTimeout(timer);
     timer=setTimeout(()=>icons.classList.remove("show"),4000);
 }
-btn.onclick=showIcons;
-btn.onmouseenter=showIcons;
+btn.onclick=showIcons; btn.onmouseenter=showIcons;
 
 animateBG();
 animateFire();
