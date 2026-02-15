@@ -19,62 +19,41 @@ html, body {
     overflow-x: hidden; scroll-behavior: smooth;
 }
 
-/* --- OPTIMIZED TRAIN INTRO --- */
-#intro {
-    position: fixed; inset: 0; background: black;
-    display: flex; justify-content: center; align-items: center;
-    z-index: 999; perspective: 800px; overflow: hidden;
-}
+/* --- INTRO --- */
+#intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; perspective: 800px; overflow: hidden; }
 #intro-container { display: flex; gap: clamp(2px, 1vw, 8px); position: relative; }
-.letter {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold;
-    display: inline-block; opacity: 0;
-    animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards;
-}
-@keyframes trainEntry {
-    0% { transform: translateZ(-1500px) scale(0); opacity: 0; filter: blur(10px); }
-    100% { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); }
-}
+.letter { font-family: 'Orbitron', sans-serif; font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold; display: inline-block; opacity: 0; animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards; }
+@keyframes trainEntry { 0% { transform: translateZ(-1500px) scale(0); opacity: 0; filter: blur(10px); } 100% { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); } }
 .zoom-burst { animation: zoomOutExplosion 0.8s ease-in forwards !important; }
 @keyframes zoomOutExplosion { 100% { transform: scale(30); filter: brightness(3); opacity: 0; } }
 
 /* --- CANVAS & THEMES --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 1000; }
-.theme-btn {
-    padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-    border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer;
-    font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow);
-}
+.theme-btn { padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow); }
 
-/* --- UI ELEMENTS (FIXED POSITIONS) --- */
+/* --- UI ELEMENTS (FORCE VISIBILITY) --- */
 .scroll-hint {
-    position: fixed; bottom: 20px; left: 50%;
-    transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center;
     background: rgba(0,0,0,0.9); border: 1px solid var(--glow); box-shadow: 0 0 15px var(--main);
     padding: 10px 20px; border-radius: 5px; text-decoration: none; font-family: 'Orbitron';
-    color: var(--soft); z-index: 500; transition: 0.5s;
+    color: var(--soft); z-index: 100; transition: opacity 0.5s;
 }
-.scroll-hint span { font-size: 10px; letter-spacing: 2px; margin-bottom: 5px; }
-.arrow-down { width: 10px; height: 10px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
+.arrow-down { width: 10px; height: 10px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; margin-top: 5px;}
 
 .back-to-top {
-    position: fixed; bottom: 20px; right: 20px;
-    background: rgba(0,0,0,0.9); border: 2px solid var(--main); box-shadow: 0 0 15px var(--main);
-    padding: 12px 15px; border-radius: 5px; text-decoration: none; font-family: 'Orbitron';
-    color: var(--soft); z-index: 1000; font-size: 12px; font-weight: bold;
-    display: none; /* JS will change this to 'block' */
+    position: fixed; bottom: 25px; right: 25px;
+    background: rgba(255, 69, 0, 0.2); border: 2px solid var(--main); box-shadow: 0 0 20px var(--main);
+    padding: 12px 18px; border-radius: 8px; text-decoration: none; font-family: 'Orbitron';
+    color: white; z-index: 1000; font-size: 14px; font-weight: bold;
+    backdrop-filter: blur(10px);
+    display: none; /* Controlled by JS Observer */
 }
 
 /* --- SECTIONS --- */
-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; padding: 60px 20px; }
-.glow-text {
-    font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em);
-    font-weight: bold; letter-spacing: 5px;
-    background: linear-gradient(90deg, var(--main), var(--glow), var(--soft));
-    -webkit-background-clip: text; color: transparent;
-}
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; padding: 60px 20px; box-sizing: border-box; }
+.glow-text { font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em); font-weight: bold; letter-spacing: 5px; background: linear-gradient(90deg, var(--main), var(--glow), var(--soft)); -webkit-background-clip: text; color: transparent; text-align: center;}
 .tagline { font-size: 0.8em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 10px; }
 
 /* --- CARDS & STORY --- */
@@ -127,7 +106,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
     <p class="tagline">Not Just Heard — Experienced</p>
     
     <a href="#about" class="scroll-hint" id="scrollBtn">
-        <span>ENTER THE VOID</span>
+        <span style="font-size: 10px; letter-spacing: 2px;">ENTER THE VOID</span>
         <div class="arrow-down"></div>
     </a>
 </section>
@@ -152,7 +131,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
     </div>
 </section>
 
-<a href="#home" class="back-to-top" id="backToTop">UP ▲</a>
+<a href="#home" class="back-to-top" id="backToTop">TOP ▲</a>
 
 <script>
 // --- INTRO ---
@@ -172,20 +151,25 @@ setTimeout(() => {
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- SCROLL LOGIC (THE FIX) ---
+// --- THE FIX: INTERSECTION OBSERVER ---
 const backToTop = document.getElementById("backToTop");
 const scrollBtn = document.getElementById("scrollBtn");
+const homeSection = document.getElementById("home");
 
-window.onscroll = function() {
-    // Check if user has scrolled down more than 300px
-    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-        backToTop.style.display = "block";  // Force Show
-        scrollBtn.style.display = "none";   // Force Hide Enter Void
-    } else {
-        backToTop.style.display = "none";   // Force Hide
-        scrollBtn.style.display = "flex";   // Force Show Enter Void
-    }
-};
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // Agar Home Section screen se 10% se kam nazar aa rahi hai
+        if (!entry.isIntersecting) {
+            backToTop.style.display = "block";
+            scrollBtn.style.opacity = "0";
+        } else {
+            backToTop.style.display = "none";
+            scrollBtn.style.opacity = "1";
+        }
+    });
+}, { threshold: 0.1 }); // 10% visibility threshold
+
+observer.observe(homeSection);
 
 // --- CANVAS & THEMES ---
 const bg=document.getElementById("embers");
