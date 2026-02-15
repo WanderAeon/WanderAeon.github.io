@@ -59,7 +59,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     font-family: 'Orbitron', sans-serif;
     color: var(--soft);
     z-index: 100;
-    transition: 0.3s;
+    transition: 0.5s ease;
 }
 
 .scroll-hint {
@@ -71,9 +71,9 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
 .back-to-top {
     position: fixed; bottom: 20px; right: 20px;
-    font-size: 10px; opacity: 0; pointer-events: none; /* JS will toggle this */
+    font-size: 10px; visibility: hidden; opacity: 0;
 }
-.back-to-top.show { opacity: 1; pointer-events: auto; }
+.back-to-top.show { visibility: visible; opacity: 1; }
 
 /* --- SECTIONS --- */
 section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; padding: 60px 20px; }
@@ -125,6 +125,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
         <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
         <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
         <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
+        <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
         <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
     </div>
 </div>
@@ -182,21 +183,23 @@ setTimeout(() => {
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- SCROLL LOGIC (SHOW/HIDE BUTTONS) ---
+// --- SCROLL LOGIC FIX ---
 const backToTop = document.getElementById("backToTop");
 const scrollBtn = document.getElementById("scrollBtn");
 
-window.onscroll = function() {
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+window.addEventListener('scroll', () => {
+    let scrolled = window.scrollY;
+    
+    if (scrolled > 200) {
         backToTop.classList.add("show");
-        scrollBtn.style.opacity = "0"; // Hide Enter the Void when scrolling down
-        scrollBtn.style.pointerEvents = "none";
+        scrollBtn.style.opacity = "0";
+        scrollBtn.style.visibility = "hidden";
     } else {
         backToTop.classList.remove("show");
         scrollBtn.style.opacity = "1";
-        scrollBtn.style.pointerEvents = "auto";
+        scrollBtn.style.visibility = "visible";
     }
-};
+});
 
 // --- CANVAS & THEMES (PRESERVED) ---
 const bg=document.getElementById("embers");
