@@ -26,73 +26,83 @@ html, body {
     z-index: 999; perspective: 800px; overflow: hidden;
 }
 #intro-container { display: flex; gap: clamp(2px, 1vw, 8px); position: relative; }
-
 .letter {
     font-family: 'Orbitron', sans-serif;
     font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold;
     display: inline-block; opacity: 0;
     animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 }
-
 @keyframes trainEntry {
     0% { transform: translateZ(-1500px) scale(0); opacity: 0; filter: blur(10px); }
     100% { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); }
 }
-
 .zoom-burst { animation: zoomOutExplosion 0.8s ease-in forwards !important; }
-@keyframes zoomOutExplosion {
-    100% { transform: scale(30); filter: brightness(3); opacity: 0; }
-}
+@keyframes zoomOutExplosion { 100% { transform: scale(30); filter: brightness(3); opacity: 0; } }
 
-/* --- EXISTING ELEMENTS PRESERVED --- */
+/* --- CANVAS & THEMES --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-
 .theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 10; }
 .theme-btn {
-    padding: 5px 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+    padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
     border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer;
-    font-family: 'Orbitron', sans-serif; font-size: 8px;
+    font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow);
 }
 
-.social-panel { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); z-index: 10; }
-.social-btn img { width: clamp(35px, 10vw, 45px); cursor: pointer; filter: drop-shadow(0 0 8px var(--glow)); }
-.social-icons { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-30px); transition: 0.4s; }
-.social-icons.show { opacity: 1; transform: translateX(0); }
-.social-icons img { width: 25px; padding: 8px; border-radius: 50%; background: rgba(0,0,0,0.6); }
+/* --- UI ELEMENTS (GLOWING BLACK STYLE) --- */
+.scroll-hint, .back-to-top {
+    background: rgba(0,0,0,0.9);
+    border: 1px solid var(--glow);
+    box-shadow: 0 0 15px var(--main);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--soft);
+    z-index: 100;
+    transition: 0.3s;
+}
+
+.scroll-hint {
+    position: fixed; bottom: 20px; left: 50%;
+    transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;
+}
+.scroll-hint span { font-size: 10px; letter-spacing: 2px; margin-bottom: 5px; }
+.arrow-down { width: 10px; height: 10px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
+
+.back-to-top {
+    position: fixed; bottom: 20px; right: 20px;
+    font-size: 10px; opacity: 0; pointer-events: none; /* JS will toggle this */
+}
+.back-to-top.show { opacity: 1; pointer-events: auto; }
 
 /* --- SECTIONS --- */
-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; text-align: center; padding: 40px 20px; }
-
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; padding: 60px 20px; }
 .glow-text {
-    font-family: 'Orbitron', sans-serif; font-size: clamp(2em, 12vw, 5em);
+    font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em);
     font-weight: bold; letter-spacing: 5px;
     background: linear-gradient(90deg, var(--main), var(--glow), var(--soft));
     -webkit-background-clip: text; color: transparent;
 }
+.tagline { font-size: 0.8em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 10px; }
 
-.tagline { font-size: 0.9em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 5px; }
-
-/* --- NEW: DISCOGRAPHY SECTION --- */
+/* --- CARDS & STORY --- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 30px; }
-.card {
-    background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px); border-radius: 10px; transition: 0.3s;
-}
-.card:hover { border-color: var(--main); transform: translateY(-5px); box-shadow: 0 0 20px rgba(255,69,0,0.2); }
-.card h3 { font-family: 'Orbitron'; font-size: 1.1em; color: var(--glow); margin-bottom: 10px; }
-.card p { font-size: 0.85em; color: #aaa; }
+.card { background: rgba(0,0,0,0.7); padding: 25px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 10px; transition: 0.3s; }
+.card:hover { border-color: var(--main); box-shadow: 0 0 20px var(--main); }
+.card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 10px; }
+.card p { font-size: 0.9em; color: #ccc; }
 
-.story-box { max-width: 700px; background: rgba(0,0,0,0.6); padding: clamp(20px, 5vw, 40px); border-left: 3px solid var(--main); backdrop-filter: blur(10px); }
-.story-box p { font-size: clamp(0.9em, 4vw, 1.1em); line-height: 1.7; color: #ccc; text-align: left; }
+.story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); }
+.story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
 
-.scroll-hint { position: absolute; bottom: 20px; cursor: pointer; text-decoration: none; color: white; }
-.arrow-down { width: 15px; height: 15px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); margin: 5px auto; animation: bounce 2s infinite; }
+/* SOCIALS */
+.social-panel { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); z-index: 10; }
+.social-btn img { width: 40px; cursor: pointer; filter: drop-shadow(0 0 8px var(--glow)); }
+.social-icons { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-30px); transition: 0.4s; }
+.social-icons.show { opacity: 1; transform: translateX(0); }
+.social-icons img { width: 25px; padding: 8px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid var(--glow); }
 
-@keyframes bounce { 0%, 100% {transform: translateY(0) rotate(45deg);} 50% {transform: translateY(-8px) rotate(45deg);} }
-
-@media(max-width:768px){
-    #intro { perspective: 500px; }
-}
+@keyframes bounce { 0%, 100% {transform: translateY(0) rotate(45deg);} 50% {transform: translateY(-5px) rotate(45deg);} }
 </style>
 </head>
 
@@ -122,8 +132,9 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 <section id="home">
     <h1 class="glow-text">WanderAeon</h1>
     <p class="tagline">Not Just Heard — Experienced</p>
-    <a href="#about" class="scroll-hint">
-        <span style="font-size: 10px; font-family: 'Orbitron'; color: var(--glow);">ENTER THE VOID</span>
+    
+    <a href="#about" class="scroll-hint" id="scrollBtn">
+        <span>ENTER THE VOID</span>
         <div class="arrow-down"></div>
     </a>
 </section>
@@ -136,22 +147,22 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 
     <div class="grid">
         <div class="card">
-            <h3>Recent Releases</h3>
-            <p>Explore the latest soundscapes of shadow and technology on our official channels.</p>
-            <a href="https://soundcloud.com/wanderaeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">LISTEN ON SOUNDCLOUD →</a>
+            <h3>Discography</h3>
+            <p>Listen to the latest tracks exploring shadow and human emotion.</p>
+            <a href="https://soundcloud.com/wanderaeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">SOUNDCLOUD →</a>
         </div>
         <div class="card">
-            <h3>Visual Stories</h3>
-            <p>Experience the cinematic side of WanderAeon through our curated video releases.</p>
-            <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">WATCH ON YOUTUBE →</a>
+            <h3>Visuals</h3>
+            <p>Watch the cinematic evolution of the WanderAeon world.</p>
+            <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">YOUTUBE →</a>
         </div>
     </div>
-    
-    <a href="#home" style="margin-top:40px; color:var(--soft); font-size:10px; font-family:'Orbitron'; text-decoration:none;">▲ BACK TO TOP</a>
 </section>
 
+<a href="#home" class="back-to-top" id="backToTop">UP ▲</a>
+
 <script>
-// --- OPTIMIZED INTRO ---
+// --- INTRO & ZOOM ---
 const text = "WanderAeon";
 const container = document.getElementById("intro-container");
 const colors = ["#ff4500", "#00f2ff", "#ffcc00", "#00ffaa", "white", "#ff4500", "#00f2ff", "#ffcc00", "white", "#00ffaa"];
@@ -171,7 +182,23 @@ setTimeout(() => {
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- PRESERVED CANVAS & FUNCTIONS ---
+// --- SCROLL LOGIC (SHOW/HIDE BUTTONS) ---
+const backToTop = document.getElementById("backToTop");
+const scrollBtn = document.getElementById("scrollBtn");
+
+window.onscroll = function() {
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        backToTop.classList.add("show");
+        scrollBtn.style.opacity = "0"; // Hide Enter the Void when scrolling down
+        scrollBtn.style.pointerEvents = "none";
+    } else {
+        backToTop.classList.remove("show");
+        scrollBtn.style.opacity = "1";
+        scrollBtn.style.pointerEvents = "auto";
+    }
+};
+
+// --- CANVAS & THEMES (PRESERVED) ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
@@ -180,10 +207,10 @@ function resize(){ bg.width=fire.width=innerWidth; bg.height=fire.height=innerHe
 resize(); onresize=resize;
 
 let embers=[];
-for(let i=0;i<80;i++) embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2});
+for(let i=0;i<70;i++) embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2});
 function animateBG(){
     bctx.clearRect(0,0,innerWidth,innerHeight);
-    for(let e of embers){ e.y+=0.5; if(e.y>innerHeight)e.y=0; bctx.fillStyle="rgba(255,150,0,0.6)"; bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill(); }
+    for(let e of embers){ e.y+=0.5; if(e.y>innerHeight)e.y=0; bctx.fillStyle="rgba(255,150,0,0.5)"; bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill(); }
     requestAnimationFrame(animateBG);
 }
 
