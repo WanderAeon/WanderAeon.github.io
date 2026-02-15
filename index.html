@@ -41,39 +41,31 @@ html, body {
 
 /* --- CANVAS & THEMES --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-.theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 10; }
+.theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 1000; }
 .theme-btn {
     padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
     border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer;
     font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow);
 }
 
-/* --- UI ELEMENTS (GLOWING BLACK STYLE) --- */
-.scroll-hint, .back-to-top {
-    background: rgba(0,0,0,0.9);
-    border: 1px solid var(--glow);
-    box-shadow: 0 0 15px var(--main);
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-family: 'Orbitron', sans-serif;
-    color: var(--soft);
-    z-index: 100;
-    transition: 0.5s ease;
-}
-
+/* --- UI ELEMENTS (FIXED POSITIONS) --- */
 .scroll-hint {
     position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%); display: flex; flex-direction: column; align-items: center;
+    background: rgba(0,0,0,0.9); border: 1px solid var(--glow); box-shadow: 0 0 15px var(--main);
+    padding: 10px 20px; border-radius: 5px; text-decoration: none; font-family: 'Orbitron';
+    color: var(--soft); z-index: 500; transition: 0.5s;
 }
 .scroll-hint span { font-size: 10px; letter-spacing: 2px; margin-bottom: 5px; }
 .arrow-down { width: 10px; height: 10px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
 
 .back-to-top {
     position: fixed; bottom: 20px; right: 20px;
-    font-size: 10px; visibility: hidden; opacity: 0;
+    background: rgba(0,0,0,0.9); border: 2px solid var(--main); box-shadow: 0 0 15px var(--main);
+    padding: 12px 15px; border-radius: 5px; text-decoration: none; font-family: 'Orbitron';
+    color: var(--soft); z-index: 1000; font-size: 12px; font-weight: bold;
+    display: none; /* JS will change this to 'block' */
 }
-.back-to-top.show { visibility: visible; opacity: 1; }
 
 /* --- SECTIONS --- */
 section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; padding: 60px 20px; }
@@ -96,7 +88,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 .story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
 
 /* SOCIALS */
-.social-panel { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); z-index: 10; }
+.social-panel { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); z-index: 1000; }
 .social-btn img { width: 40px; cursor: pointer; filter: drop-shadow(0 0 8px var(--glow)); }
 .social-icons { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-30px); transition: 0.4s; }
 .social-icons.show { opacity: 1; transform: translateX(0); }
@@ -163,52 +155,45 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 <a href="#home" class="back-to-top" id="backToTop">UP ▲</a>
 
 <script>
-// --- INTRO & ZOOM ---
+// --- INTRO ---
 const text = "WanderAeon";
 const container = document.getElementById("intro-container");
 const colors = ["#ff4500", "#00f2ff", "#ffcc00", "#00ffaa", "white", "#ff4500", "#00f2ff", "#ffcc00", "white", "#00ffaa"];
-
 text.split("").forEach((char, i) => {
     const span = document.createElement("span");
-    span.textContent = char;
-    span.className = "letter";
+    span.textContent = char; span.className = "letter";
     span.style.color = colors[i % colors.length];
     span.style.animationDelay = `${i * 0.15}s`;
     span.style.textShadow = `0 0 15px ${colors[i % colors.length]}`;
     container.appendChild(span);
 });
-
 setTimeout(() => {
     container.classList.add("zoom-burst");
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- SCROLL LOGIC FIX ---
+// --- SCROLL LOGIC (THE FIX) ---
 const backToTop = document.getElementById("backToTop");
 const scrollBtn = document.getElementById("scrollBtn");
 
-window.addEventListener('scroll', () => {
-    let scrolled = window.scrollY;
-    
-    if (scrolled > 200) {
-        backToTop.classList.add("show");
-        scrollBtn.style.opacity = "0";
-        scrollBtn.style.visibility = "hidden";
+window.onscroll = function() {
+    // Check if user has scrolled down more than 300px
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTop.style.display = "block";  // Force Show
+        scrollBtn.style.display = "none";   // Force Hide Enter Void
     } else {
-        backToTop.classList.remove("show");
-        scrollBtn.style.opacity = "1";
-        scrollBtn.style.visibility = "visible";
+        backToTop.style.display = "none";   // Force Hide
+        scrollBtn.style.display = "flex";   // Force Show Enter Void
     }
-});
+};
 
-// --- CANVAS & THEMES (PRESERVED) ---
+// --- CANVAS & THEMES ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
 const fctx=fire.getContext("2d");
 function resize(){ bg.width=fire.width=innerWidth; bg.height=fire.height=innerHeight; }
 resize(); onresize=resize;
-
 let embers=[];
 for(let i=0;i<70;i++) embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2});
 function animateBG(){
@@ -216,12 +201,10 @@ function animateBG(){
     for(let e of embers){ e.y+=0.5; if(e.y>innerHeight)e.y=0; bctx.fillStyle="rgba(255,150,0,0.5)"; bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill(); }
     requestAnimationFrame(animateBG);
 }
-
 let flames=[];
 function spawn(x,y){ for(let i=0;i<3;i++) flames.push({x,y,s:Math.random()*4+2,a:1,vx:(Math.random()-.5)*1,vy:-Math.random()*1.5}); }
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
 addEventListener("touchmove",e=>{ spawn(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
-
 function animateFire(){
     fctx.clearRect(0,0,innerWidth,innerHeight);
     for(let i=flames.length-1;i>=0;i--){
@@ -231,18 +214,15 @@ function animateFire(){
     }
     fctx.globalAlpha=1; requestAnimationFrame(animateFire);
 }
-
 function setTheme(t){
     const imgs = {'inferno': 'final.jpg', 'echo': 'echo.jpg', 'dark': 'dark.jpg'};
     document.body.style.backgroundImage=`url('${imgs[t]}')`;
 }
-
 const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
 function showIcons(){ icons.classList.add("show"); clearTimeout(timer); timer=setTimeout(()=>icons.classList.remove("show"),4000); }
 btn.onclick=showIcons; btn.onmouseenter=showIcons;
-
 animateBG(); animateFire();
 </script>
 
