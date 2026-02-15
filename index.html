@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | The Cinematic Experience</title>
+    <title>WanderAeon | Music Beyond Time</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
@@ -19,94 +19,86 @@ html, body {
     overflow-x: hidden; scroll-behavior: smooth;
 }
 
-/* --- THE TRAIN & ZOOM INTRO --- */
+/* --- OPTIMIZED TRAIN INTRO --- */
 #intro {
     position: fixed; inset: 0; background: black;
     display: flex; justify-content: center; align-items: center;
-    z-index: 999; perspective: 1000px; /* For 3D depth */
-    overflow: hidden;
+    z-index: 999; perspective: 800px; overflow: hidden;
 }
-
-#intro-container {
-    display: flex; gap: 8px; position: relative;
-    transition: transform 0.8s cubic-bezier(0.9, 0, 0.1, 1);
-}
+#intro-container { display: flex; gap: clamp(2px, 1vw, 8px); position: relative; }
 
 .letter {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3.5rem; font-weight: bold;
+    font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold;
     display: inline-block; opacity: 0;
-    /* Train coming from distance animation */
-    animation: trainEntry 1.2s cubic-bezier(0.2, 0, 0.2, 1) forwards;
+    animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards;
 }
 
 @keyframes trainEntry {
-    0% { transform: translateZ(-2000px) scale(0); opacity: 0; filter: blur(20px); }
-    70% { transform: translateZ(100px) scale(1.2); opacity: 1; filter: blur(0px); }
-    100% { transform: translateZ(0) scale(1); opacity: 1; }
+    0% { transform: translateZ(-1500px) scale(0); opacity: 0; filter: blur(10px); }
+    100% { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); }
 }
 
-/* This class will be added via JS for the final explosion */
-.zoom-burst {
-    animation: zoomOutExplosion 1s cubic-bezier(0.9, 0, 0.1, 1) forwards !important;
-}
-
+.zoom-burst { animation: zoomOutExplosion 0.8s ease-in forwards !important; }
 @keyframes zoomOutExplosion {
-    0% { transform: scale(1); filter: brightness(1); opacity: 1; }
-    100% { transform: scale(50); filter: brightness(5); opacity: 0; }
+    100% { transform: scale(30); filter: brightness(3); opacity: 0; }
 }
 
-/* --- PREVIOUS FUNCTIONAL STYLES --- */
+/* --- EXISTING ELEMENTS PRESERVED --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-.theme-buttons { position: fixed; top: 20px; right: 20px; display: flex; gap: 8px; z-index: 10; }
+.theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 10; }
 .theme-btn {
-    padding: 6px 12px; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px);
+    padding: 5px 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
     border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer;
-    font-family: 'Orbitron', sans-serif; font-size: 9px; transition: 0.3s;
+    font-family: 'Orbitron', sans-serif; font-size: 8px;
 }
 
-.social-panel { position: fixed; left: 20px; top: 50%; transform: translateY(-50%); z-index: 10; }
-.social-btn img { width: 45px; cursor: pointer; filter: drop-shadow(0 0 10px var(--glow)); }
-.social-icons {
-    margin-top: 15px; display: flex; flex-direction: column; gap: 12px;
-    opacity: 0; transform: translateX(-40px); transition: 0.5s;
-}
+.social-panel { position: fixed; left: 15px; top: 50%; transform: translateY(-50%); z-index: 10; }
+.social-btn img { width: clamp(35px, 10vw, 45px); cursor: pointer; filter: drop-shadow(0 0 8px var(--glow)); }
+.social-icons { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateX(-30px); transition: 0.4s; }
 .social-icons.show { opacity: 1; transform: translateX(0); }
-.social-icons img { width: 30px; padding: 10px; border-radius: 50%; background: rgba(0,0,0,0.6); }
+.social-icons img { width: 25px; padding: 8px; border-radius: 50%; background: rgba(0,0,0,0.6); }
 
-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; text-align: center; }
+/* --- SECTIONS --- */
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; text-align: center; padding: 40px 20px; }
 
 .glow-text {
-    font-family: 'Orbitron', sans-serif; font-size: clamp(2.5em, 10vw, 5em);
-    font-weight: bold; letter-spacing: 8px;
+    font-family: 'Orbitron', sans-serif; font-size: clamp(2em, 12vw, 5em);
+    font-weight: bold; letter-spacing: 5px;
     background: linear-gradient(90deg, var(--main), var(--glow), var(--soft));
     -webkit-background-clip: text; color: transparent;
-    text-shadow: 0 0 30px rgba(255, 69, 0, 0.4);
 }
 
-.tagline { font-size: clamp(0.8em, 3vw, 1.2em); letter-spacing: 4px; color: var(--soft); margin-top: 10px; text-transform: uppercase; }
+.tagline { font-size: 0.9em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 5px; }
 
-.scroll-hint { position: absolute; bottom: 30px; cursor: pointer; text-decoration: none; color: white; }
-.scroll-hint span { display: block; font-family: 'Orbitron', sans-serif; font-size: 10px; animation: pulse 2s infinite; color: var(--glow); }
-.arrow-down { width: 20px; height: 20px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); margin: 0 auto; animation: bounce 2s infinite; }
+/* --- NEW: DISCOGRAPHY SECTION --- */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 30px; }
+.card {
+    background: rgba(255,255,255,0.05); padding: 20px; border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px); border-radius: 10px; transition: 0.3s;
+}
+.card:hover { border-color: var(--main); transform: translateY(-5px); box-shadow: 0 0 20px rgba(255,69,0,0.2); }
+.card h3 { font-family: 'Orbitron'; font-size: 1.1em; color: var(--glow); margin-bottom: 10px; }
+.card p { font-size: 0.85em; color: #aaa; }
 
-.story-box { max-width: 700px; width: 85%; background: rgba(0,0,0,0.6); padding: 40px; border-left: 3px solid var(--main); backdrop-filter: blur(12px); margin: 50px 0; }
-.story-box p { font-size: 1.1em; line-height: 1.8; color: #ccc; text-align: left; }
-.highlight { color: var(--glow); font-weight: bold; }
+.story-box { max-width: 700px; background: rgba(0,0,0,0.6); padding: clamp(20px, 5vw, 40px); border-left: 3px solid var(--main); backdrop-filter: blur(10px); }
+.story-box p { font-size: clamp(0.9em, 4vw, 1.1em); line-height: 1.7; color: #ccc; text-align: left; }
 
-@keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0) rotate(45deg);} 40% {transform: translateY(-10px) rotate(45deg);} 60% {transform: translateY(-5px) rotate(45deg);} }
-@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+.scroll-hint { position: absolute; bottom: 20px; cursor: pointer; text-decoration: none; color: white; }
+.arrow-down { width: 15px; height: 15px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); margin: 5px auto; animation: bounce 2s infinite; }
 
-@media(max-width:768px){ .letter { font-size: 1.8rem; } }
+@keyframes bounce { 0%, 100% {transform: translateY(0) rotate(45deg);} 50% {transform: translateY(-8px) rotate(45deg);} }
+
+@media(max-width:768px){
+    #intro { perspective: 500px; }
+}
 </style>
 </head>
 
 <body>
 
-<div id="intro">
-    <div id="intro-container"></div>
-</div>
+<div id="intro"><div id="intro-container"></div></div>
 
 <canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
@@ -118,12 +110,11 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 </div>
 
 <div class="social-panel">
-    <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials"></div>
+    <div class="social-btn" id="socialBtn"><img src="SM.gif"></div>
     <div class="social-icons" id="socialIcons">
         <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png"></a>
         <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png"></a>
         <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png"></a>
-        <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png"></a>
         <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png"></a>
     </div>
 </div>
@@ -132,25 +123,37 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
     <h1 class="glow-text">WanderAeon</h1>
     <p class="tagline">Not Just Heard — Experienced</p>
     <a href="#about" class="scroll-hint">
-        <span>ENTER THE VOID</span>
+        <span style="font-size: 10px; font-family: 'Orbitron'; color: var(--glow);">ENTER THE VOID</span>
         <div class="arrow-down"></div>
     </a>
 </section>
 
 <section id="about">
     <div class="story-box">
-        <p>WanderAeon is a <span class="highlight">dark cinematic music universe</span> where sound meets story.</p>
-        <p>Blending dark rock, atmospheric pop, cyberpunk, and sci-fi elements, WanderAeon is shaping a world of shadow.</p>
-        <p>This is music for <span class="highlight">wanderers of time, thought, and identity</span>.</p>
-        <a href="#home" style="color:var(--soft); font-size:10px; font-family:'Orbitron'; text-decoration:none;">▲ BACK TO TOP</a>
+        <p>WanderAeon is a <span style="color:var(--glow);font-weight:bold;">dark cinematic music universe</span> where sound meets story.</p>
+        <p>This is music for <span style="color:var(--glow);font-weight:bold;">wanderers of time, thought, and identity</span>.</p>
     </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Recent Releases</h3>
+            <p>Explore the latest soundscapes of shadow and technology on our official channels.</p>
+            <a href="https://soundcloud.com/wanderaeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">LISTEN ON SOUNDCLOUD →</a>
+        </div>
+        <div class="card">
+            <h3>Visual Stories</h3>
+            <p>Experience the cinematic side of WanderAeon through our curated video releases.</p>
+            <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">WATCH ON YOUTUBE →</a>
+        </div>
+    </div>
+    
+    <a href="#home" style="margin-top:40px; color:var(--soft); font-size:10px; font-family:'Orbitron'; text-decoration:none;">▲ BACK TO TOP</a>
 </section>
 
 <script>
-// --- TRAIN TO ZOOM INTRO LOGIC ---
+// --- OPTIMIZED INTRO ---
 const text = "WanderAeon";
 const container = document.getElementById("intro-container");
-const introDiv = document.getElementById("intro");
 const colors = ["#ff4500", "#00f2ff", "#ffcc00", "#00ffaa", "white", "#ff4500", "#00f2ff", "#ffcc00", "white", "#00ffaa"];
 
 text.split("").forEach((char, i) => {
@@ -158,20 +161,17 @@ text.split("").forEach((char, i) => {
     span.textContent = char;
     span.className = "letter";
     span.style.color = colors[i % colors.length];
-    span.style.animationDelay = `${i * 0.2}s`; // Delayed entry like a train
-    span.style.textShadow = `0 0 20px ${colors[i % colors.length]}`;
+    span.style.animationDelay = `${i * 0.15}s`;
+    span.style.textShadow = `0 0 15px ${colors[i % colors.length]}`;
     container.appendChild(span);
 });
 
-// The final zoom explosion after all letters are in
 setTimeout(() => {
     container.classList.add("zoom-burst");
-    setTimeout(() => {
-        introDiv.style.display = "none";
-    }, 1000); // Remove intro after zoom
-}, (text.length * 200) + 2000); 
+    setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
+}, (text.length * 150) + 1500);
 
-// --- CANVAS FX (PRESERVED) ---
+// --- PRESERVED CANVAS & FUNCTIONS ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
@@ -180,24 +180,24 @@ function resize(){ bg.width=fire.width=innerWidth; bg.height=fire.height=innerHe
 resize(); onresize=resize;
 
 let embers=[];
-for(let i=0;i<120;i++) embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
+for(let i=0;i<80;i++) embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2});
 function animateBG(){
     bctx.clearRect(0,0,innerWidth,innerHeight);
-    for(let e of embers){ e.y+=0.5; if(e.y>innerHeight)e.y=0; bctx.fillStyle="rgba(255,150,0,.7)"; bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill(); }
+    for(let e of embers){ e.y+=0.5; if(e.y>innerHeight)e.y=0; bctx.fillStyle="rgba(255,150,0,0.6)"; bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill(); }
     requestAnimationFrame(animateBG);
 }
 
 let flames=[];
-function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
+function spawn(x,y){ for(let i=0;i<3;i++) flames.push({x,y,s:Math.random()*4+2,a:1,vx:(Math.random()-.5)*1,vy:-Math.random()*1.5}); }
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-addEventListener("touchmove",e=>{ let t=e.touches[0]; spawn(t.clientX,t.clientY); },{passive:true});
+addEventListener("touchmove",e=>{ spawn(e.touches[0].clientX,e.touches[0].clientY); },{passive:true});
 
 function animateFire(){
     fctx.clearRect(0,0,innerWidth,innerHeight);
     for(let i=flames.length-1;i>=0;i--){
-        let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04;
+        let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.05;
         if(p.a<=0) flames.splice(i,1);
-        else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); }
+        else { fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); }
     }
     fctx.globalAlpha=1; requestAnimationFrame(animateFire);
 }
