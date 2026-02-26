@@ -19,7 +19,7 @@ html, body {
     overflow-x: hidden; scroll-behavior: smooth;
 }
 
-/* --- INTRO --- */
+/* --- INTRO (Preserved) --- */
 #intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; perspective: 800px; overflow: hidden; }
 #intro-container { display: flex; gap: clamp(2px, 1vw, 8px); position: relative; }
 .letter { font-family: 'Orbitron', sans-serif; font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold; display: inline-block; opacity: 0; animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards; }
@@ -47,8 +47,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     background: rgba(255, 69, 0, 0.2); border: 2px solid var(--main); box-shadow: 0 0 20px var(--main);
     padding: 12px 18px; border-radius: 8px; text-decoration: none; font-family: 'Orbitron';
     color: white; z-index: 1000; font-size: 14px; font-weight: bold;
-    backdrop-filter: blur(10px);
-    display: none; /* Controlled by JS Observer */
+    backdrop-filter: blur(10px); display: none;
 }
 
 /* --- SECTIONS --- */
@@ -56,14 +55,19 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 .glow-text { font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em); font-weight: bold; letter-spacing: 5px; background: linear-gradient(90deg, var(--main), var(--glow), var(--soft)); -webkit-background-clip: text; color: transparent; text-align: center;}
 .tagline { font-size: 0.8em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 10px; }
 
-/* --- CARDS & STORY --- */
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 30px; }
-.card { background: rgba(0,0,0,0.7); padding: 25px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 10px; transition: 0.3s; }
-.card:hover { border-color: var(--main); box-shadow: 0 0 20px var(--main); }
-.card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 10px; }
-.card p { font-size: 0.9em; color: #ccc; }
+/* --- CARDS & GRID --- */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; margin-top: 40px; }
+.card { 
+    background: rgba(0,0,0,0.7); padding: 20px; border: 1px solid rgba(255,255,255,0.1); 
+    backdrop-filter: blur(10px); border-radius: 12px; transition: 0.4s; overflow: hidden;
+}
+.card:hover { border-color: var(--main); box-shadow: 0 0 25px rgba(255, 69, 0, 0.3); transform: translateY(-5px); }
+.card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 15px; font-size: 1.2rem; }
 
-.story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); }
+/* SoundCloud Embed Styling */
+.sc-container { width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #222; }
+
+.story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); margin-bottom: 20px;}
 .story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
 
 /* SOCIALS */
@@ -120,13 +124,20 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
     <div class="grid">
         <div class="card">
             <h3>Discography</h3>
-            <p>Listen to the latest tracks exploring shadow and human emotion.</p>
-            <a href="https://soundcloud.com/wanderaeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">SOUNDCLOUD →</a>
+            <div class="sc-container">
+                <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy"
+                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/1218843586&color=%23ff4500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+                </iframe>
+            </div>
+            <p>Listen to the latest steps in the journey. Shadow meets technology.</p>
         </div>
+
         <div class="card">
             <h3>Visuals</h3>
-            <p>Watch the cinematic evolution of the WanderAeon world.</p>
-            <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="color:var(--main); text-decoration:none; font-size:11px; font-family:'Orbitron';">YOUTUBE →</a>
+            <div class="sc-container" style="height: 166px; display: flex; justify-content: center; align-items: center; background: url('https://img.youtube.com/vi/YOUR_VIDEO_ID/hqdefault.jpg') center/cover;">
+                <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 50%; border: 2px solid var(--main); color: var(--main); font-weight: bold; text-decoration: none;">PLAY</a>
+            </div>
+            <p>Experience the cinematic evolution. Every frame tells a story.</p>
         </div>
     </div>
 </section>
@@ -134,7 +145,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 <a href="#home" class="back-to-top" id="backToTop">TOP ▲</a>
 
 <script>
-// --- INTRO ---
+// --- INTRO (Preserved) ---
 const text = "WanderAeon";
 const container = document.getElementById("intro-container");
 const colors = ["#ff4500", "#00f2ff", "#ffcc00", "#00ffaa", "white", "#ff4500", "#00f2ff", "#ffcc00", "white", "#00ffaa"];
@@ -151,14 +162,13 @@ setTimeout(() => {
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- THE FIX: INTERSECTION OBSERVER ---
+// --- INTERSECTION OBSERVER (Preserved) ---
 const backToTop = document.getElementById("backToTop");
 const scrollBtn = document.getElementById("scrollBtn");
 const homeSection = document.getElementById("home");
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        // Agar Home Section screen se 10% se kam nazar aa rahi hai
         if (!entry.isIntersecting) {
             backToTop.style.display = "block";
             scrollBtn.style.opacity = "0";
@@ -167,11 +177,10 @@ const observer = new IntersectionObserver((entries) => {
             scrollBtn.style.opacity = "1";
         }
     });
-}, { threshold: 0.1 }); // 10% visibility threshold
-
+}, { threshold: 0.1 });
 observer.observe(homeSection);
 
-// --- CANVAS & THEMES ---
+// --- CANVAS & FUNCTIONS (Preserved) ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
