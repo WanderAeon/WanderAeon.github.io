@@ -19,7 +19,7 @@ html, body {
     overflow-x: hidden; scroll-behavior: smooth;
 }
 
-/* --- INTRO (Preserved) --- */
+/* --- INTRO --- */
 #intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; perspective: 800px; overflow: hidden; }
 #intro-container { display: flex; gap: clamp(2px, 1vw, 8px); position: relative; }
 .letter { font-family: 'Orbitron', sans-serif; font-size: clamp(1.5rem, 8vw, 3.5rem); font-weight: bold; display: inline-block; opacity: 0; animation: trainEntry 1s cubic-bezier(0.2, 0, 0.2, 1) forwards; }
@@ -32,7 +32,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 1000; }
 .theme-btn { padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow); }
 
-/* --- UI ELEMENTS (FORCE VISIBILITY) --- */
+/* --- UI ELEMENTS --- */
 .scroll-hint {
     position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center;
@@ -55,19 +55,15 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 .glow-text { font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em); font-weight: bold; letter-spacing: 5px; background: linear-gradient(90deg, var(--main), var(--glow), var(--soft)); -webkit-background-clip: text; color: transparent; text-align: center;}
 .tagline { font-size: 0.8em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 10px; }
 
-/* --- CARDS & GRID --- */
+/* --- GRID & PLAYERS --- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; margin-top: 40px; }
-.card { 
-    background: rgba(0,0,0,0.7); padding: 20px; border: 1px solid rgba(255,255,255,0.1); 
-    backdrop-filter: blur(10px); border-radius: 12px; transition: 0.4s; overflow: hidden;
-}
-.card:hover { border-color: var(--main); box-shadow: 0 0 25px rgba(255, 69, 0, 0.3); transform: translateY(-5px); }
-.card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 15px; font-size: 1.2rem; }
+.card { background: rgba(0,0,0,0.7); padding: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; transition: 0.3s; }
+.card:hover { border-color: var(--main); box-shadow: 0 0 20px var(--main); }
+.card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 15px; }
 
-/* SoundCloud Embed Styling */
-.sc-container { width: 100%; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #222; }
+.player-container { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background: #000; height: 166px;}
 
-.story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); margin-bottom: 20px;}
+.story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); }
 .story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
 
 /* SOCIALS */
@@ -108,7 +104,6 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 <section id="home">
     <h1 class="glow-text">WanderAeon</h1>
     <p class="tagline">Not Just Heard — Experienced</p>
-    
     <a href="#about" class="scroll-hint" id="scrollBtn">
         <span style="font-size: 10px; letter-spacing: 2px;">ENTER THE VOID</span>
         <div class="arrow-down"></div>
@@ -124,20 +119,20 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
     <div class="grid">
         <div class="card">
             <h3>Discography</h3>
-            <div class="sc-container">
-                <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" loading="lazy"
-                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/1218843586&color=%23ff4500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+            <div class="player-container">
+                <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1816568289&color=%23ff4500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
                 </iframe>
             </div>
-            <p>Listen to the latest steps in the journey. Shadow meets technology.</p>
+            <p>Listen: <span style="color:var(--glow);">Before the Return</span>.</p>
         </div>
 
         <div class="card">
             <h3>Visuals</h3>
-            <div class="sc-container" style="height: 166px; display: flex; justify-content: center; align-items: center; background: url('https://img.youtube.com/vi/YOUR_VIDEO_ID/hqdefault.jpg') center/cover;">
-                <a href="https://www.youtube.com/@WanderAeon" target="_blank" style="background: rgba(0,0,0,0.6); padding: 15px; border-radius: 50%; border: 2px solid var(--main); color: var(--main); font-weight: bold; text-decoration: none;">PLAY</a>
+            <div class="player-container">
+                <iframe width="100%" height="166" src="https://www.youtube.com/embed?listType=user_uploads&list=WanderAeon" frameborder="0" allowfullscreen></iframe>
             </div>
-            <p>Experience the cinematic evolution. Every frame tells a story.</p>
+            <p>Watch the cinematic evolution.</p>
         </div>
     </div>
 </section>
@@ -145,7 +140,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 <a href="#home" class="back-to-top" id="backToTop">TOP ▲</a>
 
 <script>
-// --- INTRO (Preserved) ---
+// --- INTRO & OBSERVER ---
 const text = "WanderAeon";
 const container = document.getElementById("intro-container");
 const colors = ["#ff4500", "#00f2ff", "#ffcc00", "#00ffaa", "white", "#ff4500", "#00f2ff", "#ffcc00", "white", "#00ffaa"];
@@ -162,25 +157,18 @@ setTimeout(() => {
     setTimeout(() => { document.getElementById("intro").style.display = "none"; }, 800);
 }, (text.length * 150) + 1500);
 
-// --- INTERSECTION OBSERVER (Preserved) ---
 const backToTop = document.getElementById("backToTop");
 const scrollBtn = document.getElementById("scrollBtn");
 const homeSection = document.getElementById("home");
-
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        if (!entry.isIntersecting) {
-            backToTop.style.display = "block";
-            scrollBtn.style.opacity = "0";
-        } else {
-            backToTop.style.display = "none";
-            scrollBtn.style.opacity = "1";
-        }
+        if (!entry.isIntersecting) { backToTop.style.display = "block"; scrollBtn.style.opacity = "0"; }
+        else { backToTop.style.display = "none"; scrollBtn.style.opacity = "1"; }
     });
 }, { threshold: 0.1 });
 observer.observe(homeSection);
 
-// --- CANVAS & FUNCTIONS (Preserved) ---
+// --- CANVAS ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
@@ -207,14 +195,11 @@ function animateFire(){
     }
     fctx.globalAlpha=1; requestAnimationFrame(animateFire);
 }
-function setTheme(t){
-    const imgs = {'inferno': 'final.jpg', 'echo': 'echo.jpg', 'dark': 'dark.jpg'};
-    document.body.style.backgroundImage=`url('${imgs[t]}')`;
-}
+function setTheme(t){ const imgs = {'inferno': 'final.jpg', 'echo': 'echo.jpg', 'dark': 'dark.jpg'}; document.body.style.backgroundImage=`url('${imgs[t]}')`; }
 const btn=document.getElementById("socialBtn");
 const icons=document.getElementById("socialIcons");
 let timer;
-function showIcons(){ icons.classList.add("show"); clearTimeout(timer); timer=setTimeout(()=>icons.classList.remove("show"),4000); }
+function showIcons(){ icons.classList.add("show"); clearTimeout(timer); timer=setTimeout(()=>icons.classList.remove("show"), 4000); }
 btn.onclick=showIcons; btn.onmouseenter=showIcons;
 animateBG(); animateFire();
 </script>
