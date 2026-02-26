@@ -57,23 +57,29 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 
 /* --- GRID & CARDS --- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; margin-top: 40px; }
-.card { background: rgba(0,0,0,0.7); padding: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; transition: 0.3s; }
+.card { background: rgba(0,0,0,0.7); padding: 25px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; transition: 0.3s; }
 .card:hover { border-color: var(--main); box-shadow: 0 0 20px var(--main); }
 .card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 15px; }
 
-/* HYBRID PLAYER STYLING */
+/* HYBRID PLAYER STYLING - Increased Height for Button Visibility */
 .player-container { 
     width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; 
-    background: rgba(0,0,0,0.5); height: 166px; display: flex; flex-direction: column; 
-    justify-content: center; align-items: center; border: 1px solid rgba(255,69,0,0.1);
+    background: rgba(0,0,0,0.5); height: 220px; display: flex; flex-direction: column; 
+    justify-content: flex-start; align-items: center; border: 1px solid rgba(255,69,0,0.1);
+    padding-bottom: 15px;
 }
 
 .fallback-link {
-    margin-top: 10px; color: var(--main); text-decoration: none; 
-    font-family: 'Orbitron'; font-size: 10px; border: 1px solid var(--main); 
-    padding: 6px 12px; border-radius: 4px; transition: 0.3s;
+    margin-top: 15px; color: var(--main); text-decoration: none; 
+    font-family: 'Orbitron'; font-size: 11px; border: 2px solid var(--main); 
+    padding: 10px 18px; border-radius: 6px; transition: 0.3s;
+    background: rgba(0,0,0,0.8);
+    font-weight: bold;
+    letter-spacing: 1px;
+    display: block;
+    width: fit-content;
 }
-.fallback-link:hover { background: var(--main); color: white; box-shadow: 0 0 10px var(--main); }
+.fallback-link:hover { background: var(--main); color: white; box-shadow: 0 0 15px var(--main); }
 
 .story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); }
 .story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
@@ -144,7 +150,7 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
         <div class="card">
             <h3>Visuals</h3>
             <div class="player-container">
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/P_P5F-6uP-Y" 
+                <iframe width="100%" height="166" src="https://www.youtube.com/embed/P_P5F-6uP-Y" 
                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowfullscreen style="border-radius: 8px;">
                 </iframe>
