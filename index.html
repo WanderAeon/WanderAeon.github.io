@@ -30,7 +30,7 @@ html, body {
 /* --- CANVAS & THEMES --- */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .theme-buttons { position: fixed; top: 15px; right: 15px; display: flex; gap: 5px; z-index: 1000; }
-.theme-btn { padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow); }
+.theme-btn { padding: 5px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); border: 1px solid var(--glow); color: white; border-radius: 4px; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 8px; box-shadow: 0 0 5px var(--glow); text-decoration:none; }
 
 /* --- UI ELEMENTS --- */
 .scroll-hint {
@@ -55,13 +55,25 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
 .glow-text { font-family: 'Orbitron', sans-serif; font-size: clamp(2.2em, 12vw, 5em); font-weight: bold; letter-spacing: 5px; background: linear-gradient(90deg, var(--main), var(--glow), var(--soft)); -webkit-background-clip: text; color: transparent; text-align: center;}
 .tagline { font-size: 0.8em; letter-spacing: 3px; color: var(--soft); text-transform: uppercase; margin-top: 10px; }
 
-/* --- GRID & PLAYERS --- */
+/* --- GRID & CARDS --- */
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; width: 100%; max-width: 1100px; margin-top: 40px; }
 .card { background: rgba(0,0,0,0.7); padding: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 12px; transition: 0.3s; }
 .card:hover { border-color: var(--main); box-shadow: 0 0 20px var(--main); }
 .card h3 { font-family: 'Orbitron'; color: var(--glow); margin-bottom: 15px; }
 
-.player-container { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; background: #000; height: 166px;}
+/* HYBRID PLAYER STYLING */
+.player-container { 
+    width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 15px; 
+    background: rgba(0,0,0,0.5); height: 166px; display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; border: 1px solid rgba(255,69,0,0.1);
+}
+
+.fallback-link {
+    margin-top: 10px; color: var(--main); text-decoration: none; 
+    font-family: 'Orbitron'; font-size: 10px; border: 1px solid var(--main); 
+    padding: 6px 12px; border-radius: 4px; transition: 0.3s;
+}
+.fallback-link:hover { background: var(--main); color: white; box-shadow: 0 0 10px var(--main); }
 
 .story-box { max-width: 700px; background: rgba(0,0,0,0.8); padding: 30px; border-left: 3px solid var(--main); box-shadow: 0 0 20px rgba(0,0,0,1); }
 .story-box p { font-size: clamp(0.95em, 4vw, 1.1em); line-height: 1.8; color: #ddd; text-align: left; }
@@ -121,8 +133,10 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
             <h3>Discography</h3>
             <div class="player-container">
                 <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
-                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1816568289&color=%23ff4500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1816568289&color=%23ff4500&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true"
+                    style="border-radius: 8px;">
                 </iframe>
+                <a href="https://soundcloud.com/wanderaeon/before-the-return" target="_blank" class="fallback-link">LISTEN ON SOUNDCLOUD →</a>
             </div>
             <p>Listen: <span style="color:var(--glow);">Before the Return</span>.</p>
         </div>
@@ -130,7 +144,11 @@ section { min-height: 100vh; display: flex; flex-direction: column; justify-cont
         <div class="card">
             <h3>Visuals</h3>
             <div class="player-container">
-                <iframe width="100%" height="166" src="https://www.youtube.com/embed?listType=user_uploads&list=WanderAeon" frameborder="0" allowfullscreen></iframe>
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/P_P5F-6uP-Y" 
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen style="border-radius: 8px;">
+                </iframe>
+                <a href="https://www.youtube.com/@WanderAeon" target="_blank" class="fallback-link">VIEW CHANNEL →</a>
             </div>
             <p>Watch the cinematic evolution.</p>
         </div>
@@ -168,7 +186,7 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 observer.observe(homeSection);
 
-// --- CANVAS ---
+// --- CANVAS & FX ---
 const bg=document.getElementById("embers");
 const fire=document.getElementById("fire");
 const bctx=bg.getContext("2d");
