@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WanderAeon | Human x AI</title>
 <link href="" rel="stylesheet">
 <style>
@@ -13,10 +15,10 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(-
 #layer2 { background-image: url('echo.jpg'); z-index: 2; opacity: 0.4; mix-blend-mode: screen; }
 #layer3 { background-image: url('dark.jpg'); z-index: 3; opacity: 0.2; }
 .hero { height: 100vh; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
-.logo-text { font-family: 'Orbitron'; font-size: 6vw; letter-spacing: 15px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px var(--main)); text-align: center; line-height: 1.1; }
-.social-orbit { position: absolute; top: 50%; left: 50%; width: 500px; height: 500px; margin: -250px 0 0 -250px; border-radius: 50%; animation: rot 35s linear infinite; pointer-events: none; }
-.social-icon { position: absolute; width: 55px; height: 55px; background: rgba(0,0,0,0.95); border: 2px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; pointer-events: auto; animation: crot 35s linear infinite; transition: 0.3s; }
-.social-icon img { width: 28px; filter: invert(1); }
+.logo-text { font-family: 'Orbitron'; font-size: clamp(2rem, 10vw, 7rem); letter-spacing: 15px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px var(--main)); text-align: center; line-height: 1.1; margin: 0; }
+.social-orbit { position: absolute; top: 50%; left: 50%; width: clamp(300px, 60vw, 550px); height: clamp(300px, 60vw, 550px); transform: translate(-50%, -50%); border-radius: 50%; animation: rot 35s linear infinite; pointer-events: none; }
+.social-icon { position: absolute; width: 50px; height: 50px; background: rgba(0,0,0,0.9); border: 2px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; pointer-events: auto; animation: crot 35s linear infinite; transition: 0.3s; }
+.social-icon img { width: 25px; filter: invert(1); }
 .social-icon:hover { background: var(--main); box-shadow: 0 0 30px var(--main); transform: scale(1.3); }
 .i1 { top: 0; left: 50%; transform: translate(-50%, -50%); }
 .i2 { top: 50%; right: 0; transform: translate(50%, -50%); }
@@ -25,6 +27,7 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(-
 .i5 { top: 15%; right: 15%; transform: translate(50%, -50%); }
 @keyframes rot { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes crot { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+.tagline { font-family: 'Orbitron'; letter-spacing: 5px; color: #ffcc66; font-size: 14px; margin-top: 20px; text-align: center; }
 </style>
 </head>
 <body>
@@ -34,12 +37,12 @@ body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(-
 <div id="layer3" class="layer"></div>
 </div>
 <div class="hero">
-<div style="z-index: 10; text-align: center;">
+<div style="z-index: 10;">
 <h1 class="logo-text">WANDER
 
 
 AEON</h1>
-<p style="font-family: 'Orbitron'; letter-spacing: 5px; color: #ffcc66; font-size: 14px; margin-top: 20px;">HUMAN x AI</p>
+<p class="tagline">HUMAN x AI</p>
 </div>
 <div class="social-orbit">
 <a href="" target="_blank" class="social-icon i1"><img src="youtube.png"></a>
