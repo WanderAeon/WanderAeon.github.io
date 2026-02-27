@@ -1,3 +1,8 @@
+Hahaha, yar yeh "Black Hole" wala glitch waqai bohat ziddi hai! Lagta hai humare darmiyan jo code box wala system hai, woh WanderAeon ki dark energy ko bardasht nahi kar pa raha.
+
+Chalo, main ne ab Section-by-Section Plain Text mein poora code likh diya hai. Aap ne bas upar se neechay tak poora copy karna hai aur apni index.html mein paste kar dena hai. Is mein box ka intezar mat karo, bas ye text hi asli sona hai!
+
+WanderAeon v2.5 — The Complete Plain Text Index
 <!DOCTYPE html>
 
 <html lang="en">
@@ -8,26 +13,26 @@
 <link href="" rel="stylesheet">
 <style>
 :root { --main: #ff4500; --glow: #ff9900; --bg: #050505; }
-body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-.parallax-wrapper { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-.layer { position: absolute; inset: -15%; background-size: cover; background-position: center; transition: transform 0.1s ease-out; will-change: transform; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--bg); color: white; font-family: sans-serif; overflow: hidden; }
+.parallax-wrapper { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+.layer { position: absolute; top: -15%; left: -15%; width: 130%; height: 130%; background-size: cover; background-position: center; transition: transform 0.1s ease-out; will-change: transform; }
 #layer1 { background-image: url('final.jpg'); z-index: 1; filter: brightness(0.4); }
 #layer2 { background-image: url('echo.jpg'); z-index: 2; opacity: 0.4; mix-blend-mode: screen; }
 #layer3 { background-image: url('dark.jpg'); z-index: 3; opacity: 0.2; }
-.hero { height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; }
-.logo-container { position: relative; z-index: 10; text-align: center; }
-.logo-text { font-family: 'Orbitron'; font-size: clamp(2.5rem, 15vw, 7rem); font-weight: 900; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px var(--main)); line-height: 1; margin: 0; }
-.social-orbit { position: absolute; top: 50%; left: 50%; width: clamp(320px, 55vw, 550px); height: clamp(320px, 55vw, 550px); transform: translate(-50%, -50%); border-radius: 50%; animation: rotate 30s linear infinite; pointer-events: none; }
-.social-icon { position: absolute; width: 48px; height: 48px; background: rgba(0,0,0,0.9); border: 1px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; pointer-events: auto; animation: counter-rotate 30s linear infinite; transition: 0.3s; }
+.hero { height: 100vh; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+.logo-container { position: relative; z-index: 10; text-align: center; pointer-events: none; }
+.logo-text { font-family: 'Orbitron'; font-size: clamp(2.5rem, 15vw, 7.5rem); font-weight: 900; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px var(--main)); line-height: 1.1; margin: 0; }
+.social-orbit { position: absolute; top: 50%; left: 50%; width: clamp(320px, 55vw, 550px); height: clamp(320px, 55vw, 550px); transform: translate(-50%, -50%); border-radius: 50%; animation: rotateOrbit 40s linear infinite; pointer-events: none; }
+.social-icon { position: absolute; width: 50px; height: 50px; background: rgba(0,0,0,0.9); border: 1px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; pointer-events: auto; animation: counterRotate 40s linear infinite; transition: 0.3s; text-decoration: none; }
 .social-icon img { width: 24px; filter: invert(1); }
-.social-icon:hover { background: var(--main); box-shadow: 0 0 25px var(--main); transform: scale(1.2); }
-.i1 { top: 0; left: 50%; margin: -24px 0 0 -24px; }
-.i2 { top: 50%; right: 0; margin: -24px -24px 0 0; }
-.i3 { bottom: 0; left: 50%; margin: 0 0 -24px -24px; }
-.i4 { top: 50%; left: 0; margin: -24px 0 0 -24px; }
-.i5 { top: 15%; right: 15%; margin: -24px -24px 0 0; }
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes counter-rotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+.social-icon:hover { background: var(--main); box-shadow: 0 0 30px var(--main); transform: scale(1.2); }
+.i1 { top: 0; left: 50%; transform: translate(-50%, -50%); }
+.i2 { top: 50%; right: 0; transform: translate(50%, -50%); }
+.i3 { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
+.i4 { top: 50%; left: 0; transform: translate(-50%, -50%); }
+.i5 { top: 15%; right: 15%; transform: translate(50%, -50%); }
+@keyframes rotateOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes counterRotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
 .tagline { font-family: 'Orbitron'; letter-spacing: 6px; color: #ffcc66; font-size: 0.75rem; margin-top: 40px; opacity: 0.8; }
 </style>
 </head>
@@ -43,6 +48,8 @@ body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: 
 
 
 AEON</h1>
+<p class="tagline">HUMAN x AI | THE CINEMATIC UNIVERSE</p>
+</div>
 <div class="social-orbit">
 <a href="" target="_blank" class="social-icon i1"><img src="youtube.png"></a>
 <a href="" target="_blank" class="social-icon i2"><img src="soundcloud.png"></a>
@@ -50,16 +57,14 @@ AEON</h1>
 <a href="" target="_blank" class="social-icon i4"><img src="tiktok.png"></a>
 <a href="" target="_blank" class="social-icon i5"><img src="whatsapp.png"></a>
 </div>
-<p class="tagline">HUMAN x AI | THE CINEMATIC UNIVERSE</p>
-</div>
 </section>
 <script>
-document.addEventListener('mousemove', (e) => {
-const x = (window.innerWidth / 2 - e.clientX) / 35;
-const y = (window.innerHeight / 2 - e.clientY) / 35;
-document.getElementById('layer1').style.transform = translate(${x}px, ${y}px) scale(1.1);
-document.getElementById('layer2').style.transform = translate(${x*2}px, ${y*2}px) scale(1.1);
-document.getElementById('layer3').style.transform = translate(${x*3}px, ${y*3}px) scale(1.1);
+document.addEventListener('mousemove', function(e) {
+var moveX = (window.innerWidth / 2 - e.clientX) / 40;
+var moveY = (window.innerHeight / 2 - e.clientY) / 40;
+document.getElementById('layer1').style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px)';
+document.getElementById('layer2').style.transform = 'translate(' + (moveX * 2) + 'px, ' + (moveY * 2) + 'px)';
+document.getElementById('layer3').style.transform = 'translate(' + (moveX * 3.2) + 'px, ' + (moveY * 3.2) + 'px)';
 });
 </script>
 </body>
