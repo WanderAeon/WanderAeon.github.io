@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Physics Cubes</title>
+    <title>WanderAeon | Stable Physics</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
@@ -26,7 +26,6 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     border: 1px solid rgba(255,255,255,0.1); 
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     text-align: center; min-width: 130px;
-    transition: transform 0.2s;
 }
 
 .cube-green { background: rgba(0, 255, 136, 0.05); border-color: var(--released); color: var(--released); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
@@ -99,42 +98,44 @@ songs.forEach(song => {
     el.innerHTML = `<span>${song.name}</span>`;
     el.onclick = () => { for(let i=0; i<10; i++) spawn(event.clientX, event.clientY); setTimeout(() => window.open(song.link, '_blank'), 200); };
     document.getElementById('cube-universe').appendChild(el);
-    // Fixed width/height for collision math
-    cubes.push({ el, x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5, w: 140, h: 50 });
+    cubes.push({ el, x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1, w: 140, h: 50 });
 });
 
 function checkCollision(c1, c2) {
     if (c1.x < c2.x + c2.w && c1.x + c1.w > c2.x && c1.y < c2.y + c2.h && c1.y + c1.h > c2.y) {
-        // Elastic collision bounce
         let tempVx = c1.vx; let tempVy = c1.vy;
-        c1.vx = c2.vx; c1.vy = c2.vy;
-        c2.vx = tempVx; c2.vy = tempVy;
-        // Move them apart slightly to prevent sticking
-        c1.x += c1.vx * 2; c1.y += c1.vy * 2;
+        c1.vx = c2.vx * 0.8; c1.vy = c2.vy * 0.8;
+        c2.vx = tempVx * 0.8; c2.vy = tempVy * 0.8;
+        c1.x += c1.vx * 3; c1.y += c1.vy * 3;
     }
 }
 
 function animateCubes() {
     cubes.forEach((c, i) => {
+        // Friction: Slows down excessive speed
+        c.vx *= 0.99; c.vy *= 0.99;
+        
         c.x += c.vx; c.y += c.vy;
         
-        // Wall Collision
         if (c.x <= 0 || c.x >= innerWidth - c.w) c.vx *= -1;
         if (c.y <= 0 || c.y >= innerHeight - c.h) c.vy *= -1;
 
-        // Mouse Influence (Smooth rebound)
         const dx = mX - (c.x + c.w/2);
         const dy = mY - (c.y + c.h/2);
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 150) {
-            c.vx -= dx * 0.005;
-            c.vy -= dy * 0.005;
+        if(dist < 120) {
+            c.vx -= dx * 0.002;
+            c.vy -= dy * 0.002;
         }
 
-        // Cube vs Cube Collision
         for(let j = i + 1; j < cubes.length; j++) {
             checkCollision(c, cubes[j]);
         }
+
+        // Limit Max Speed
+        const maxSpeed = 2;
+        if(Math.abs(c.vx) > maxSpeed) c.vx = (c.vx > 0 ? 1 : -1) * maxSpeed;
+        if(Math.abs(c.vy) > maxSpeed) c.vy = (c.vy > 0 ? 1 : -1) * maxSpeed;
 
         c.el.style.left = c.x + 'px'; c.el.style.top = c.y + 'px';
     });
