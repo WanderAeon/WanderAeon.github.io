@@ -3,130 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Music Beyond Time</title>
+    <title>WanderAeon | The Sonic Cubes</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-
 <style>
-:root{
-    --main: #ff4500;
-    --glow: #ff9900;
-    --soft: #ffcc66;
-}
-
-html, body {
-    margin: 0; padding: 0;
-    width: 100%; height: 100%;
-    font-family: 'Inter', sans-serif;
-    color: white;
-    background: #050505 url('final.jpg') center/cover no-repeat fixed;
-    scroll-behavior: smooth;
-}
+:root{ --main: #ff4500; --glow: #ff9900; --soft: #ffcc66; --released: #00ff88; --teaser: #ff3333; }
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Inter', sans-serif; color: white; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; }
 
 /* INTRO PORTAL */
-#intro {
-    position: fixed; inset: 0; background: black;
-    display: flex; justify-content: center; align-items: center; z-index: 999;
-    animation: fadeOut 3s forwards 1s;
-}
-.portal {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: radial-gradient(circle, #fff, var(--main), #000);
-    box-shadow: 0 0 40px orange, 0 0 150px red;
-    animation: expand 3s forwards;
-}
+#intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; animation: fadeOut 3s forwards 1s; }
+.portal { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--main), #000); box-shadow: 0 0 40px orange, 0 0 150px red; animation: expand 3s forwards; }
 @keyframes expand { 0% { transform: scale(0) } 100% { transform: scale(80); opacity: 0 } }
 @keyframes fadeOut { 0%, 80% { opacity: 1 } 100% { opacity: 0; pointer-events: none } }
 
-/* CANVAS FX */
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-/* NAVIGATION & THEMES */
-.theme-buttons {
-    position: fixed; top: 20px; right: 20px;
-    display: flex; gap: 8px; z-index: 10;
+/* SONIC CUBES STYLING */
+#cube-universe { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+.sonic-cube { 
+    position: absolute; padding: 12px 18px; border-radius: 4px; 
+    font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; pointer-events: auto; transition: transform 0.3s, box-shadow 0.3s;
+    text-transform: uppercase; letter-spacing: 1px;
+    border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    text-align: center; min-width: 100px;
 }
-.theme-btn {
-    padding: 6px 12px; background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(5px); border: 1px solid var(--glow);
-    color: white; border-radius: 4px; cursor: pointer;
-    font-family: 'Orbitron', sans-serif; font-size: 9px;
-    letter-spacing: 1px; transition: 0.3s;
-}
-.theme-btn:hover { background: var(--main); box-shadow: 0 0 15px var(--main); }
+.cube-green { background: rgba(0, 255, 136, 0.1); border-color: var(--released); color: var(--released); box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
+.cube-red { background: rgba(255, 51, 51, 0.1); border-color: var(--teaser); color: var(--teaser); box-shadow: 0 0 10px rgba(255, 51, 51, 0.2); }
+.sonic-cube:hover { transform: scale(1.2) rotate(2deg); box-shadow: 0 0 30px currentColor; background: rgba(255,255,255,0.05); z-index: 100; }
 
-/* UPDATED SOCIAL ORBIT PANEL */
+/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 50px; top: 50%; transform: translateY(-50%); z-index: 100; }
 .social-btn { position: relative; width: 65px; height: 65px; z-index: 105; cursor: pointer; }
-.social-btn img { width: 100%; filter: drop-shadow(0 0 15px var(--main)); transition: 0.4s; }
-.social-icons { 
-    position: absolute; top: 50%; left: 50%; 
-    width: 220px; height: 220px; margin: -110px 0 0 -110px; 
-    border-radius: 50%; opacity: 0; visibility: hidden; 
-    transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-    transform: rotate(-90deg) scale(0.3); z-index: 104; 
-}
+.social-btn img { width: 100%; filter: drop-shadow(0 0 15px var(--main)); }
+.social-icons { position: absolute; top: 50%; left: 50%; width: 220px; height: 220px; margin: -110px 0 0 -110px; border-radius: 50%; opacity: 0; visibility: hidden; transition: 0.6s; transform: rotate(-90deg) scale(0.3); z-index: 104; }
 .social-icons.show { opacity: 1; visibility: visible; transform: rotate(0deg) scale(1); animation: slowSpin 25s linear infinite; }
 @keyframes slowSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.social-icons a { position: absolute; width: 45px; height: 45px; background: rgba(0,0,0,0.9); border: 1.5px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: 0.3s; overflow: hidden; }
-.social-icons img { width: 24px !important; height: 24px !important; filter: invert(1); object-fit: contain; padding: 0 !important; border: none !important; background: transparent !important; }
-.social-icons a:hover { background: var(--main); box-shadow: 0 0 25px var(--main); transform: scale(1.2); }
-
-/* Orbit Positions */
+.social-icons a { position: absolute; width: 45px; height: 45px; background: rgba(0,0,0,0.9); border: 1.5px solid var(--main); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+.social-icons img { width: 24px !important; filter: invert(1); }
 .i1 { top: 0; left: 50%; transform: translate(-50%, -50%); }
 .i2 { top: 50%; right: 0; transform: translate(50%, -50%); }
 .i3 { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
 .i4 { top: 50%; left: 0; transform: translate(-50%, -50%); }
 .i5 { top: 18%; right: 18%; transform: translate(50%, -50%); }
 
-/* SECTIONS */
-section {
-    min-height: 100vh; display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    position: relative; z-index: 2; text-align: center;
-}
-
 /* HERO */
-.glow-text {
-    font-family: 'Orbitron', sans-serif; font-size: clamp(2.5em, 10vw, 5em);
-    font-weight: bold; letter-spacing: 8px;
-    background: linear-gradient(90deg, var(--main), var(--glow), var(--soft));
-    -webkit-background-clip: text; color: transparent;
-    text-shadow: 0 0 30px rgba(255, 69, 0, 0.4);
-}
-.tagline {
-    font-size: clamp(0.8em, 3vw, 1.2em); letter-spacing: 4px;
-    color: var(--soft); margin-top: 10px; text-transform: uppercase;
-}
-
-/* STORY BOX */
-.story-box {
-    max-width: 700px; width: 85%;
-    background: rgba(0,0,0,0.6); padding: 40px;
-    border-left: 3px solid var(--main); backdrop-filter: blur(12px);
-    margin: 50px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.story-box p { font-size: 1.1em; line-height: 1.8; color: #ccc; margin-bottom: 20px; text-align: left; }
-.highlight { color: var(--glow); font-weight: bold; }
-
-.back-to-top {
-    margin-top: 20px; cursor: pointer; font-family: 'Orbitron', sans-serif;
-    font-size: 10px; color: var(--soft); text-decoration: none;
-}
+section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; }
+.glow-text { font-family: 'Orbitron', sans-serif; font-size: clamp(2.5em, 10vw, 5em); letter-spacing: 8px; background: linear-gradient(90deg, var(--main), var(--glow), var(--soft)); -webkit-background-clip: text; color: transparent; text-align: center; }
 </style>
 </head>
-
 <body>
 
 <div id="intro"><div class="portal"></div></div>
-
-<canvas id="embers"></canvas>
 <canvas id="fire"></canvas>
-
-<div class="theme-buttons">
-    <button class="theme-btn" onclick="setTheme('inferno')">INFERNO</button>
-    <button class="theme-btn" onclick="setTheme('echo')">ECHO</button>
-    <button class="theme-btn" onclick="setTheme('dark')">DARK</button>
-</div>
+<div id="cube-universe"></div>
 
 <div class="social-panel">
     <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials"></div>
@@ -139,94 +69,68 @@ section {
     </div>
 </div>
 
-<section id="home">
+<section>
     <h1 class="glow-text">WanderAeon</h1>
-    <p class="tagline">Not Just Heard — Experienced</p>
-    <a href="#about" style="text-decoration:none;">
-        <div style="font-family:'Orbitron'; font-size:10px; letter-spacing:2px; color:var(--glow); margin-top:50px;">ENTER THE VOID</div>
-    </a>
-</section>
-
-<section id="about">
-    <div class="story-box">
-        <p>WanderAeon is a <span class="highlight">dark cinematic music universe</span> where sound meets story, now at the very beginning of its journey.</p>
-        <p>Blending dark rock, atmospheric pop, cyberpunk, and sci-fi elements, WanderAeon is slowly shaping a world of shadow, technology, and human emotion.</p>
-        <a href="#home" class="back-to-top">▲ BACK TO TOP</a>
-    </div>
+    <p style="letter-spacing: 6px; color: var(--soft); text-transform: uppercase; font-family: 'Orbitron'; font-size: 12px; margin-top: 20px;">HUMAN x AI</p>
 </section>
 
 <script>
-const bg=document.getElementById("embers");
-const fire=document.getElementById("fire");
-const bctx=bg.getContext("2d");
-const fctx=fire.getContext("2d");
-
-function resize(){
-    bg.width=fire.width=innerWidth;
-    bg.height=fire.height=innerHeight;
-}
-resize();
-onresize=resize;
-
-// Particles
-let embers=[];
-for(let i=0;i<120;i++)
-    embers.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*2.5});
-
-function animateBG(){
-    bctx.clearRect(0,0,innerWidth,innerHeight);
-    for(let e of embers){
-        e.y+=0.5;
-        if(e.y>innerHeight)e.y=0;
-        bctx.fillStyle="rgba(255,150,0,.7)";
-        bctx.beginPath(); bctx.arc(e.x,e.y,e.s,0,Math.PI*2); bctx.fill();
-    }
-    requestAnimationFrame(animateBG);
-}
-
 // Fire Trail
-let flames=[];
-function spawn(x,y){
-    for(let i=0;i<4;i++)
-    flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2});
-}
-
+const fire=document.getElementById("fire"); const fctx=fire.getContext("2d");
+function resize(){ fire.width=innerWidth; fire.height=innerHeight; }
+resize(); onresize=resize;
+let flames=[]; function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
 addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
-addEventListener("touchmove",e=>{ let t=e.touches[0]; spawn(t.clientX,t.clientY); },{passive:true});
+function animateFire(){ fctx.clearRect(0,0,innerWidth,innerHeight); for(let i=flames.length-1;i>=0;i--){ let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04; if(p.a<=0) flames.splice(i,1); else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); } } requestAnimationFrame(animateFire); }
+animateFire();
 
-function animateFire(){
-    fctx.clearRect(0,0,innerWidth,innerHeight);
-    for(let i=flames.length-1;i>=0;i--){
-        let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04;
-        if(p.a<=0) flames.splice(i,1);
-        else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); }
-    }
-    fctx.globalAlpha=1;
-    requestAnimationFrame(animateFire);
-}
+// --- THE SONIC CUBES DATA & LOGIC ---
+// Yahan aap naye songs add ya purane edit kar sakte hain
+const songs = [
+    { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
+    { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
+    { name: "Before the Return", type: "green", link: "https://www.youtube.com/watch?v=0wBXdnBznY0" },
+    { name: "Sunno", type: "green", link: "https://www.youtube.com/watch?v=02uImf7-wfQ" },
+    { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
+    { name: "JanEJana", type: "green", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
+];
 
-// Themes
-function setTheme(t){
-    const images = {'inferno': 'final.jpg', 'echo': 'echo.jpg', 'dark': 'dark.jpg'};
-    document.body.style.backgroundImage=`url('${images[t]}')`;
+const cubeUniverse = document.getElementById('cube-universe');
+const cubes = [];
+
+songs.forEach(song => {
+    const el = document.createElement('div');
+    el.className = `sonic-cube cube-${song.type}`;
+    el.innerText = song.name;
+    el.onclick = () => window.open(song.link, '_blank');
+    cubeUniverse.appendChild(el);
+    
+    cubes.push({
+        el: el,
+        x: Math.random() * (innerWidth - 150),
+        y: Math.random() * (innerHeight - 50),
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5
+    });
+});
+
+function animateCubes() {
+    cubes.forEach(c => {
+        c.x += c.vx; c.y += c.vy;
+        // Wall Collision
+        if (c.x <= 0 || c.x >= innerWidth - 120) c.vx *= -1;
+        if (c.y <= 0 || c.y >= innerHeight - 50) c.vy *= -1;
+        c.el.style.left = c.x + 'px';
+        c.el.style.top = c.y + 'px';
+    });
+    requestAnimationFrame(animateCubes);
 }
+animateCubes();
 
 // Social Toggle
-const btn=document.getElementById("socialBtn");
-const icons=document.getElementById("socialIcons");
-let timer;
-
-function showIcons(){
-    icons.classList.add("show");
-    clearTimeout(timer);
-    timer=setTimeout(()=>icons.classList.remove("show"),6000);
-}
-btn.onclick=showIcons;
-btn.onmouseenter=showIcons;
-
-animateBG();
-animateFire();
+const btn=document.getElementById("socialBtn"); const icons=document.getElementById("socialIcons");
+function showIcons(){ icons.classList.add("show"); setTimeout(()=>icons.classList.remove("show"),6000); }
+btn.onclick=showIcons; btn.onmouseenter=showIcons;
 </script>
-
 </body>
 </html>
