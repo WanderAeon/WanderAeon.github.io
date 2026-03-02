@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Neon Sonic Cubes</title>
+    <title>WanderAeon | Magic Sonic Cubes</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --glow: #ff9900; --released: #00ff88; --teaser: #ff3333; }
@@ -17,39 +17,34 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-/* UPGRADED SONIC CUBES */
+/* MAGIC SONIC CUBES */
 #cube-universe { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
 .sonic-cube { 
     position: absolute; padding: 15px 20px; border-radius: 8px; 
     font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; pointer-events: auto; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer; pointer-events: auto;
     text-transform: uppercase; letter-spacing: 2px;
     border: 1px solid rgba(255,255,255,0.1); 
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     text-align: center; min-width: 120px;
+    transition: transform 0.2s ease-out, box-shadow 0.3s;
+    will-change: transform, left, top;
 }
 
-/* Released (Green) Upgraded */
 .cube-green { 
     background: rgba(0, 255, 136, 0.05); border-color: var(--released); color: var(--released); 
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2), inset 0 0 10px rgba(0, 255, 136, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
     animation: pulseGreen 3s infinite alternate;
 }
-/* Teaser (Red) Upgraded */
 .cube-red { 
     background: rgba(255, 51, 51, 0.05); border-color: var(--teaser); color: var(--teaser); 
-    box-shadow: 0 0 15px rgba(255, 51, 51, 0.2), inset 0 0 10px rgba(255, 51, 51, 0.1);
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
     animation: pulseRed 3s infinite alternate;
 }
 
-@keyframes pulseGreen { 0% { box-shadow: 0 0 10px var(--released); } 100% { box-shadow: 0 0 25px var(--released); } }
-@keyframes pulseRed { 0% { box-shadow: 0 0 10px var(--teaser); } 100% { box-shadow: 0 0 25px var(--teaser); } }
-
-.sonic-cube:hover { 
-    transform: scale(1.2) rotateX(10deg) rotateY(10deg); 
-    background: rgba(255,255,255,0.1); z-index: 100;
-}
+@keyframes pulseGreen { 0% { border-color: rgba(0,255,136,0.5); } 100% { border-color: var(--released); box-shadow: 0 0 30px var(--released); } }
+@keyframes pulseRed { 0% { border-color: rgba(255,51,51,0.5); } 100% { border-color: var(--teaser); box-shadow: 0 0 30px var(--teaser); } }
 
 /* SOCIAL PANEL */
 .social-panel { position: fixed; left: 50px; top: 50%; transform: translateY(-50%); z-index: 100; }
@@ -67,7 +62,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .i5 { top: 18%; right: 18%; transform: translate(50%, -50%); }
 
 /* HERO */
-.glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; }
+.glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -97,18 +92,20 @@ const fire=document.getElementById("fire"); const fctx=fire.getContext("2d");
 function resize(){ fire.width=innerWidth; fire.height=innerHeight; }
 resize(); onresize=resize;
 let flames=[]; function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
-addEventListener("mousemove",e=>spawn(e.clientX,e.clientY));
+let mouseX = 0, mouseY = 0;
+addEventListener("mousemove",e=>{ spawn(e.clientX,e.clientY); mouseX = e.clientX; mouseY = e.clientY; });
+
 function animateFire(){ fctx.clearRect(0,0,innerWidth,innerHeight); for(let i=flames.length-1;i>=0;i--){ let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04; if(p.a<=0) flames.splice(i,1); else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); } } requestAnimationFrame(animateFire); }
 animateFire();
 
-// SONIC CUBES LOGIC
+// MAGNETIC SONIC CUBES LOGIC
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
     { name: "Before the Return", type: "green", link: "https://www.youtube.com/watch?v=0wBXdnBznY0" },
     { name: "Sunno", type: "green", link: "https://www.youtube.com/watch?v=02uImf7-wfQ" },
     { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
-    { name: "JanEJana", type: "Golden", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
+    { name: "JanEJana", type: "green", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
 ];
 
 const cubes = [];
@@ -116,16 +113,34 @@ songs.forEach(song => {
     const el = document.createElement('div');
     el.className = `sonic-cube cube-${song.type}`;
     el.innerHTML = `<span>${song.name}</span>`;
-    el.onclick = () => window.open(song.link, '_blank');
+    el.onclick = () => { 
+        // Explosion Effect on Click
+        for(let i=0; i<15; i++) spawn(event.clientX, event.clientY);
+        setTimeout(() => window.open(song.link, '_blank'), 200);
+    };
     document.getElementById('cube-universe').appendChild(el);
-    cubes.push({ el, x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2 });
+    cubes.push({ el, x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*1.5, vy: (Math.random()-0.5)*1.5, targetX: 0, targetY: 0 });
 });
 
 function animateCubes() {
     cubes.forEach(c => {
+        // Normal Floating Movement
         c.x += c.vx; c.y += c.vy;
+
+        // MAGNETIC LOGIC: Khinchaao
+        const dx = mouseX - c.x;
+        const dy = mouseY - c.y;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+        
+        if(distance < 250) {
+            c.x += dx * 0.03;
+            c.y += dy * 0.03;
+        }
+
+        // Wall Collision
         if (c.x <= 0 || c.x >= innerWidth - 140) c.vx *= -1;
         if (c.y <= 0 || c.y >= innerHeight - 60) c.vy *= -1;
+        
         c.el.style.left = c.x + 'px'; c.el.style.top = c.y + 'px';
     });
     requestAnimationFrame(animateCubes);
