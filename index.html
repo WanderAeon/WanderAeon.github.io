@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Echo Constellation</title>
+    <title>WanderAeon | Breathing Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
@@ -27,14 +27,20 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     text-transform: uppercase;
     letter-spacing: 2px;
     cursor: pointer;
-    transition: 0.5s;
-    opacity: 0.1; /* Almost invisible until mouse comes near */
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Automatic breathing effect */
+    animation: breathe 6s infinite ease-in-out;
 }
-.node:hover { opacity: 1 !important; transform: scale(1.1); }
+.node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none; }
 .dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; }
+
+/* Breathing Keyframes */
+@keyframes breathe {
+    0%, 100% { opacity: 0.05; filter: blur(5px); }
+    50% { opacity: 0.4; filter: blur(2px); }
+}
 
 /* Color States */
 .green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
@@ -110,11 +116,14 @@ songs.forEach((song, i) => {
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
     
-    // Spread nodes across the screen
-    const x = 15 + Math.random() * 70;
+    // Random positions
+    const x = 10 + Math.random() * 80;
     const y = 15 + Math.random() * 70;
     el.style.left = x + '%';
     el.style.top = y + '%';
+    
+    // Staggered animation delay so they don't breathe at the same time
+    el.style.animationDelay = (Math.random() * 5) + 's';
     
     univ.appendChild(el);
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
@@ -126,14 +135,15 @@ function updateNodes() {
         const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
         
-        // Reveal effect: opacity increases as mouse gets closer
-        const maxDist = 250;
+        const maxDist = 200;
         if(dist < maxDist) {
+            // Disable animation when mouse is near for manual control
+            n.el.style.animation = 'none';
             n.el.style.opacity = 1 - (dist/maxDist);
-            n.el.style.filter = `blur(${dist/50}px)`;
+            n.el.style.filter = `blur(${dist/60}px)`;
         } else {
-            n.el.style.opacity = 0.05;
-            n.el.style.filter = `blur(5px)`;
+            // Re-enable breathing animation
+            n.el.style.animation = 'breathe 6s infinite ease-in-out';
         }
     });
 }
