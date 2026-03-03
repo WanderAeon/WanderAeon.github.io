@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Stable Physics</title>
+    <title>WanderAeon | Echo Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
 
+/* INTRO PORTAL */
 #intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; animation: fadeOut 3s forwards 1s; }
 .portal { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--main), #000); box-shadow: 0 0 40px orange, 0 0 150px red; animation: expand 3s forwards; }
 @keyframes expand { 0% { transform: scale(0) } 100% { transform: scale(80); opacity: 0 } }
@@ -16,23 +17,32 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 
 canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
-#cube-universe { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
-.sonic-cube { 
-    position: absolute; padding: 12px 18px; border-radius: 8px; 
-    font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; pointer-events: auto;
-    text-transform: uppercase; letter-spacing: 2px;
-    border: 1px solid rgba(255,255,255,0.1); 
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    text-align: center; min-width: 130px;
+/* CONSTELLATION SYSTEM */
+#universe { position: fixed; inset: 0; z-index: 5; }
+.node { 
+    position: absolute; 
+    font-family: 'Orbitron', sans-serif; 
+    font-size: 10px; 
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.5s;
+    opacity: 0.1; /* Almost invisible until mouse comes near */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+.node:hover { opacity: 1 !important; transform: scale(1.1); }
+.dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; }
 
-.cube-green { background: rgba(0, 255, 136, 0.05); border-color: var(--released); color: var(--released); box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
-.cube-red { background: rgba(255, 51, 51, 0.05); border-color: var(--teaser); color: var(--teaser); box-shadow: 0 0 15px rgba(255, 51, 51, 0.3); }
-.cube-gold { background: rgba(255, 215, 0, 0.1); border-color: var(--hit); color: var(--hit); box-shadow: 0 0 25px var(--hit); animation: goldPulse 2s infinite alternate; }
-@keyframes goldPulse { from { box-shadow: 0 0 10px var(--hit); } to { box-shadow: 0 0 35px var(--hit); } }
+/* Color States */
+.green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
+.red .dot { background: var(--teaser); box-shadow: 0 0 15px var(--teaser); }
+.gold .dot { background: var(--hit); box-shadow: 0 0 25px var(--hit); animation: hitPulse 1.5s infinite alternate; }
+@keyframes hitPulse { from { transform: scale(1); box-shadow: 0 0 10px var(--hit); } to { transform: scale(1.5); box-shadow: 0 0 30px var(--hit); } }
 
+/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 50px; top: 50%; transform: translateY(-50%); z-index: 100; }
 .social-btn { position: relative; width: 65px; height: 65px; z-index: 105; cursor: pointer; }
 .social-btn img { width: 100%; filter: drop-shadow(0 0 15px var(--main)); }
@@ -47,14 +57,14 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .i4 { top: 50%; left: 0; transform: translate(-50%, -50%); }
 .i5 { top: 18%; right: 18%; transform: translate(50%, -50%); }
 
-.glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; }
+.glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; z-index: 2; position: relative; }
 </style>
 </head>
 <body>
 
 <div id="intro"><div class="portal"></div></div>
 <canvas id="fire"></canvas>
-<div id="cube-universe"></div>
+<div id="universe"></div>
 
 <div class="social-panel">
     <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials"></div>
@@ -77,7 +87,7 @@ function resize(){ fire.width=innerWidth; fire.height=innerHeight; }
 resize(); onresize=resize;
 let flames=[]; function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
 let mX = 0, mY = 0;
-addEventListener("mousemove",e=>{ spawn(e.clientX,e.clientY); mX = e.clientX; mY = e.clientY; });
+addEventListener("mousemove",e=>{ spawn(e.clientX,e.clientY); mX = e.clientX; mY = e.clientY; updateNodes(); });
 
 function animateFire(){ fctx.clearRect(0,0,innerWidth,innerHeight); for(let i=flames.length-1;i>=0;i--){ let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04; if(p.a<=0) flames.splice(i,1); else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); } } requestAnimationFrame(animateFire); }
 animateFire();
@@ -91,57 +101,42 @@ const songs = [
     { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
 ];
 
-const cubes = [];
-songs.forEach(song => {
+const nodes = [];
+const univ = document.getElementById('universe');
+
+songs.forEach((song, i) => {
     const el = document.createElement('div');
-    el.className = `sonic-cube cube-${song.type}`;
-    el.innerHTML = `<span>${song.name}</span>`;
-    el.onclick = () => { for(let i=0; i<10; i++) spawn(event.clientX, event.clientY); setTimeout(() => window.open(song.link, '_blank'), 200); };
-    document.getElementById('cube-universe').appendChild(el);
-    cubes.push({ el, x: Math.random()*innerWidth, y: Math.random()*innerHeight, vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1, w: 140, h: 50 });
+    el.className = `node ${song.type}`;
+    el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
+    el.onclick = () => window.open(song.link, '_blank');
+    
+    // Spread nodes across the screen
+    const x = 15 + Math.random() * 70;
+    const y = 15 + Math.random() * 70;
+    el.style.left = x + '%';
+    el.style.top = y + '%';
+    
+    univ.appendChild(el);
+    nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
 
-function checkCollision(c1, c2) {
-    if (c1.x < c2.x + c2.w && c1.x + c1.w > c2.x && c1.y < c2.y + c2.h && c1.y + c1.h > c2.y) {
-        let tempVx = c1.vx; let tempVy = c1.vy;
-        c1.vx = c2.vx * 0.8; c1.vy = c2.vy * 0.8;
-        c2.vx = tempVx * 0.8; c2.vy = tempVy * 0.8;
-        c1.x += c1.vx * 3; c1.y += c1.vy * 3;
-    }
-}
-
-function animateCubes() {
-    cubes.forEach((c, i) => {
-        // Friction: Slows down excessive speed
-        c.vx *= 0.99; c.vy *= 0.99;
-        
-        c.x += c.vx; c.y += c.vy;
-        
-        if (c.x <= 0 || c.x >= innerWidth - c.w) c.vx *= -1;
-        if (c.y <= 0 || c.y >= innerHeight - c.h) c.vy *= -1;
-
-        const dx = mX - (c.x + c.w/2);
-        const dy = mY - (c.y + c.h/2);
+function updateNodes() {
+    nodes.forEach(n => {
+        const dx = mX - n.x;
+        const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 120) {
-            c.vx -= dx * 0.002;
-            c.vy -= dy * 0.002;
+        
+        // Reveal effect: opacity increases as mouse gets closer
+        const maxDist = 250;
+        if(dist < maxDist) {
+            n.el.style.opacity = 1 - (dist/maxDist);
+            n.el.style.filter = `blur(${dist/50}px)`;
+        } else {
+            n.el.style.opacity = 0.05;
+            n.el.style.filter = `blur(5px)`;
         }
-
-        for(let j = i + 1; j < cubes.length; j++) {
-            checkCollision(c, cubes[j]);
-        }
-
-        // Limit Max Speed
-        const maxSpeed = 2;
-        if(Math.abs(c.vx) > maxSpeed) c.vx = (c.vx > 0 ? 1 : -1) * maxSpeed;
-        if(Math.abs(c.vy) > maxSpeed) c.vy = (c.vy > 0 ? 1 : -1) * maxSpeed;
-
-        c.el.style.left = c.x + 'px'; c.el.style.top = c.y + 'px';
     });
-    requestAnimationFrame(animateCubes);
 }
-animateCubes();
 
 const btn=document.getElementById("socialBtn"); const icons=document.getElementById("socialIcons");
 function show(){ icons.classList.add("show"); setTimeout(()=>icons.classList.remove("show"),6000); }
