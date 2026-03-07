@@ -3,11 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Deep Breathing Constellation</title>
+    <title>WanderAeon | Nebula Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
+
+/* NEBULA CLOUDS */
+.nebula {
+    position: fixed; inset: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 69, 0, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 30% 40%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
+    filter: blur(80px);
+    z-index: 0;
+    animation: drift 40s linear infinite;
+    pointer-events: none;
+}
+.nebula-alt {
+    background: radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.06) 0%, transparent 55%);
+    animation: drift-alt 55s linear infinite;
+}
+
+@keyframes drift {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes drift-alt {
+    0% { transform: rotate(360deg) translate(-5%, -5%); }
+    50% { transform: rotate(180deg) translate(5%, 5%); }
+    100% { transform: rotate(0deg) translate(-5%, -5%); }
+}
 
 /* INTRO PORTAL */
 #intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; animation: fadeOut 3s forwards 1s; }
@@ -30,17 +56,15 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Deep Breathing effect */
     animation: deepBreathe 8s infinite ease-in-out;
     opacity: 0;
 }
 .node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
 
-/* Deep Breathing Keyframes - 2-3 sec visibility at peak */
 @keyframes deepBreathe {
     0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); }
-    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } /* Text stays visible here */
+    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); }
 }
 
 /* Color States */
@@ -70,6 +94,8 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 <body>
 
 <div id="intro"><div class="portal"></div></div>
+<div class="nebula"></div>
+<div class="nebula nebula-alt"></div>
 <canvas id="fire"></canvas>
 <div id="universe"></div>
 
@@ -116,16 +142,11 @@ songs.forEach((song, i) => {
     el.className = `node ${song.type}`;
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
-    
-    // Spread nodes strategically
     const x = 15 + Math.random() * 70;
     const y = 20 + Math.random() * 60;
     el.style.left = x + '%';
     el.style.top = y + '%';
-    
-    // Random delays for natural star-like pulsing
     el.style.animationDelay = (Math.random() * 8) + 's';
-    
     univ.appendChild(el);
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
@@ -135,7 +156,6 @@ function updateNodes() {
         const dx = mX - n.x;
         const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        
         const maxDist = 220;
         if(dist < maxDist) {
             n.el.style.animation = 'none';
