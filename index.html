@@ -143,3 +143,50 @@ window.onresize = initNebula;
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
+    { name: "Before the Return", type: "green", link: "https://www.youtube.com/watch?v=0wBXdnBdnY0" },
+    { name: "Sunno", type: "green", link: "https://www.youtube.com/watch?v=02uImf7-wfQ" },
+    { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
+    { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
+];
+
+const nodes = [];
+const univ = document.getElementById('universe');
+let mX = 0, mY = 0;
+
+songs.forEach((song, i) => {
+    const el = document.createElement('div');
+    el.className = `node ${song.type}`;
+    el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
+    el.onclick = () => window.open(song.link, '_blank');
+    const x = 15 + Math.random() * 70;
+    const y = 20 + Math.random() * 60;
+    el.style.left = x + '%';
+    el.style.top = y + '%';
+    el.style.animationDelay = (Math.random() * 8) + 's';
+    univ.appendChild(el);
+    nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
+});
+
+addEventListener("mousemove", e => { mX = e.clientX; mY = e.clientY; updateNodes(); });
+
+function updateNodes() {
+    nodes.forEach(n => {
+        const dx = mX - n.x;
+        const dy = mY - n.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 220) {
+            n.el.style.animation = 'none';
+            n.el.style.opacity = 1 - (dist/220);
+            n.el.style.filter = "blur(0px)";
+        } else {
+            n.el.style.animation = 'deepBreathe 8s infinite ease-in-out';
+        }
+    });
+}
+
+const btn=document.getElementById("socialBtn"); const icons=document.getElementById("socialIcons");
+function show(){ icons.classList.add("show"); setTimeout(()=>icons.classList.remove("show"),6000); }
+btn.onclick=show; btn.onmouseenter=show;
+</script>
+</body>
+</html>
