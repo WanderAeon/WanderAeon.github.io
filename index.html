@@ -3,28 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Real Nebula Constellation</title>
+    <title>WanderAeon | Deep Breathing Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
-
-/* Real Background Image with Overlay */
-#bg-image {
-    position: fixed; inset: 0;
-    background: url('final.jpg') center/cover no-repeat fixed;
-    filter: brightness(0.3);
-    z-index: -2;
-}
-
-/* Nebula Canvas Overlay */
-#nebula-canvas { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.6; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
 
 /* INTRO PORTAL */
 #intro { position: fixed; inset: 0; background: black; display: flex; justify-content: center; align-items: center; z-index: 999; animation: fadeOut 3s forwards 1s; }
 .portal { width: 40px; height: 40px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--main), #000); box-shadow: 0 0 40px orange, 0 0 150px red; animation: expand 3s forwards; }
 @keyframes expand { 0% { transform: scale(0) } 100% { transform: scale(80); opacity: 0 } }
 @keyframes fadeOut { 0%, 80% { opacity: 1 } 100% { opacity: 0; pointer-events: none } }
+
+canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
 /* CONSTELLATION SYSTEM */
 #universe { position: fixed; inset: 0; z-index: 5; }
@@ -39,15 +30,17 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Deep Breathing effect */
     animation: deepBreathe 8s infinite ease-in-out;
     opacity: 0;
 }
 .node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
 
+/* Deep Breathing Keyframes - 2-3 sec visibility at peak */
 @keyframes deepBreathe {
-    0%, 100% { opacity: 0.1; filter: blur(4px); transform: scale(0.9); }
-    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); }
+    0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); }
+    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } /* Text stays visible here */
 }
 
 /* Color States */
@@ -77,8 +70,7 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000;
 <body>
 
 <div id="intro"><div class="portal"></div></div>
-<div id="bg-image"></div>
-<canvas id="nebula-canvas"></canvas>
+<canvas id="fire"></canvas>
 <div id="universe"></div>
 
 <div class="social-panel">
@@ -97,53 +89,20 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000;
 </section>
 
 <script>
-// --- NEBULA CANVAS LOGIC ---
-const nCanvas = document.getElementById("nebula-canvas");
-const nCtx = nCanvas.getContext("2d");
-let particles = [];
+const fire=document.getElementById("fire"); const fctx=fire.getContext("2d");
+function resize(){ fire.width=innerWidth; fire.height=innerHeight; }
+resize(); onresize=resize;
+let flames=[]; function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
+let mX = 0, mY = 0;
+addEventListener("mousemove",e=>{ spawn(e.clientX,e.clientY); mX = e.clientX; mY = e.clientY; updateNodes(); });
 
-function initNebula() {
-    nCanvas.width = window.innerWidth;
-    nCanvas.height = window.innerHeight;
-    particles = [];
-    for(let i=0; i<40; i++) {
-        particles.push({
-            x: Math.random() * nCanvas.width,
-            y: Math.random() * nCanvas.height,
-            r: Math.random() * 150 + 100,
-            color: i % 2 === 0 ? "rgba(255, 69, 0, 0.05)" : "rgba(0, 255, 136, 0.03)",
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5
-        });
-    }
-}
+function animateFire(){ fctx.clearRect(0,0,innerWidth,innerHeight); for(let i=flames.length-1;i>=0;i--){ let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04; if(p.a<=0) flames.splice(i,1); else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); } } requestAnimationFrame(animateFire); }
+animateFire();
 
-function drawNebula() {
-    nCtx.clearRect(0,0,nCanvas.width, nCanvas.height);
-    nCtx.filter = "blur(60px)";
-    particles.forEach(p => {
-        nCtx.beginPath();
-        nCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        nCtx.fillStyle = p.color;
-        nCtx.fill();
-        p.x += p.vx; p.y += p.vy;
-        if(p.x < -p.r) p.x = nCanvas.width + p.r;
-        if(p.x > nCanvas.width + p.r) p.x = -p.r;
-        if(p.y < -p.r) p.y = nCanvas.height + p.r;
-        if(p.y > nCanvas.height + p.r) p.y = -p.r;
-    });
-    requestAnimationFrame(drawNebula);
-}
-
-initNebula();
-drawNebula();
-window.onresize = initNebula;
-
-// --- SONGS LOGIC ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
-    { name: "Before the Return", type: "green", link: "https://www.youtube.com/watch?v=0wBXdnBdnY0" },
+    { name: "Before the Return", type: "green", link: "https://www.youtube.com/watch?v=0wBXdnBznY0" },
     { name: "Sunno", type: "green", link: "https://www.youtube.com/watch?v=02uImf7-wfQ" },
     { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
     { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
@@ -151,33 +110,37 @@ const songs = [
 
 const nodes = [];
 const univ = document.getElementById('universe');
-let mX = 0, mY = 0;
 
 songs.forEach((song, i) => {
     const el = document.createElement('div');
     el.className = `node ${song.type}`;
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
+    
+    // Spread nodes strategically
     const x = 15 + Math.random() * 70;
     const y = 20 + Math.random() * 60;
     el.style.left = x + '%';
     el.style.top = y + '%';
+    
+    // Random delays for natural star-like pulsing
     el.style.animationDelay = (Math.random() * 8) + 's';
+    
     univ.appendChild(el);
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
-
-addEventListener("mousemove", e => { mX = e.clientX; mY = e.clientY; updateNodes(); });
 
 function updateNodes() {
     nodes.forEach(n => {
         const dx = mX - n.x;
         const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 220) {
+        
+        const maxDist = 220;
+        if(dist < maxDist) {
             n.el.style.animation = 'none';
-            n.el.style.opacity = 1 - (dist/220);
-            n.el.style.filter = "blur(0px)";
+            n.el.style.opacity = 1 - (dist/maxDist);
+            n.el.style.filter = `blur(${dist/80}px)`;
         } else {
             n.el.style.animation = 'deepBreathe 8s infinite ease-in-out';
         }
