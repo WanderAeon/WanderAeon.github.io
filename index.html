@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Breathing Constellation</title>
+    <title>WanderAeon | Deep Breathing Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
@@ -22,7 +22,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .node { 
     position: absolute; 
     font-family: 'Orbitron', sans-serif; 
-    font-size: 10px; 
+    font-size: 11px; 
     color: white;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -30,23 +30,24 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Automatic breathing effect */
-    animation: breathe 6s infinite ease-in-out;
+    /* Deep Breathing effect */
+    animation: deepBreathe 8s infinite ease-in-out;
+    opacity: 0;
 }
-.node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none; }
-.dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; }
+.node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
+.dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
 
-/* Breathing Keyframes */
-@keyframes breathe {
-    0%, 100% { opacity: 0.05; filter: blur(5px); }
-    50% { opacity: 0.4; filter: blur(2px); }
+/* Deep Breathing Keyframes - 2-3 sec visibility at peak */
+@keyframes deepBreathe {
+    0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); }
+    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } /* Text stays visible here */
 }
 
 /* Color States */
 .green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
 .red .dot { background: var(--teaser); box-shadow: 0 0 15px var(--teaser); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 25px var(--hit); animation: hitPulse 1.5s infinite alternate; }
-@keyframes hitPulse { from { transform: scale(1); box-shadow: 0 0 10px var(--hit); } to { transform: scale(1.5); box-shadow: 0 0 30px var(--hit); } }
+@keyframes hitPulse { from { transform: scale(1); box-shadow: 0 0 10px var(--hit); } to { transform: scale(1.4); box-shadow: 0 0 35px var(--hit); } }
 
 /* SOCIAL PANEL */
 .social-panel { position: fixed; left: 50px; top: 50%; transform: translateY(-50%); z-index: 100; }
@@ -116,14 +117,14 @@ songs.forEach((song, i) => {
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
     
-    // Random positions
-    const x = 10 + Math.random() * 80;
-    const y = 15 + Math.random() * 70;
+    // Spread nodes strategically
+    const x = 15 + Math.random() * 70;
+    const y = 20 + Math.random() * 60;
     el.style.left = x + '%';
     el.style.top = y + '%';
     
-    // Staggered animation delay so they don't breathe at the same time
-    el.style.animationDelay = (Math.random() * 5) + 's';
+    // Random delays for natural star-like pulsing
+    el.style.animationDelay = (Math.random() * 8) + 's';
     
     univ.appendChild(el);
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
@@ -135,15 +136,13 @@ function updateNodes() {
         const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
         
-        const maxDist = 200;
+        const maxDist = 220;
         if(dist < maxDist) {
-            // Disable animation when mouse is near for manual control
             n.el.style.animation = 'none';
             n.el.style.opacity = 1 - (dist/maxDist);
-            n.el.style.filter = `blur(${dist/60}px)`;
+            n.el.style.filter = `blur(${dist/80}px)`;
         } else {
-            // Re-enable breathing animation
-            n.el.style.animation = 'breathe 6s infinite ease-in-out';
+            n.el.style.animation = 'deepBreathe 8s infinite ease-in-out';
         }
     });
 }
