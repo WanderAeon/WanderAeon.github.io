@@ -3,35 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Fog Wipe Start</title>
+    <title>WanderAeon | Autumn Echo</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
+:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --leaf-dark: #cc4400; --leaf-gold: #e6b800; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
 
-/* FOG WIPE EFFECT */
+/* INTRO PORTAL */
 #intro { 
     position: fixed; inset: 0; background: black; 
     z-index: 999; display: flex; justify-content: center; align-items: center;
 }
-
-/* Two panels of fog that split apart */
 .fog-panel {
     position: absolute; top: 0; width: 50%; height: 100%;
     background: linear-gradient(rgba(0,0,0,0.9), rgba(20,20,20,0.95));
     backdrop-filter: blur(50px);
     transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1);
-    display: flex; align-items: center; justify-content: center;
 }
 .left-panel { left: 0; border-right: 1px solid rgba(255, 69, 0, 0.1); }
 .right-panel { right: 0; border-left: 1px solid rgba(255, 69, 0, 0.1); }
-
-/* Start the split after a small delay */
 .loaded .left-panel { transform: translateX(-100%); }
 .loaded .right-panel { transform: translateX(100%); }
 .loaded #intro { pointer-events: none; transition: opacity 1s 1.5s; opacity: 0; }
-
-/* Initial Glowing Core in Fog */
 .fog-core {
     width: 60px; height: 60px; border-radius: 50%;
     background: radial-gradient(circle, #fff, var(--main));
@@ -41,7 +34,8 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 }
 @keyframes fogPulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.1); opacity: 1; } }
 
-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+/* AUTUMN LEAVES CANVAS */
+#leaves-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.6; }
 
 /* CONSTELLATION SYSTEM */
 #universe { position: fixed; inset: 0; z-index: 5; }
@@ -61,13 +55,10 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 }
 .node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
-
 @keyframes deepBreathe {
     0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); }
     30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); }
 }
-
-/* Color States */
 .green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
 .red .dot { background: var(--teaser); box-shadow: 0 0 15px var(--teaser); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 25px var(--hit); animation: hitPulse 1.5s infinite alternate; }
@@ -99,7 +90,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
     <div class="fog-panel right-panel"></div>
 </div>
 
-<canvas id="fire"></canvas>
+<canvas id="leaves-canvas"></canvas>
 <div id="universe"></div>
 
 <div class="social-panel">
@@ -118,16 +109,62 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 </section>
 
 <script>
-const fire=document.getElementById("fire"); const fctx=fire.getContext("2d");
-function resize(){ fire.width=innerWidth; fire.height=innerHeight; }
-resize(); onresize=resize;
-let flames=[]; function spawn(x,y){ for(let i=0;i<4;i++) flames.push({x,y,s:Math.random()*5+2,a:1,vx:(Math.random()-.5)*1.5,vy:-Math.random()*2}); }
-let mX = 0, mY = 0;
-addEventListener("mousemove",e=>{ spawn(e.clientX,e.clientY); mX = e.clientX; mY = e.clientY; updateNodes(); });
+// --- AUTUMN LEAVES LOGIC ---
+const lCanvas = document.getElementById("leaves-canvas");
+const lCtx = lCanvas.getContext("2d");
+let leaves = [];
+const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
 
-function animateFire(){ fctx.clearRect(0,0,innerWidth,innerHeight); for(let i=flames.length-1;i>=0;i--){ let p=flames[i]; p.x+=p.vx; p.y+=p.vy; p.a-=.04; if(p.a<=0) flames.splice(i,1); else{ fctx.globalAlpha=p.a; fctx.fillStyle="orange"; fctx.beginPath(); fctx.arc(p.x,p.y,p.s,0,Math.PI*2); fctx.fill(); } } requestAnimationFrame(animateFire); }
-animateFire();
+function initLeaves() {
+    lCanvas.width = window.innerWidth;
+    lCanvas.height = window.innerHeight;
+    leaves = [];
+    for(let i=0; i<35; i++) { // Optimized number for mobile
+        leaves.push({
+            x: Math.random() * lCanvas.width,
+            y: Math.random() * lCanvas.height,
+            r: Math.random() * 5 + 2, // Size
+            color: leafColors[Math.floor(Math.random() * leafColors.length)],
+            vx: (Math.random() - 0.5) * 1, // Horizontal drift
+            vy: Math.random() * 1.5 + 0.5, // Falling speed
+            ay: Math.random() * 0.02 + 0.01 // Swing animation
+        });
+    }
+}
 
+function drawLeaves() {
+    lCtx.clearRect(0,0,lCanvas.width, lCanvas.height);
+    lCtx.filter = "blur(1px)"; // Soft bokeh effect
+    leaves.forEach(p => {
+        lCtx.beginPath();
+        // Drawing abstract leaf-like shapes
+        lCtx.moveTo(p.x, p.y);
+        lCtx.lineTo(p.x + p.r, p.y + p.r);
+        lCtx.lineTo(p.x, p.y + p.r * 2);
+        lCtx.lineTo(p.x - p.r, p.y + p.r);
+        lCtx.closePath();
+        
+        lCtx.fillStyle = p.color;
+        lCtx.fill();
+        
+        // Physics
+        p.y += p.vy;
+        p.x += Math.sin(p.y * p.ay) * 0.5 + p.vx;
+        
+        // Loop back
+        if(p.y > lCanvas.height + p.r * 2) {
+            p.y = -p.r * 2;
+            p.x = Math.random() * lCanvas.width;
+        }
+    });
+    requestAnimationFrame(drawLeaves);
+}
+
+initLeaves();
+drawLeaves();
+window.onresize = initLeaves;
+
+// --- SONGS LOGIC ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -139,6 +176,7 @@ const songs = [
 
 const nodes = [];
 const univ = document.getElementById('universe');
+let mX = 0, mY = 0;
 
 songs.forEach((song, i) => {
     const el = document.createElement('div');
@@ -154,6 +192,8 @@ songs.forEach((song, i) => {
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
 
+addEventListener("mousemove", e => { mX = e.clientX; mY = e.clientY; updateNodes(); });
+
 function updateNodes() {
     nodes.forEach(n => {
         const dx = mX - n.x;
@@ -163,7 +203,7 @@ function updateNodes() {
         if(dist < maxDist) {
             n.el.style.animation = 'none';
             n.el.style.opacity = 1 - (dist/maxDist);
-            n.el.style.filter = `blur(${dist/80}px)`;
+            n.el.style.filter = "blur(0px)";
         } else {
             n.el.style.animation = 'deepBreathe 8s infinite ease-in-out';
         }
