@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Fast Autumn Echo</title>
+    <title>WanderAeon | Burning Constellation</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
+:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --leaf-dark: #cc4400; --leaf-gold: #e6b800; --burn: #ffcc00; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
 
-/* FOG WIPE EFFECT */
+/* INTRO PORTAL */
 #intro { position: fixed; inset: 0; background: black; z-index: 999; display: flex; justify-content: center; align-items: center; }
 .fog-panel { position: absolute; top: 0; width: 50%; height: 100%; background: linear-gradient(rgba(0,0,0,0.9), rgba(20,20,20,0.95)); backdrop-filter: blur(50px); transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1); }
 .left-panel { left: 0; border-right: 1px solid rgba(255, 69, 0, 0.1); }
@@ -21,8 +21,8 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 @keyframes fogPulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.1); opacity: 1; } }
 
 /* CANVASES */
-canvas { position: fixed; inset: 0; pointer-events: none; }
-#leaves-canvas { z-index: 1; opacity: 0.7; }
+canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+#leaves-canvas { opacity: 0.8; }
 #fire-canvas { z-index: 2; }
 
 /* CONSTELLATION SYSTEM */
@@ -111,28 +111,44 @@ function initLeaves() {
             y: Math.random() * lCanvas.height,
             r: Math.random() * 5 + 3,
             color: leafColors[Math.floor(Math.random() * leafColors.length)],
-            vx: (Math.random() - 0.5) * 3, // Increased drift
-            vy: Math.random() * 3 + 2, // Faster falling
-            angle: Math.random() * Math.PI * 2
+            vx: (Math.random() - 0.5) * 3, // Drift speed
+            vy: Math.random() * 3 + 2, // Falling speed
+            angle: Math.random() * Math.PI * 2,
+            isBurning: false,
+            burnTime: 0
         });
     }
 }
 
 function spawnFire(x, y) {
     for(let i=0; i<5; i++)
-        flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 });
+        flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3, age:0 });
 }
 
 function draw() {
     lCtx.clearRect(0,0,lCanvas.width, lCanvas.height);
     fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
 
-    // Draw Autumn Leaves
+    // Draw Autumn Leaves & check burning
     leaves.forEach(p => {
         lCtx.save();
         lCtx.translate(p.x, p.y);
         lCtx.rotate(p.angle);
-        lCtx.fillStyle = p.color;
+        
+        // --- BURNING LOGIC ---
+        if (p.isBurning) {
+            p.burnTime += 1;
+            // Create a realistic burning core
+            lCtx.fillStyle = `rgba(255, ${200 - p.burnTime * 2}, 0, ${1 - p.burnTime/60})`;
+            lCtx.shadowBlur = 10;
+            lCtx.shadowColor = "orange";
+            if (p.burnTime % 5 === 0) spawnFire(p.x, p.y); // Spawn sparks while burning
+            if (p.burnTime > 60) { p.isBurning = false; p.burnTime = 0; p.y = -20; p.x = Math.random() * lCanvas.width; p.r = Math.random() * 5 + 3; } // Destroy leaf after burn
+        } else {
+            lCtx.fillStyle = p.color;
+            lCtx.shadowBlur = 0;
+        }
+
         lCtx.beginPath();
         lCtx.moveTo(0,0); lCtx.lineTo(p.r, p.r); lCtx.lineTo(0, p.r*2); lCtx.lineTo(-p.r, p.r);
         lCtx.closePath();
@@ -140,7 +156,7 @@ function draw() {
         lCtx.restore();
         
         p.y += p.vy; p.x += p.vx; p.angle += 0.02;
-        if(p.y > lCanvas.height) { p.y = -20; p.x = Math.random() * lCanvas.width; }
+        if(p.y > lCanvas.height) { p.y = -20; p.x = Math.random() * lCanvas.width; p.isBurning = false; p.burnTime = 0; p.r = Math.random() * 5 + 3; }
     });
 
     // Draw Fire Particles
@@ -189,8 +205,17 @@ songs.forEach((song, i) => {
 
 addEventListener("mousemove", e => { 
     mX = e.clientX; mY = e.clientY; 
-    spawnFire(mX, mY); // Fire trail re-activated
+    spawnFire(mX, mY); 
     updateNodes(); 
+    
+    // Check if mouse touches any leaf
+    leaves.forEach(leaf => {
+        const dx = mX - leaf.x;
+        const dy = mY - leaf.y;
+        if(Math.sqrt(dx*dx + dy*dy) < 30) { // Burning interaction radius
+            leaf.isBurning = true;
+        }
+    });
 });
 
 function updateNodes() {
