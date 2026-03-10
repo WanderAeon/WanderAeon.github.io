@@ -3,62 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Autumn Echo</title>
+    <title>WanderAeon | Fast Autumn Echo</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --leaf-dark: #cc4400; --leaf-gold: #e6b800; }
+:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
 
-/* INTRO PORTAL */
-#intro { 
-    position: fixed; inset: 0; background: black; 
-    z-index: 999; display: flex; justify-content: center; align-items: center;
-}
-.fog-panel {
-    position: absolute; top: 0; width: 50%; height: 100%;
-    background: linear-gradient(rgba(0,0,0,0.9), rgba(20,20,20,0.95));
-    backdrop-filter: blur(50px);
-    transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1);
-}
+/* FOG WIPE EFFECT */
+#intro { position: fixed; inset: 0; background: black; z-index: 999; display: flex; justify-content: center; align-items: center; }
+.fog-panel { position: absolute; top: 0; width: 50%; height: 100%; background: linear-gradient(rgba(0,0,0,0.9), rgba(20,20,20,0.95)); backdrop-filter: blur(50px); transition: transform 2s cubic-bezier(0.7, 0, 0.3, 1); }
 .left-panel { left: 0; border-right: 1px solid rgba(255, 69, 0, 0.1); }
 .right-panel { right: 0; border-left: 1px solid rgba(255, 69, 0, 0.1); }
 .loaded .left-panel { transform: translateX(-100%); }
 .loaded .right-panel { transform: translateX(100%); }
 .loaded #intro { pointer-events: none; transition: opacity 1s 1.5s; opacity: 0; }
-.fog-core {
-    width: 60px; height: 60px; border-radius: 50%;
-    background: radial-gradient(circle, #fff, var(--main));
-    box-shadow: 0 0 50px var(--main);
-    animation: fogPulse 2s infinite alternate;
-    position: absolute; z-index: 1000;
-}
+.fog-core { width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #fff, var(--main)); box-shadow: 0 0 50px var(--main); animation: fogPulse 2s infinite alternate; position: absolute; z-index: 1000; }
 @keyframes fogPulse { from { transform: scale(0.8); opacity: 0.5; } to { transform: scale(1.1); opacity: 1; } }
 
-/* AUTUMN LEAVES CANVAS */
-#leaves-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.6; }
+/* CANVASES */
+canvas { position: fixed; inset: 0; pointer-events: none; }
+#leaves-canvas { z-index: 1; opacity: 0.7; }
+#fire-canvas { z-index: 2; }
 
 /* CONSTELLATION SYSTEM */
 #universe { position: fixed; inset: 0; z-index: 5; }
 .node { 
-    position: absolute; 
-    font-family: 'Orbitron', sans-serif; 
-    font-size: 11px; 
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: deepBreathe 8s infinite ease-in-out;
-    opacity: 0;
+    position: absolute; font-family: 'Orbitron', sans-serif; font-size: 11px; color: white;
+    text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    animation: deepBreathe 8s infinite ease-in-out; opacity: 0;
 }
 .node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
-@keyframes deepBreathe {
-    0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); }
-    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); }
-}
+@keyframes deepBreathe { 0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); } 30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } }
 .green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
 .red .dot { background: var(--teaser); box-shadow: 0 0 15px var(--teaser); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 25px var(--hit); animation: hitPulse 1.5s infinite alternate; }
@@ -91,6 +68,7 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 </div>
 
 <canvas id="leaves-canvas"></canvas>
+<canvas id="fire-canvas"></canvas>
 <div id="universe"></div>
 
 <div class="social-panel">
@@ -109,62 +87,80 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 </section>
 
 <script>
-// --- AUTUMN LEAVES LOGIC ---
+// --- LEAVES & FIRE CANVAS LOGIC ---
 const lCanvas = document.getElementById("leaves-canvas");
 const lCtx = lCanvas.getContext("2d");
+const fCanvas = document.getElementById("fire-canvas");
+const fCtx = fCanvas.getContext("2d");
+
 let leaves = [];
+let flames = [];
 const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
 
+function resize() {
+    lCanvas.width = fCanvas.width = window.innerWidth;
+    lCanvas.height = fCanvas.height = window.innerHeight;
+    initLeaves();
+}
+
 function initLeaves() {
-    lCanvas.width = window.innerWidth;
-    lCanvas.height = window.innerHeight;
     leaves = [];
-    for(let i=0; i<35; i++) { // Optimized number for mobile
+    for(let i=0; i<45; i++) {
         leaves.push({
             x: Math.random() * lCanvas.width,
             y: Math.random() * lCanvas.height,
-            r: Math.random() * 5 + 2, // Size
+            r: Math.random() * 5 + 3,
             color: leafColors[Math.floor(Math.random() * leafColors.length)],
-            vx: (Math.random() - 0.5) * 1, // Horizontal drift
-            vy: Math.random() * 1.5 + 0.5, // Falling speed
-            ay: Math.random() * 0.02 + 0.01 // Swing animation
+            vx: (Math.random() - 0.5) * 3, // Increased drift
+            vy: Math.random() * 3 + 2, // Faster falling
+            angle: Math.random() * Math.PI * 2
         });
     }
 }
 
-function drawLeaves() {
-    lCtx.clearRect(0,0,lCanvas.width, lCanvas.height);
-    lCtx.filter = "blur(1px)"; // Soft bokeh effect
-    leaves.forEach(p => {
-        lCtx.beginPath();
-        // Drawing abstract leaf-like shapes
-        lCtx.moveTo(p.x, p.y);
-        lCtx.lineTo(p.x + p.r, p.y + p.r);
-        lCtx.lineTo(p.x, p.y + p.r * 2);
-        lCtx.lineTo(p.x - p.r, p.y + p.r);
-        lCtx.closePath();
-        
-        lCtx.fillStyle = p.color;
-        lCtx.fill();
-        
-        // Physics
-        p.y += p.vy;
-        p.x += Math.sin(p.y * p.ay) * 0.5 + p.vx;
-        
-        // Loop back
-        if(p.y > lCanvas.height + p.r * 2) {
-            p.y = -p.r * 2;
-            p.x = Math.random() * lCanvas.width;
-        }
-    });
-    requestAnimationFrame(drawLeaves);
+function spawnFire(x, y) {
+    for(let i=0; i<5; i++)
+        flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 });
 }
 
-initLeaves();
-drawLeaves();
-window.onresize = initLeaves;
+function draw() {
+    lCtx.clearRect(0,0,lCanvas.width, lCanvas.height);
+    fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
 
-// --- SONGS LOGIC ---
+    // Draw Autumn Leaves
+    leaves.forEach(p => {
+        lCtx.save();
+        lCtx.translate(p.x, p.y);
+        lCtx.rotate(p.angle);
+        lCtx.fillStyle = p.color;
+        lCtx.beginPath();
+        lCtx.moveTo(0,0); lCtx.lineTo(p.r, p.r); lCtx.lineTo(0, p.r*2); lCtx.lineTo(-p.r, p.r);
+        lCtx.closePath();
+        lCtx.fill();
+        lCtx.restore();
+        
+        p.y += p.vy; p.x += p.vx; p.angle += 0.02;
+        if(p.y > lCanvas.height) { p.y = -20; p.x = Math.random() * lCanvas.width; }
+    });
+
+    // Draw Fire Particles
+    for(let i=flames.length-1; i>=0; i--) {
+        let p = flames[i]; p.x += p.vx; p.y += p.vy; p.a -= 0.04;
+        if(p.a <= 0) flames.splice(i, 1);
+        else {
+            fCtx.globalAlpha = p.a; fCtx.fillStyle = "orange";
+            fCtx.beginPath(); fCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); fCtx.fill();
+        }
+    }
+    fCtx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+}
+
+resize();
+draw();
+window.onresize = resize;
+
+// --- CONSTELLATION MOUSE LOGIC ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA?si=NmCr6O1z5hHFQhJ3" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -185,24 +181,25 @@ songs.forEach((song, i) => {
     el.onclick = () => window.open(song.link, '_blank');
     const x = 15 + Math.random() * 70;
     const y = 20 + Math.random() * 60;
-    el.style.left = x + '%';
-    el.style.top = y + '%';
+    el.style.left = x + '%'; el.style.top = y + '%';
     el.style.animationDelay = (Math.random() * 8) + 's';
     univ.appendChild(el);
     nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
 
-addEventListener("mousemove", e => { mX = e.clientX; mY = e.clientY; updateNodes(); });
+addEventListener("mousemove", e => { 
+    mX = e.clientX; mY = e.clientY; 
+    spawnFire(mX, mY); // Fire trail re-activated
+    updateNodes(); 
+});
 
 function updateNodes() {
     nodes.forEach(n => {
-        const dx = mX - n.x;
-        const dy = mY - n.y;
+        const dx = mX - n.x; const dy = mY - n.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        const maxDist = 220;
-        if(dist < maxDist) {
+        if(dist < 220) {
             n.el.style.animation = 'none';
-            n.el.style.opacity = 1 - (dist/maxDist);
+            n.el.style.opacity = 1 - (dist/220);
             n.el.style.filter = "blur(0px)";
         } else {
             n.el.style.animation = 'deepBreathe 8s infinite ease-in-out';
