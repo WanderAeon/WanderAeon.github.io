@@ -3,78 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WanderAeon | Heartbeat Pulse</title>
+    <title>WanderAeon | Standard Scale Heartbeat</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; }
+/* Reset dimensions precisely to fix scaling tsunami */
+*, *::before, *::after { box-sizing: border-box; }
+:root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
 
-/* IDEA 1: HEARTBEAT START EFFECT */
+/* THE PURE HEARTBEAT START EFFECT (Isolated Layer) */
 #intro { 
     position: fixed; inset: 0; background: #000; 
     z-index: 999; display: flex; justify-content: center; align-items: center;
-    transition: opacity 1.5s ease-out;
+    transition: opacity 1.5s ease-out 1s; /* Delayed fade to complete pulse */
+    pointer-events: auto;
 }
 .pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
 .heart-pulse {
-    position: absolute; width: 100px; height: 100px; border: 2px solid var(--main);
+    position: absolute; width: 100px; height: 100px; border: 3px solid var(--main);
     border-radius: 50%; opacity: 0;
-    animation: pulseAnim 2s infinite ease-out;
+    animation: pulseAnim 1.8s infinite ease-out;
 }
-.pulse-2 { animation-delay: 0.5s; }
+.pulse-2 { animation-delay: 0.6s; }
 .intro-text {
-    font-family: 'Orbitron'; font-size: 24px; color: white; letter-spacing: 10px;
+    font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px;
     text-transform: uppercase; z-index: 1000; opacity: 0;
-    animation: textFade 4s forwards 0.5s;
+    animation: textFade 4s forwards 0.3s;
 }
 
 @keyframes pulseAnim {
-    0% { transform: scale(0.5); opacity: 0.8; }
-    100% { transform: scale(4); opacity: 0; }
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(5); opacity: 0; }
 }
 @keyframes textFade {
     0% { opacity: 0; filter: blur(10px); }
-    50% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); }
+    30% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); }
+    70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); }
     100% { opacity: 0; filter: blur(10px); }
 }
+/* When loaded, remove intro with clean wipe */
 .loaded #intro { opacity: 0; pointer-events: none; }
 
-/* REST OF THE STABLE CODE (Leaves, Constellation, Socials) */
-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-#leaves-canvas { opacity: 0.8; }
+/* --- RESTORED FIXED VISUALS --- */
+/* Restore canvases with lower z-index and standard visibility */
+canvas { position: fixed; inset: 0; pointer-events: none; }
+#leaves-canvas { z-index: 1; opacity: 0.8; }
 #fire-canvas { z-index: 2; }
-#universe { position: fixed; inset: 0; z-index: 5; }
+
+/* RESTORED CONSTELLATION SYSTEM (Standard Scale) */
+#universe { position: fixed; inset: 0; z-index: 5; pointer-events: auto; }
 .node { 
-    position: absolute; font-family: 'Orbitron'; font-size: 11px; color: white;
+    position: absolute; font-family: 'Orbitron', sans-serif; font-size: 11px; color: white;
     text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
     display: flex; flex-direction: column; align-items: center;
     animation: deepBreathe 8s infinite ease-in-out; opacity: 0;
 }
+.node span { font-size: 11px; } /* Strictly enforce 11px */
 .node:hover { opacity: 1 !important; transform: scale(1.1); filter: blur(0px) !important; animation: none !important; z-index: 10; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
-@keyframes deepBreathe { 0%, 100% { opacity: 0.05; filter: blur(4px); transform: scale(0.9); } 30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } }
+
+@keyframes deepBreathe {
+    0%, 100% { opacity: 0.1; filter: blur(4px); transform: scale(0.9); }
+    30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); }
+}
+
+/* Song States */
 .green .dot { background: var(--released); box-shadow: 0 0 15px var(--released); }
 .red .dot { background: var(--teaser); box-shadow: 0 0 15px var(--teaser); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 25px var(--hit); animation: hitPulse 1.5s infinite alternate; }
 @keyframes hitPulse { from { transform: scale(1); box-shadow: 0 0 10px var(--hit); } to { transform: scale(1.4); box-shadow: 0 0 35px var(--hit); } }
 
-/* SOCIAL PANEL (Professional) */
-.social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; }
-.social-btn { position: relative; width: 70px; height: 70px; z-index: 110; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); transition: 0.4s; }
+/* RESTORED PROFESSIONAL SOCIAL PANEL (Standard Size) */
+.social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; pointer-events: auto; }
+.social-btn { 
+    position: relative; width: 70px; height: 70px; z-index: 110; cursor: pointer; 
+    border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main);
+    display: flex; justify-content: center; align-items: center; overflow: hidden;
+    transition: 0.4s; box-shadow: 0 0 20px rgba(255, 69, 0, 0.3);
+}
 .social-btn:hover { transform: scale(1.1); box-shadow: 0 0 30px var(--main); }
-.social-icons { position: absolute; top: 50%; left: 35px; width: 0; height: 350px; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; gap: 15px; opacity: 0; visibility: hidden; transition: 0.5s; pointer-events: none; }
+/* Strictly enforce standard image size on main button image */
+.social-btn img { max-width: 80%; max-height: 80%; filter: drop-shadow(0 0 5px var(--main)); }
+
+.social-icons { 
+    position: absolute; top: 50%; left: 35px; width: 0; height: 350px; 
+    transform: translateY(-50%); display: flex; flex-direction: column; 
+    justify-content: center; gap: 15px; opacity: 0; visibility: hidden; 
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none;
+}
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 90px; pointer-events: auto; }
-.social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; transition: 0.3s; backdrop-filter: blur(10px); position: relative; }
-.social-icons a img { width: 24px; filter: invert(1) opacity(0.8); }
+
+.social-icons a { 
+    width: 50px; height: 50px; background: rgba(0,0,0,0.7); 
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; 
+    display: flex; justify-content: center; align-items: center; 
+    transition: 0.3s; backdrop-filter: blur(10px); position: relative;
+}
+.social-icons a img { max-width: 24px; filter: invert(1) opacity(0.8); transition: 0.3s; }
+
+/* Individual Brand Colors and Interaction */
 .yt:hover { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; transform: translateX(10px); }
 .tk:hover { border-color: #00f2ea; box-shadow: 0 0 15px #00f2ea; transform: translateX(10px); }
 .sc:hover { border-color: #ff5500; box-shadow: 0 0 15px #ff5500; transform: translateX(10px); }
 .fb:hover { border-color: #1877f2; box-shadow: 0 0 15px #1877f2; transform: translateX(10px); }
 .wa:hover { border-color: #25d366; box-shadow: 0 0 15px #25d366; transform: translateX(10px); }
-.social-icons a::after { content: attr(data-label); position: absolute; left: 60px; background: rgba(0,0,0,0.8); color: white; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-family: 'Orbitron'; opacity: 0; white-space: nowrap; transition: 0.3s; border: 1px solid var(--main); }
+.social-icons a:hover img { filter: invert(1) opacity(1) drop-shadow(0 0 5px white); }
+
+/* Standard Label Tooltip */
+.social-icons a::after {
+    content: attr(data-label); position: absolute; left: 60px; background: rgba(0,0,0,0.8);
+    color: white; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-family: 'Orbitron';
+    opacity: 0; white-space: nowrap; pointer-events: none; transition: 0.3s; border: 1px solid var(--main);
+}
 .social-icons a:hover::after { opacity: 1; left: 70px; }
 
-.glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; z-index: 2; position: relative; }
+/* HERO (Glow-Text) */
+.glow-text { 
+    font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; 
+    background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; 
+    color: transparent; text-align: center; margin: 0; 
+    pointer-events: none; z-index: 2; position: relative; 
+}
 </style>
 </head>
 <body>
@@ -108,9 +157,10 @@ canvas { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 
 <script>
 // --- START SYSTEM ---
+// Standard 4.5s delay to match textFade and pulse animation
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
-// --- LEAVES & FIRE CANVAS ---
+// --- LEAVES & FIRE CANVAS LOGIC ---
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
@@ -122,7 +172,7 @@ function initLeaves() {
         leaves.push({ x: Math.random() * lCanvas.width, y: Math.random() * lCanvas.height, r: Math.random() * 5 + 3, color: leafColors[Math.floor(Math.random() * leafColors.length)], vx: (Math.random() - 0.5) * 3, vy: Math.random() * 3 + 2, angle: Math.random() * Math.PI * 2, isBurning: false, burnTime: 0 });
     }
 }
-function spawnFire(x, y) { for(let i=0; i<5; i++) flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 }); }
+function spawnFire(x, y) { for(let i=0; i<5; i++) flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3, age:0 }); }
 
 function draw() {
     lCtx.clearRect(0,0,lCanvas.width, lCanvas.height); fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
@@ -132,7 +182,7 @@ function draw() {
             p.burnTime += 1; lCtx.fillStyle = `rgba(255, ${200 - p.burnTime * 2}, 0, ${1 - p.burnTime/60})`; lCtx.shadowBlur = 10; lCtx.shadowColor = "orange";
             if (p.burnTime % 5 === 0) spawnFire(p.x, p.y);
             if (p.burnTime > 60) { p.isBurning = false; p.burnTime = 0; p.y = -20; }
-        } else { lCtx.fillStyle = p.color; }
+        } else { lCtx.fillStyle = p.color; lCtx.shadowBlur = 0; }
         lCtx.beginPath(); lCtx.moveTo(0,0); lCtx.lineTo(p.r, p.r); lCtx.lineTo(0, p.r*2); lCtx.lineTo(-p.r, p.r); lCtx.closePath(); lCtx.fill(); lCtx.restore();
         p.y += p.vy; p.x += p.vx; p.angle += 0.02;
         if(p.y > lCanvas.height) { p.y = -20; p.x = Math.random() * lCanvas.width; }
@@ -141,9 +191,8 @@ function draw() {
         let p = flames[i]; p.x += p.vx; p.y += p.vy; p.a -= 0.04;
         if(p.a <= 0) flames.splice(i, 1); else { fCtx.globalAlpha = p.a; fCtx.fillStyle = "orange"; fCtx.beginPath(); fCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); fCtx.fill(); }
     }
-    requestAnimationFrame(draw);
+    fCtx.globalAlpha = 1; requestAnimationFrame(draw);
 }
-
 resize(); draw(); window.onresize = resize;
 
 // --- CONSTELLATION ---
@@ -162,7 +211,8 @@ songs.forEach((song, i) => {
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
     const x = 15 + Math.random() * 70; const y = 20 + Math.random() * 60;
-    el.style.left = x + '%'; el.style.top = y + '%'; el.style.animationDelay = (Math.random() * 8) + 's';
+    el.style.left = x + '%'; el.style.top = y + '%';
+    el.style.animationDelay = (Math.random() * 8) + 's';
     univ.appendChild(el); nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
 });
 
@@ -176,7 +226,7 @@ addEventListener("mousemove", e => {
     leaves.forEach(leaf => { if(Math.sqrt((mX-leaf.x)**2 + (mY-leaf.y)**2) < 30) leaf.isBurning = true; });
 });
 
-// Socials
+// Professional Social Toggle Logic (Standard Scale)
 const btn = document.getElementById("socialBtn"); const icons = document.getElementById("socialIcons");
 let active = false;
 btn.onclick = (e) => { e.stopPropagation(); active = !active; active ? icons.classList.add("show") : icons.classList.remove("show"); };
