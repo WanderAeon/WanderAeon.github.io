@@ -11,6 +11,28 @@
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
 
+/* CUSTOM CURSOR (Desktop Only) */
+#custom-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    font-family: 'Orbitron';
+    font-size: 12px;
+    color: var(--main);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    text-shadow: 0 0 10px var(--main);
+    display: none; /* Hidden by default, shown via JS on desktop */
+    transform: translate(-50%, -50%);
+}
+
+/* Hide default cursor on desktop for better effect */
+@media (pointer: fine) {
+    body { cursor: none; }
+    a, .node, .social-btn { cursor: none; }
+}
+
 /* INTRO LAYER */
 #intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
 .pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
@@ -32,7 +54,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
 @keyframes deepBreathe { 0%, 100% { opacity: 0.1; filter: blur(4px); transform: scale(0.9); } 30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } }
 
-/* SOCIAL PANEL - FIXED FOR HD IMAGES */
+/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; pointer-events: auto; }
 .social-btn { position: relative; width: 70px; height: 70px; z-index: 110; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; overflow: hidden; transition: 0.4s; box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); }
 .social-btn img { width: 100%; height: 100%; object-fit: cover; } 
@@ -41,7 +63,6 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 90px; pointer-events: auto; }
 
 .social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; transition: 0.3s; backdrop-filter: blur(10px); overflow: hidden; }
-/* Using exact filenames provided by you. filter:none ensures they show original colors. */
 .social-icons a img { width: 32px; height: 32px; object-fit: contain; filter: none; opacity: 1; transition: 0.3s; }
 
 .yt:hover { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; transform: translateX(10px); }
@@ -55,9 +76,18 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .social-icons a:hover::after { opacity: 1; left: 70px; }
 
 .glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; z-index: 2; position: relative; }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .social-panel { left: 10px; }
+    .glow-text { font-size: 12vw; }
+    .social-icons.show { left: 75px; }
+}
 </style>
 </head>
 <body>
+
+<div id="custom-cursor">WanderAeon</div>
 
 <div id="intro">
     <div class="pulse-container">
@@ -89,18 +119,27 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 <script>
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
+// --- VISUALS LOGIC ---
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
+const cursor = document.getElementById("custom-cursor");
+
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
 
-function resize() { lCanvas.width = fCanvas.width = window.innerWidth; lCanvas.height = fCanvas.height = window.innerHeight; initLeaves(); }
+function resize() { 
+    lCanvas.width = fCanvas.width = window.innerWidth; 
+    lCanvas.height = fCanvas.height = window.innerHeight; 
+    initLeaves(); 
+}
+
 function initLeaves() {
     leaves = [];
-    for(let i=0; i<45; i++) {
-        // SLOWER SPEED: vy set to very low (0.3 to 0.8)
+    let count = window.innerWidth < 768 ? 20 : 45; // Mobile par kam leaves for performance
+    for(let i=0; i<count; i++) {
         leaves.push({ x: Math.random() * lCanvas.width, y: Math.random() * lCanvas.height, r: Math.random() * 5 + 3, color: leafColors[Math.floor(Math.random() * leafColors.length)], vx: (Math.random() - 0.5) * 1, vy: Math.random() * 0.5 + 0.3, angle: Math.random() * Math.PI * 2, isBurning: false, burnTime: 0 });
     }
 }
+
 function spawnFire(x, y) { for(let i=0; i<5; i++) flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 }); }
 
 function draw() {
@@ -113,7 +152,7 @@ function draw() {
             if (p.burnTime > 60) { p.isBurning = false; p.burnTime = 0; p.y = -20; }
         } else { lCtx.fillStyle = p.color; }
         lCtx.beginPath(); lCtx.moveTo(0,0); lCtx.lineTo(p.r, p.r); lCtx.lineTo(0, p.r*2); lCtx.lineTo(-p.r, p.r); lCtx.closePath(); lCtx.fill(); lCtx.restore();
-        p.y += p.vy; p.x += p.vx; p.angle += 0.005; // Extremely slow rotation
+        p.y += p.vy; p.x += p.vx; p.angle += 0.005;
         if(p.y > lCanvas.height) { p.y = -20; p.x = Math.random() * lCanvas.width; }
     });
     for(let i=flames.length-1; i>=0; i--) {
@@ -122,8 +161,43 @@ function draw() {
     }
     requestAnimationFrame(draw);
 }
+
+// --- MOUSE & TOUCH LOGIC ---
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+if (!isTouchDevice) {
+    cursor.style.display = 'block';
+}
+
+addEventListener("mousemove", e => { 
+    let mX = e.clientX; let mY = e.clientY;
+    
+    // Custom Cursor Movement
+    if (!isTouchDevice) {
+        cursor.style.left = mX + 'px';
+        cursor.style.top = mY + 'px';
+    }
+
+    spawnFire(mX, mY); 
+    
+    nodes.forEach(n => {
+        const dx = mX - n.x; const dy = mY - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
+        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
+    });
+    leaves.forEach(leaf => { if(Math.sqrt((mX-leaf.x)**2 + (mY-leaf.y)**2) < 30) leaf.isBurning = true; });
+});
+
+// Mobile Touch Support for Fire
+addEventListener("touchmove", e => {
+    let tX = e.touches[0].clientX; let tY = e.touches[0].clientY;
+    spawnFire(tX, tY);
+    leaves.forEach(leaf => { if(Math.sqrt((tX-leaf.x)**2 + (tY-leaf.y)**2) < 30) leaf.isBurning = true; });
+});
+
 resize(); draw(); window.onresize = resize;
 
+// --- SONGS NODES ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -133,7 +207,6 @@ const songs = [
     { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
 ];
 const nodes = []; const univ = document.getElementById('universe');
-let mX = 0, mY = 0;
 songs.forEach((song) => {
     const el = document.createElement('div'); el.className = `node ${song.type}`;
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
@@ -141,16 +214,6 @@ songs.forEach((song) => {
     const x = 15 + Math.random() * 70; const y = 20 + Math.random() * 60;
     el.style.left = x + '%'; el.style.top = y + '%';
     univ.appendChild(el); nodes.push({ el, x: (x/100)*innerWidth, y: (y/100)*innerHeight });
-});
-
-addEventListener("mousemove", e => { 
-    mX = e.clientX; mY = e.clientY; spawnFire(mX, mY); 
-    nodes.forEach(n => {
-        const dx = mX - n.x; const dy = mY - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
-        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
-    });
-    leaves.forEach(leaf => { if(Math.sqrt((mX-leaf.x)**2 + (mY-leaf.y)**2) < 30) leaf.isBurning = true; });
 });
 
 const btn = document.getElementById("socialBtn"); const icons = document.getElementById("socialIcons");
