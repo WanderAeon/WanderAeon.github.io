@@ -16,6 +16,9 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 .bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
 @keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 40px; opacity: 1; } }
 
+/* SOUND CONTROL UI */
+#sound-status { position: fixed; top: 20px; right: 20px; z-index: 1002; color: white; font-family: 'Orbitron'; font-size: 10px; letter-spacing: 2px; display: none; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid var(--main); border-radius: 5px; }
+
 /* ORBITAL ALPHABETS CURSOR */
 #cursor-container { position: fixed; pointer-events: none; z-index: 9999; display: none; }
 #cursor-dot { position: absolute; width: 6px; height: 6px; background: var(--main); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--main), 0 0 30px var(--main); }
@@ -73,9 +76,9 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 
 <audio id="bg-music" loop preload="auto">
     <source src="We_are_WanderAeon.mp3" type="audio/mpeg">
-    <source src="We_are_WanderAeon" type="audio/mpeg">
-    Your browser does not support the audio element.
 </audio>
+
+<div id="sound-status">MUSIC: PLAYING</div>
 
 <div class="visualizer-container" id="visualizer"></div>
 
@@ -114,22 +117,31 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 <script>
 const startBtn = document.getElementById('start-btn');
 const bgMusic = document.getElementById('bg-music');
+const soundStatus = document.getElementById('sound-status');
 
-// Play Music logic
+// Force Play Logic
 startBtn.addEventListener('click', () => {
-    bgMusic.volume = 0.4; 
-    let playPromise = bgMusic.play();
-    
-    if (playPromise !== undefined) {
-        playPromise.then(_ => {
-            console.log("Audio started successfully");
-        }).catch(error => {
-            console.log("Audio failed to play. Check file name:", error);
-            alert("Music file dastyab nahi hai. File ka naam 'We_are_WanderAeon.mp3' check karein.");
-        });
-    }
+    bgMusic.volume = 0.5; 
+    bgMusic.play().then(() => {
+        soundStatus.style.display = "block";
+        soundStatus.innerText = "MUSIC: PLAYING";
+    }).catch(error => {
+        console.error("Playback error:", error);
+        alert("Audio load nahi ho saki. Baraye meharbani check karein ke 'We_are_WanderAeon.mp3' aapki index file ke sath hi pari hai.");
+    });
     document.body.classList.add('loaded');
 });
+
+// Sound Status Toggle (Click to Mute/Unmute)
+soundStatus.onclick = () => {
+    if (bgMusic.paused) {
+        bgMusic.play();
+        soundStatus.innerText = "MUSIC: PLAYING";
+    } else {
+        bgMusic.pause();
+        soundStatus.innerText = "MUSIC: PAUSED";
+    }
+};
 
 // Visualizer Bars
 const viz = document.getElementById("visualizer");
