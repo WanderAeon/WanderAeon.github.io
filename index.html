@@ -11,26 +11,45 @@
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
 
-/* CUSTOM CURSOR (Desktop Only) */
-#custom-cursor {
+/* ORBITAL CUSTOM CURSOR (Desktop Only) */
+#cursor-container {
     position: fixed;
     pointer-events: none;
     z-index: 9999;
+    display: none; /* JS will show on desktop */
+}
+#cursor-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--main);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px var(--main), 0 0 30px var(--main);
+}
+#cursor-text {
+    position: absolute;
     font-family: 'Orbitron';
-    font-size: 12px;
-    color: var(--main);
+    font-size: 10px;
+    color: white;
     text-transform: uppercase;
     letter-spacing: 2px;
     white-space: nowrap;
-    text-shadow: 0 0 10px var(--main);
-    display: none; /* Hidden by default, shown via JS on desktop */
-    transform: translate(-50%, -50%);
+    text-shadow: 0 0 8px var(--main);
+    /* Animation for rotation */
+    animation: rotateText 6s linear infinite;
+    transform-origin: center center;
 }
 
-/* Hide default cursor on desktop for better effect */
+@keyframes rotateText {
+    from { transform: rotate(0deg) translateX(50px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(50px) rotate(-360deg); }
+}
+
+/* Hide default cursor on desktop */
 @media (pointer: fine) {
     body { cursor: none; }
-    a, .node, .social-btn { cursor: none; }
+    a, .node, .social-btn, .social-icons a { cursor: none; }
 }
 
 /* INTRO LAYER */
@@ -82,12 +101,16 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
     .social-panel { left: 10px; }
     .glow-text { font-size: 12vw; }
     .social-icons.show { left: 75px; }
+    #cursor-container { display: none !important; }
 }
 </style>
 </head>
 <body>
 
-<div id="custom-cursor">WanderAeon</div>
+<div id="cursor-container">
+    <div id="cursor-dot"></div>
+    <div id="cursor-text">WanderAeon</div>
+</div>
 
 <div id="intro">
     <div class="pulse-container">
@@ -122,7 +145,7 @@ setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 // --- VISUALS LOGIC ---
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
-const cursor = document.getElementById("custom-cursor");
+const cursorContainer = document.getElementById("cursor-container");
 
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
 
@@ -134,7 +157,7 @@ function resize() {
 
 function initLeaves() {
     leaves = [];
-    let count = window.innerWidth < 768 ? 20 : 45; // Mobile par kam leaves for performance
+    let count = window.innerWidth < 768 ? 20 : 45; 
     for(let i=0; i<count; i++) {
         leaves.push({ x: Math.random() * lCanvas.width, y: Math.random() * lCanvas.height, r: Math.random() * 5 + 3, color: leafColors[Math.floor(Math.random() * leafColors.length)], vx: (Math.random() - 0.5) * 1, vy: Math.random() * 0.5 + 0.3, angle: Math.random() * Math.PI * 2, isBurning: false, burnTime: 0 });
     }
@@ -166,16 +189,16 @@ function draw() {
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 if (!isTouchDevice) {
-    cursor.style.display = 'block';
+    cursorContainer.style.display = 'block';
 }
 
 addEventListener("mousemove", e => { 
     let mX = e.clientX; let mY = e.clientY;
     
-    // Custom Cursor Movement
+    // Orbital Cursor Position
     if (!isTouchDevice) {
-        cursor.style.left = mX + 'px';
-        cursor.style.top = mY + 'px';
+        cursorContainer.style.left = mX + 'px';
+        cursorContainer.style.top = mY + 'px';
     }
 
     spawnFire(mX, mY); 
@@ -188,7 +211,6 @@ addEventListener("mousemove", e => {
     leaves.forEach(leaf => { if(Math.sqrt((mX-leaf.x)**2 + (mY-leaf.y)**2) < 30) leaf.isBurning = true; });
 });
 
-// Mobile Touch Support for Fire
 addEventListener("touchmove", e => {
     let tX = e.touches[0].clientX; let tY = e.touches[0].clientY;
     spawnFire(tX, tY);
