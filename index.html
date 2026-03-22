@@ -6,40 +6,14 @@
     <title>WanderAeon | Not just heard, experienced</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-/* Reset dimensions precisely */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
 
 /* NEON VISUALIZER BARS */
-.visualizer-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 4px;
-    padding: 0 20px;
-    z-index: 4;
-    pointer-events: none;
-    opacity: 0.6;
-}
-.bar {
-    width: 3px;
-    height: 10px;
-    background: var(--main);
-    box-shadow: 0 0 10px var(--main);
-    border-radius: 2px 2px 0 0;
-    animation: bounce 1.5s ease-in-out infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { height: 5px; opacity: 0.3; }
-    50% { height: 40px; opacity: 1; }
-}
+.visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
+.bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
+@keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 40px; opacity: 1; } }
 
 /* ORBITAL ALPHABETS CURSOR */
 #cursor-container { position: fixed; pointer-events: none; z-index: 9999; display: none; }
@@ -47,19 +21,26 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 .orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 12px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 8px var(--main); animation: rotateLetter 3.5s linear infinite; transform-origin: center center; }
 @keyframes rotateLetter { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
 
-@media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a { cursor: none; } }
+@media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a, button { cursor: none; } }
 
-/* INTRO LAYER */
-#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
-.pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
+/* INTRO LAYER WITH AUDIO PERMISSION */
+#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease-out; pointer-events: auto; }
+.pulse-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
 .heart-pulse { position: absolute; width: 100px; height: 100px; border: 3px solid var(--main); border-radius: 50%; opacity: 0; animation: pulseAnim 1.8s infinite ease-out; }
 .pulse-2 { animation-delay: 0.6s; }
-.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; opacity: 0; animation: textFade 4s forwards 0.3s; }
+.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; }
 @keyframes pulseAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(5); opacity: 0; } }
-@keyframes textFade { 0% { opacity: 0; filter: blur(10px); } 30%, 70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); } 100% { opacity: 0; filter: blur(10px); } }
+
+/* Play Button Style */
+#start-btn {
+    margin-top: 20px; padding: 10px 25px; background: transparent; border: 1px solid var(--main); color: white;
+    font-family: 'Orbitron'; cursor: pointer; letter-spacing: 2px; transition: 0.3s; z-index: 1001;
+}
+#start-btn:hover { background: var(--main); box-shadow: 0 0 20px var(--main); }
+
 .loaded #intro { opacity: 0; pointer-events: none; }
 
-/* VISUALS */
+/* OTHER VISUALS */
 canvas { position: fixed; inset: 0; pointer-events: none; }
 #leaves-canvas { z-index: 1; opacity: 0.8; }
 #fire-canvas { z-index: 2; }
@@ -70,33 +51,26 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 10px; }
 @keyframes deepBreathe { 0%, 100% { opacity: 0.1; filter: blur(4px); transform: scale(0.9); } 30%, 70% { opacity: 1; filter: blur(0px); transform: scale(1); } }
 
-/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; pointer-events: auto; }
-.social-btn { position: relative; width: 70px; height: 70px; z-index: 110; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; overflow: hidden; transition: 0.4s; box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); }
-.social-btn img { width: 100%; height: 100%; object-fit: cover; } 
+.social-btn { position: relative; width: 70px; height: 70px; z-index: 110; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; overflow: hidden; transition: 0.4s; }
 .social-icons { position: absolute; top: 50%; left: 35px; width: 0; height: 350px; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; gap: 15px; opacity: 0; visibility: hidden; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; }
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 90px; pointer-events: auto; }
-.social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; transition: 0.3s; backdrop-filter: blur(10px); overflow: hidden; }
-.social-icons a img { width: 32px; height: 32px; object-fit: contain; filter: none; opacity: 1; transition: 0.3s; }
-
-.yt:hover { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; transform: translateX(10px); }
-.tk:hover { border-color: #00f2ea; box-shadow: 0 0 15px #00f2ea; transform: translateX(10px); }
-.sc:hover { border-color: #ff5500; box-shadow: 0 0 15px #ff5500; transform: translateX(10px); }
-.fb:hover { border-color: #1877f2; box-shadow: 0 0 15px #1877f2; transform: translateX(10px); }
-.wa:hover { border-color: #25d366; box-shadow: 0 0 15px #25d366; transform: translateX(10px); }
+.social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; transition: 0.3s; overflow: hidden; }
 
 .glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; z-index: 2; position: relative; }
 
-/* Mobile Adjustments */
 @media (max-width: 768px) {
     .social-panel { left: 10px; }
     .glow-text { font-size: 12vw; }
-    .social-icons.show { left: 75px; }
     #cursor-container, .visualizer-container { display: none !important; }
 }
 </style>
 </head>
 <body>
+
+<audio id="bg-music" loop>
+    <source src="https://www.bensound.com/bensound-music/bensound-slowmotion.mp3" type="audio/mpeg">
+</audio>
 
 <div class="visualizer-container" id="visualizer"></div>
 
@@ -110,6 +84,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
         <div class="heart-pulse pulse-2"></div>
         <div class="intro-text">WanderAeon</div>
     </div>
+    <button id="start-btn">ENTER EXPERIENCE</button>
 </div>
 
 <canvas id="leaves-canvas"></canvas>
@@ -117,13 +92,13 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 <div id="universe"></div>
 
 <div class="social-panel">
-    <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials"></div>
+    <div class="social-btn" id="socialBtn"><img src="SM.gif" alt="Socials" style="width:100%"></div>
     <div class="social-icons" id="socialIcons">
-        <a href="https://www.youtube.com/@WanderAeon" target="_blank" class="yt"><img src="youtube.png"></a>
-        <a href="https://www.tiktok.com/@wanderaeon" target="_blank" class="tk"><img src="tiktok.png"></a>
-        <a href="https://soundcloud.com/wanderaeon" target="_blank" class="sc"><img src="soundcloud.png"></a>
-        <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank" class="fb"><img src="facebook.png"></a>
-        <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank" class="wa"><img src="whatsapp.png"></a>
+        <a href="https://www.youtube.com/@WanderAeon" target="_blank"><img src="youtube.png" style="width:32px"></a>
+        <a href="https://www.tiktok.com/@wanderaeon" target="_blank"><img src="tiktok.png" style="width:32px"></a>
+        <a href="https://soundcloud.com/wanderaeon" target="_blank"><img src="soundcloud.png" style="width:32px"></a>
+        <a href="https://www.facebook.com/profile.php?id=61584853409975" target="_blank"><img src="facebook.png" style="width:32px"></a>
+        <a href="https://whatsapp.com/channel/0029VbBr6TtEVccDIQ0q6I2U" target="_blank"><img src="whatsapp.png" style="width:32px"></a>
     </div>
 </div>
 
@@ -132,22 +107,28 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </section>
 
 <script>
-setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
+const startBtn = document.getElementById('start-btn');
+const bgMusic = document.getElementById('bg-music');
 
-// --- VISUALIZER BARS INJECTION ---
+// Jab user Enter button click karega tab music start hoga
+startBtn.addEventListener('click', () => {
+    bgMusic.volume = 0.3; // Halka background music
+    bgMusic.play();
+    document.body.classList.add('loaded');
+});
+
+// --- VISUALIZER BARS ---
 const viz = document.getElementById("visualizer");
-const barCount = 40;
-for(let i=0; i<barCount; i++) {
+for(let i=0; i<40; i++) {
     const bar = document.createElement("div");
     bar.className = "bar";
     bar.style.animationDelay = `${Math.random() * 1.5}s`;
-    bar.style.animationDuration = `${0.5 + Math.random() * 1}s`;
     viz.appendChild(bar);
 }
 
-// --- CURSOR ALPHABETS INJECTION ---
+// --- CURSOR ALPHABETS ---
 const cursorContainer = document.getElementById("cursor-container");
-const brandName = "W a n d e r A e o n";
+const brandName = "WanderAeon";
 brandName.split("").forEach((char, index) => {
     const span = document.createElement("span");
     span.innerText = char;
@@ -156,7 +137,7 @@ brandName.split("").forEach((char, index) => {
     cursorContainer.appendChild(span);
 });
 
-// --- VISUALS LOGIC ---
+// --- VISUALS LOGIC (Leaves & Fire) ---
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
@@ -203,7 +184,7 @@ addEventListener("mousemove", e => {
     bars.forEach(bar => {
         const rect = bar.getBoundingClientRect();
         const dist = Math.abs(mX - rect.left);
-        if(dist < 100) { bar.style.height = (100 - dist) + 'px'; bar.style.background = "#fff"; }
+        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
         else { bar.style.background = "var(--main)"; }
     });
 
@@ -217,6 +198,7 @@ addEventListener("mousemove", e => {
 
 resize(); draw(); window.onresize = resize;
 
+// --- SONGS NODES ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -236,9 +218,8 @@ songs.forEach((song) => {
 });
 
 const btn = document.getElementById("socialBtn"); const icons = document.getElementById("socialIcons");
-let active = false;
-btn.onclick = (e) => { e.stopPropagation(); active = !active; active ? icons.classList.add("show") : icons.classList.remove("show"); };
-document.body.onclick = () => { icons.classList.remove("show"); active = false; };
+btn.onclick = (e) => { e.stopPropagation(); icons.classList.toggle("show"); };
+document.body.onclick = () => { icons.classList.remove("show"); };
 </script>
 </body>
 </html>
