@@ -75,7 +75,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 <body>
 
 <audio id="bg-music" loop preload="auto">
-    <source src="We_are_WanderAeon.mp3" type="audio/mpeg">
+    <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <div id="sound-status">MUSIC: PLAYING</div>
@@ -127,7 +127,7 @@ startBtn.addEventListener('click', () => {
         soundStatus.innerText = "MUSIC: PLAYING";
     }).catch(error => {
         console.error("Playback error:", error);
-        alert("Audio load nahi ho saki. Baraye meharbani check karein ke 'We_are_WanderAeon.mp3' aapki index file ke sath hi pari hai.");
+        alert("Audio load nahi ho saki. Baraye meharbani check karein ke 'music.mp3' aapki index file ke sath hi pari hai.");
     });
     document.body.classList.add('loaded');
 });
