@@ -6,18 +6,15 @@
     <title>WanderAeon | Not just heard, experienced</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
-/* Base Setup */
+/* Reset dimensions precisely */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
 body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
 
-/* NEON VISUALIZER BARS */
+/* NEON VISUALIZER BARS (Reactive to Mouse) */
 .visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
 .bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
-@keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 40px; opacity: 1; } }
-
-/* SOUND CONTROL UI */
-#sound-status { position: fixed; top: 20px; right: 20px; z-index: 1002; color: white; font-family: 'Orbitron'; font-size: 10px; letter-spacing: 2px; display: none; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid var(--main); border-radius: 5px; }
+@keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 35px; opacity: 1; } }
 
 /* ORBITAL ALPHABETS CURSOR */
 #cursor-container { position: fixed; pointer-events: none; z-index: 9999; display: none; }
@@ -25,19 +22,16 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 .orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 12px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 8px var(--main); animation: rotateLetter 3.5s linear infinite; transform-origin: center center; }
 @keyframes rotateLetter { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
 
-@media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a, button { cursor: none; } }
+@media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a { cursor: none; } }
 
-/* INTRO LAYER */
-#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease-out; pointer-events: auto; }
-.pulse-container { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+/* INTRO LAYER (Auto-Fade) */
+#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
+.pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
 .heart-pulse { position: absolute; width: 100px; height: 100px; border: 3px solid var(--main); border-radius: 50%; opacity: 0; animation: pulseAnim 1.8s infinite ease-out; }
 .pulse-2 { animation-delay: 0.6s; }
-.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; }
+.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; opacity: 0; animation: textFade 4s forwards 0.3s; }
 @keyframes pulseAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(5); opacity: 0; } }
-
-#start-btn { margin-top: 20px; padding: 12px 35px; background: transparent; border: 2px solid var(--main); color: white; font-family: 'Orbitron'; cursor: pointer; letter-spacing: 3px; transition: 0.3s; z-index: 1001; text-transform: uppercase; }
-#start-btn:hover { background: var(--main); box-shadow: 0 0 30px var(--main); transform: scale(1.1); }
-
+@keyframes textFade { 0% { opacity: 0; filter: blur(10px); } 30%, 70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); } 100% { opacity: 0; filter: blur(10px); } }
 .loaded #intro { opacity: 0; pointer-events: none; }
 
 /* VISUALS CANVAS */
@@ -74,12 +68,6 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </head>
 <body>
 
-<audio id="bg-music" loop preload="auto">
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-<div id="sound-status">MUSIC: PLAYING</div>
-
 <div class="visualizer-container" id="visualizer"></div>
 
 <div id="cursor-container">
@@ -92,7 +80,6 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
         <div class="heart-pulse pulse-2"></div>
         <div class="intro-text">WanderAeon</div>
     </div>
-    <button id="start-btn">Experience with Sound</button>
 </div>
 
 <canvas id="leaves-canvas"></canvas>
@@ -115,35 +102,10 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </section>
 
 <script>
-const startBtn = document.getElementById('start-btn');
-const bgMusic = document.getElementById('bg-music');
-const soundStatus = document.getElementById('sound-status');
+// Auto-fade intro after 4.5s
+setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
-// Force Play Logic
-startBtn.addEventListener('click', () => {
-    bgMusic.volume = 0.5; 
-    bgMusic.play().then(() => {
-        soundStatus.style.display = "block";
-        soundStatus.innerText = "MUSIC: PLAYING";
-    }).catch(error => {
-        console.error("Playback error:", error);
-        alert("Audio load nahi ho saki. Baraye meharbani check karein ke 'music.mp3' aapki index file ke sath hi pari hai.");
-    });
-    document.body.classList.add('loaded');
-});
-
-// Sound Status Toggle (Click to Mute/Unmute)
-soundStatus.onclick = () => {
-    if (bgMusic.paused) {
-        bgMusic.play();
-        soundStatus.innerText = "MUSIC: PLAYING";
-    } else {
-        bgMusic.pause();
-        soundStatus.innerText = "MUSIC: PAUSED";
-    }
-};
-
-// Visualizer Bars
+// Visualizer Bars Injection
 const viz = document.getElementById("visualizer");
 for(let i=0; i<40; i++) {
     const bar = document.createElement("div");
@@ -163,7 +125,7 @@ brandName.split("").forEach((char, index) => {
     cursorContainer.appendChild(span);
 });
 
-// Canvas Setup
+// Canvas Logic (Leaves & Fire)
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
@@ -206,11 +168,12 @@ addEventListener("mousemove", e => {
     if (!isTouchDevice) { cursorContainer.style.left = mX + 'px'; cursorContainer.style.top = mY + 'px'; }
     spawnFire(mX, mY); 
     
+    // Viz Reactive Interaction
     const bars = document.querySelectorAll('.bar');
     bars.forEach(bar => {
         const rect = bar.getBoundingClientRect();
         const dist = Math.abs(mX - rect.left);
-        if(dist < 100) { bar.style.height = (90 - dist/2) + 'px'; bar.style.background = "#fff"; }
+        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
         else { bar.style.background = "var(--main)"; }
     });
 
@@ -224,7 +187,7 @@ addEventListener("mousemove", e => {
 
 resize(); draw(); window.onresize = resize;
 
-// Song Nodes
+// Song Nodes Setup
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
