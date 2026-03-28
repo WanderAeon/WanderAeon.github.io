@@ -16,11 +16,19 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 .bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
 @keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 35px; opacity: 1; } }
 
-/* ORBITAL ALPHABETS CURSOR */
-#cursor-container { position: fixed; pointer-events: none; z-index: 9999; display: none; }
+/* ELASTIC ORBITAL CURSOR */
+#cursor-container { position: fixed; pointer-events: none; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; display: none; }
 #cursor-dot { position: absolute; width: 6px; height: 6px; background: var(--main); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--main), 0 0 30px var(--main); }
-.orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 12px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 8px var(--main); animation: rotateLetter 3.5s linear infinite; transform-origin: center center; }
-@keyframes rotateLetter { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.orbit-letter { 
+    position: absolute; 
+    font-family: 'Orbitron'; 
+    font-size: 13px; 
+    color: white; 
+    text-transform: uppercase; 
+    white-space: nowrap; 
+    text-shadow: 0 0 10px var(--main);
+    will-change: transform;
+}
 
 @media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a { cursor: none; } }
 
@@ -114,16 +122,74 @@ for(let i=0; i<40; i++) {
     viz.appendChild(bar);
 }
 
-// Cursor Orbital Letters
+// ELASTIC CURSOR LOGIC
 const cursorContainer = document.getElementById("cursor-container");
+const cursorDot = document.getElementById("cursor-dot");
 const brandName = "WanderAeon";
+const letters = [];
+const mouse = { x: 0, y: 0 };
+const dots = [];
+
+// Create letters
 brandName.split("").forEach((char, index) => {
     const span = document.createElement("span");
     span.innerText = char;
     span.className = "orbit-letter";
-    span.style.animationDelay = `${index * 0.12}s`; 
     cursorContainer.appendChild(span);
+    letters.push({
+        el: span,
+        x: 0, y: 0,
+        targetX: 0, targetY: 0,
+        angle: (index / brandName.length) * Math.PI * 2
+    });
 });
+
+// Cursor Tracking
+addEventListener("mousemove", e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    cursorDot.style.left = mouse.x + 'px';
+    cursorDot.style.top = mouse.y + 'px';
+    if (!isTouchDevice) cursorContainer.style.display = 'block';
+    
+    // Viz Interaction
+    const bars = document.querySelectorAll('.bar');
+    bars.forEach(bar => {
+        const rect = bar.getBoundingClientRect();
+        const dist = Math.abs(mouse.x - rect.left);
+        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
+        else { bar.style.background = "var(--main)"; }
+    });
+
+    // Song Nodes & Leaves Interaction
+    nodes.forEach(n => {
+        const dx = mouse.x - n.x; const dy = mouse.y - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
+        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
+        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
+    });
+    leaves.forEach(leaf => { if(Math.sqrt((mouse.x-leaf.x)**2 + (mouse.y-leaf.y)**2) < 30) leaf.isBurning = true; });
+    spawnFire(mouse.x, mouse.y);
+});
+
+// ELASTIC ANIMATION LOOP
+let time = 0;
+function animateCursor() {
+    time += 0.05;
+    letters.forEach((letter, i) => {
+        // Orbital positions
+        const orbitRadius = 45;
+        const orbitX = mouse.x + Math.cos(time + letter.angle) * orbitRadius;
+        const orbitY = mouse.y + Math.sin(time + letter.angle) * orbitRadius;
+
+        // Elastic Lerp (Follow mouse trail with lag)
+        letter.x += (orbitX - letter.x) * (0.15 - (i * 0.005));
+        letter.y += (orbitY - letter.y) * (0.15 - (i * 0.005));
+
+        letter.el.style.transform = `translate(${letter.x}px, ${letter.y}px)`;
+    });
+    requestAnimationFrame(animateCursor);
+}
+animateCursor();
 
 // Canvas Logic (Leaves & Fire)
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
@@ -159,30 +225,11 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-// Interactivity
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-if (!isTouchDevice) { cursorContainer.style.display = 'block'; }
-
-addEventListener("mousemove", e => { 
-    let mX = e.clientX; let mY = e.clientY;
-    if (!isTouchDevice) { cursorContainer.style.left = mX + 'px'; cursorContainer.style.top = mY + 'px'; }
-    spawnFire(mX, mY); 
-    
-    // Viz Reactive Interaction
-    const bars = document.querySelectorAll('.bar');
-    bars.forEach(bar => {
-        const rect = bar.getBoundingClientRect();
-        const dist = Math.abs(mX - rect.left);
-        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
-        else { bar.style.background = "var(--main)"; }
-    });
-
-    nodes.forEach(n => {
-        const dx = mX - n.x; const dy = mY - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
-        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
-    });
-    leaves.forEach(leaf => { if(Math.sqrt((mX-leaf.x)**2 + (mY-leaf.y)**2) < 30) leaf.isBurning = true; });
+addEventListener("touchmove", e => {
+    let tX = e.touches[0].clientX; let tY = e.touches[0].clientY;
+    spawnFire(tX, tY);
+    leaves.forEach(leaf => { if(Math.sqrt((tX-leaf.x)**2 + (tY-leaf.y)**2) < 30) leaf.isBurning = true; });
 });
 
 resize(); draw(); window.onresize = resize;
