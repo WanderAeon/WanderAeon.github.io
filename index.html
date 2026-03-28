@@ -9,30 +9,29 @@
 /* Reset dimensions precisely */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505; overflow: hidden; font-family: sans-serif; position: relative; }
 
-/* NEON VISUALIZER BARS (Reactive to Mouse) */
+/* 3D PARALLAX BACKGROUND */
+#bg-layer {
+    position: fixed; inset: -50px; /* Offset for movement */
+    background: url('final.jpg') center/cover no-repeat;
+    z-index: -1;
+    transition: transform 0.2s ease-out;
+}
+
+/* NEON VISUALIZER BARS */
 .visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
 .bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
-@keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 35px; opacity: 1; } }
+@keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 40px; opacity: 1; } }
 
 /* ELASTIC ORBITAL CURSOR */
 #cursor-container { position: fixed; pointer-events: none; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-#cursor-dot { position: absolute; width: 6px; height: 6px; background: var(--main); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--main), 0 0 30px var(--main); }
-.orbit-letter { 
-    position: absolute; 
-    font-family: 'Orbitron'; 
-    font-size: 13px; 
-    color: white; 
-    text-transform: uppercase; 
-    white-space: nowrap; 
-    text-shadow: 0 0 10px var(--main);
-    will-change: transform;
-}
+#cursor-dot { position: absolute; width: 6px; height: 6px; background: var(--main); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--main), 0 0 30px var(--main); transition: transform 0.3s; }
+.orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 13px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 10px var(--main); will-change: transform; transition: font-size 0.3s; }
 
 @media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a { cursor: none; } }
 
-/* INTRO LAYER (Auto-Fade) */
+/* INTRO LAYER */
 #intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
 .pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
 .heart-pulse { position: absolute; width: 100px; height: 100px; border: 3px solid var(--main); border-radius: 50%; opacity: 0; animation: pulseAnim 1.8s infinite ease-out; }
@@ -46,7 +45,7 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 canvas { position: fixed; inset: 0; pointer-events: none; }
 #leaves-canvas { z-index: 1; opacity: 0.8; }
 #fire-canvas { z-index: 2; }
-#universe { position: fixed; inset: 0; z-index: 5; pointer-events: auto; }
+#universe { position: fixed; inset: 0; z-index: 5; pointer-events: auto; transition: transform 0.3s ease-out; }
 
 /* NODES */
 .node { position: absolute; font-family: 'Orbitron', sans-serif; font-size: 11px; color: white; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; animation: deepBreathe 8s infinite ease-in-out; opacity: 0; }
@@ -76,6 +75,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </head>
 <body>
 
+<div id="bg-layer"></div>
 <div class="visualizer-container" id="visualizer"></div>
 
 <div id="cursor-container">
@@ -110,10 +110,14 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </section>
 
 <script>
-// Auto-fade intro after 4.5s
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
-// Visualizer Bars Injection
+// GLOBAL VARS
+const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+let currentOrbitRadius = 45;
+let isHoveringElement = false;
+
+// 1. VISUALIZER
 const viz = document.getElementById("visualizer");
 for(let i=0; i<40; i++) {
     const bar = document.createElement("div");
@@ -122,76 +126,70 @@ for(let i=0; i<40; i++) {
     viz.appendChild(bar);
 }
 
-// ELASTIC CURSOR LOGIC
+// 2. ELASTIC CURSOR WITH MAGNETIC HOVER
 const cursorContainer = document.getElementById("cursor-container");
 const cursorDot = document.getElementById("cursor-dot");
 const brandName = "WanderAeon";
 const letters = [];
-const mouse = { x: 0, y: 0 };
-const dots = [];
 
-// Create letters
 brandName.split("").forEach((char, index) => {
     const span = document.createElement("span");
     span.innerText = char;
     span.className = "orbit-letter";
     cursorContainer.appendChild(span);
-    letters.push({
-        el: span,
-        x: 0, y: 0,
-        targetX: 0, targetY: 0,
-        angle: (index / brandName.length) * Math.PI * 2
-    });
+    letters.push({ el: span, x: 0, y: 0, angle: (index / brandName.length) * Math.PI * 2 });
 });
 
-// Cursor Tracking
+// 3. TRACKING & PARALLAX
+const bgLayer = document.getElementById('bg-layer');
+const universe = document.getElementById('universe');
+
 addEventListener("mousemove", e => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
+    
+    // Smooth Parallax
+    const moveX = (mouse.x - window.innerWidth/2) * 0.02;
+    const moveY = (mouse.y - window.innerHeight/2) * 0.02;
+    bgLayer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    universe.style.transform = `translate(${-moveX * 1.5}px, ${-moveY * 1.5}px)`;
+
     cursorDot.style.left = mouse.x + 'px';
     cursorDot.style.top = mouse.y + 'px';
-    if (!isTouchDevice) cursorContainer.style.display = 'block';
     
-    // Viz Interaction
-    const bars = document.querySelectorAll('.bar');
-    bars.forEach(bar => {
-        const rect = bar.getBoundingClientRect();
-        const dist = Math.abs(mouse.x - rect.left);
-        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
-        else { bar.style.background = "var(--main)"; }
-    });
+    if (!isTouchDevice) cursorContainer.style.display = 'block';
 
-    // Song Nodes & Leaves Interaction
-    nodes.forEach(n => {
-        const dx = mouse.x - n.x; const dy = mouse.y - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
-        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
-    });
-    leaves.forEach(leaf => { if(Math.sqrt((mouse.x-leaf.x)**2 + (mouse.y-leaf.y)**2) < 30) leaf.isBurning = true; });
+    // Magnet Effect Check
+    const hovered = document.elementFromPoint(mouse.x, mouse.y);
+    if(hovered && (hovered.closest('.node') || hovered.closest('.social-btn') || hovered.closest('.social-icons a'))) {
+        currentOrbitRadius = 75; // Expand circle
+        cursorDot.style.transform = "translate(-50%, -50%) scale(2)";
+    } else {
+        currentOrbitRadius = 45; // Shrink to normal
+        cursorDot.style.transform = "translate(-50%, -50%) scale(1)";
+    }
+
+    // Fire & Leaves (Unchanged)
     spawnFire(mouse.x, mouse.y);
+    leaves.forEach(leaf => { if(Math.sqrt((mouse.x-leaf.x)**2 + (mouse.y-leaf.y)**2) < 30) leaf.isBurning = true; });
 });
 
-// ELASTIC ANIMATION LOOP
+// 4. ANIMATION LOOP
 let time = 0;
-function animateCursor() {
+function animate() {
     time += 0.05;
     letters.forEach((letter, i) => {
-        // Orbital positions
-        const orbitRadius = 45;
-        const orbitX = mouse.x + Math.cos(time + letter.angle) * orbitRadius;
-        const orbitY = mouse.y + Math.sin(time + letter.angle) * orbitRadius;
-
-        // Elastic Lerp (Follow mouse trail with lag)
+        const orbitX = mouse.x + Math.cos(time + letter.angle) * currentOrbitRadius;
+        const orbitY = mouse.y + Math.sin(time + letter.angle) * currentOrbitRadius;
         letter.x += (orbitX - letter.x) * (0.15 - (i * 0.005));
         letter.y += (orbitY - letter.y) * (0.15 - (i * 0.005));
-
         letter.el.style.transform = `translate(${letter.x}px, ${letter.y}px)`;
     });
-    requestAnimationFrame(animateCursor);
+    requestAnimationFrame(animate);
 }
-animateCursor();
+animate();
 
-// Canvas Logic (Leaves & Fire)
+// 5. CANVAS (Leaves & Fire)
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
@@ -226,12 +224,6 @@ function draw() {
 }
 
 const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-addEventListener("touchmove", e => {
-    let tX = e.touches[0].clientX; let tY = e.touches[0].clientY;
-    spawnFire(tX, tY);
-    leaves.forEach(leaf => { if(Math.sqrt((tX-leaf.x)**2 + (tY-leaf.y)**2) < 30) leaf.isBurning = true; });
-});
-
 resize(); draw(); window.onresize = resize;
 
 // Song Nodes Setup
