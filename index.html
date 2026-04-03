@@ -5,98 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>WanderAeon | Not just heard, experienced</title>
-    <meta name="description" content="Experience the untamed shadows and wandering souls through music.">
-    <meta property="og:title" content="WanderAeon | Not just heard, experienced">
-    <meta property="og:description" content="A futuristic musical journey. Not just heard, experienced.">
-    <meta property="og:image" content="final.jpg"> <meta property="og:type" content="website">
-    
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="referrer" content="no-referrer">
+    <meta name="description" content="Experience the untamed shadows through music.">
+    <meta property="og:title" content="WanderAeon | Experience">
+    <meta property="og:image" content="final.jpg">
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 
 <style>
-/* Reset dimensions */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
 
 body, html { 
     margin: 0; padding: 0; width: 100%; height: 100%; 
-    background: #050505; /* Fallback color */
-    overflow: hidden; font-family: sans-serif; position: relative; 
-    user-select: none;
+    background: #050505; overflow: hidden; font-family: sans-serif; 
+    position: relative; user-select: none;
 }
 
-/* PARALLAX BACKGROUND LAYER */
+/* 1. BACKGROUND LAYER (Fixed & Parallax) */
 #bg-layer {
     position: fixed;
     top: -5%; left: -5%;
     width: 110%; height: 110%;
     background: url('final.jpg') center/cover no-repeat;
     z-index: -1;
-    transition: transform 0.2s ease-out; /* Smooth movement */
-    will-change: transform;
+    transition: transform 0.1s ease-out;
 }
 
-/* NEON VISUALIZER BARS */
+/* 2. INTRO LAYER (Pulse Circles back!) */
+#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
+.pulse-container { position: relative; display: flex; justify-content: center; align-items: center; }
+.heart-pulse { position: absolute; width: 100px; height: 100px; border: 3px solid var(--main); border-radius: 50%; opacity: 0; animation: pulseAnim 1.8s infinite ease-out; }
+.pulse-2 { animation-delay: 0.6s; }
+.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; opacity: 0; animation: textFade 4s forwards 0.3s; }
+@keyframes pulseAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(5); opacity: 0; } }
+@keyframes textFade { 0% { opacity: 0; filter: blur(10px); } 30%, 70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); } 100% { opacity: 0; filter: blur(10px); } }
+.loaded #intro { opacity: 0; pointer-events: none; }
+
+/* 3. VISUALIZER & CURSOR */
 .visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
 .bar { width: 3px; height: 10px; background: var(--main); box-shadow: 0 0 10px var(--main); border-radius: 2px 2px 0 0; animation: bounce 1.5s ease-in-out infinite; }
 @keyframes bounce { 0%, 100% { height: 5px; opacity: 0.3; } 50% { height: 35px; opacity: 1; } }
 
-/* ELASTIC CURSOR */
 #cursor-container { position: fixed; pointer-events: none; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; display: none; }
 #cursor-dot { position: absolute; width: 6px; height: 6px; background: var(--main); border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 15px var(--main), 0 0 30px var(--main); }
-.orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 13px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 10px var(--main); will-change: transform; }
+.orbit-letter { position: absolute; font-family: 'Orbitron'; font-size: 13px; color: white; text-transform: uppercase; white-space: nowrap; text-shadow: 0 0 10px var(--main); }
 
-@media (pointer: fine) { body { cursor: none; } a, .node, .social-btn, .social-icons a { cursor: none; } }
+@media (pointer: fine) { body { cursor: none; } .node, .social-btn, a { cursor: none; } }
 
-/* INTRO LAYER */
-#intro { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; justify-content: center; align-items: center; transition: opacity 1.5s ease-out 1s; pointer-events: auto; }
-.intro-text { font-family: 'Orbitron'; font-size: 20px; color: white; letter-spacing: 12px; text-transform: uppercase; z-index: 1000; opacity: 0; animation: textFade 4s forwards 0.3s; }
-@keyframes textFade { 0% { opacity: 0; filter: blur(10px); } 30%, 70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); } 100% { opacity: 0; filter: blur(10px); } }
-.loaded #intro { opacity: 0; pointer-events: none; }
-
-/* NODES */
+/* 4. NODES */
 #universe { position: fixed; inset: 0; z-index: 5; pointer-events: auto; }
-.node { 
-    position: absolute; font-family: 'Orbitron', sans-serif; font-size: 10px; 
-    color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; 
-    cursor: pointer; display: flex; flex-direction: column; align-items: center; 
-    transition: 0.4s; transform: translate(-50%, -50%);
-}
+.node { position: absolute; font-family: 'Orbitron', sans-serif; font-size: 10px; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.4s; transform: translate(-50%, -50%); }
 .node:hover { color: #fff; transform: translate(-50%, -50%) scale(1.15); z-index: 10; opacity: 1 !important; }
-.dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; }
-.red .dot { background: var(--teaser); box-shadow: 0 0 8px var(--teaser); }
-.green .dot { background: var(--released); box-shadow: 0 0 8px var(--released); }
-.gold .dot { background: var(--hit); box-shadow: 0 0 8px var(--hit); }
+.dot { width: 7px; height: 7px; border-radius: 50%; margin-bottom: 8px; }
+.red .dot { background: var(--teaser); box-shadow: 0 0 10px var(--teaser); }
+.green .dot { background: var(--released); box-shadow: 0 0 10px var(--released); }
+.gold .dot { background: var(--hit); box-shadow: 0 0 10px var(--hit); }
 
-/* SOCIAL PANEL */
-.social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; pointer-events: auto; }
-.social-btn { position: relative; width: 70px; height: 70px; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; overflow: hidden; transition: 0.4s; }
+/* SOCIALS */
+.social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; }
+.social-btn { width: 70px; height: 70px; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; overflow: hidden; transition: 0.4s; }
 .social-icons { position: absolute; top: 50%; left: 35px; width: 0; height: 350px; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; gap: 15px; opacity: 0; visibility: hidden; transition: 0.5s; pointer-events: none; }
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 90px; pointer-events: auto; }
-.social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+.social-icons a { width: 50px; height: 50px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; justify-content: center; align-items: center; }
 
 .glow-text { font-family: 'Orbitron'; font-size: 8vw; letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); -webkit-background-clip: text; color: transparent; text-align: center; margin: 0; pointer-events: none; z-index: 2; position: relative; }
 
-@media (max-width: 768px) {
-    .social-panel { left: 10px; }
-    .glow-text { font-size: 12vw; }
-    #cursor-container, .visualizer-container { display: none !important; }
-}
+@media (max-width: 768px) { .social-panel { left: 10px; } .glow-text { font-size: 12vw; } #cursor-container, .visualizer-container { display: none !important; } }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <div id="bg-layer"></div>
 
-<div class="visualizer-container" id="visualizer"></div>
-<div id="cursor-container"><div id="cursor-dot"></div></div>
-
 <div id="intro">
-    <div class="intro-text">WanderAeon</div>
+    <div class="pulse-container">
+        <div class="heart-pulse"></div>
+        <div class="heart-pulse pulse-2"></div>
+        <div class="intro-text">WanderAeon</div>
+    </div>
 </div>
 
+<div class="visualizer-container" id="visualizer"></div>
+<div id="cursor-container"><div id="cursor-dot"></div></div>
 <canvas id="fire-canvas" style="position:fixed; inset:0; pointer-events:none; z-index:2;"></canvas>
 <div id="universe"></div>
 
@@ -116,14 +107,16 @@ body, html {
 </section>
 
 <script>
-// --- SECURITY & INTRO ---
+// --- CORE SECURITY ---
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) e.preventDefault();
 });
+
+// Intro Fade
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
-// --- VISUALIZER ---
+// Visualizer
 const viz = document.getElementById("visualizer");
 for(let i=0; i<40; i++) {
     const bar = document.createElement("div");
@@ -132,7 +125,7 @@ for(let i=0; i<40; i++) {
     viz.appendChild(bar);
 }
 
-// --- CURSOR & PARALLAX LOGIC ---
+// Cursor & Parallax
 const bgLayer = document.getElementById("bg-layer");
 const cursorContainer = document.getElementById("cursor-container");
 const cursorDot = document.getElementById("cursor-dot");
@@ -154,43 +147,44 @@ addEventListener("mousemove", e => {
     cursorDot.style.top = mouse.y + 'px';
     cursorContainer.style.display = 'block';
 
-    // PARALLAX EFFECT: Move background slightly based on mouse
-    const moveX = (mouse.x - window.innerWidth / 2) * -0.01;
-    const moveY = (mouse.y - window.innerHeight / 2) * -0.01;
+    // Parallax movement
+    const moveX = (mouse.x - window.innerWidth/2) * -0.015;
+    const moveY = (mouse.y - window.innerHeight/2) * -0.015;
     bgLayer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    
+    spawnFire(mouse.x, mouse.y); // FIRE IS BACK!
 });
 
 function animateCursor() {
     let t = Date.now() * 0.002;
-    letters.forEach((letter, i) => {
-        const orbitX = mouse.x + Math.cos(t + letter.angle) * 45;
-        const orbitY = mouse.y + Math.sin(t + letter.angle) * 45;
-        letter.x += (orbitX - letter.x) * 0.1;
-        letter.y += (orbitY - letter.y) * 0.1;
-        letter.el.style.transform = `translate(${letter.x}px, ${letter.y}px)`;
+    letters.forEach((l, i) => {
+        const orbitX = mouse.x + Math.cos(t + l.angle) * 45;
+        const orbitY = mouse.y + Math.sin(t + l.angle) * 45;
+        l.x += (orbitX - l.x) * 0.1;
+        l.y += (orbitY - l.y) * 0.1;
+        l.el.style.transform = `translate(${l.x}px, ${l.y}px)`;
     });
     requestAnimationFrame(animateCursor);
 }
 animateCursor();
 
-// --- FIRE EFFECT ---
+// Fire Canvas Logic
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let flames = [];
 function resize() { fCanvas.width = window.innerWidth; fCanvas.height = window.innerHeight; }
-function spawnFire(x, y) { for(let i=0; i<2; i++) flames.push({ x, y, s: Math.random()*3+1, a:1, vx:(Math.random()-.5)*1, vy:-Math.random()*2 }); }
-
-function draw() {
+function spawnFire(x, y) { for(let i=0; i<3; i++) flames.push({ x, y, s: Math.random()*4+1, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 }); }
+function drawFlames() {
     fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
     flames.forEach((p, i) => {
-        p.x += p.vx; p.y += p.vy; p.a -= 0.02;
+        p.x += p.vx; p.y += p.vy; p.a -= 0.03;
         if(p.a <= 0) flames.splice(i, 1);
         else { fCtx.globalAlpha = p.a; fCtx.fillStyle = "orange"; fCtx.beginPath(); fCtx.arc(p.x, p.y, p.s, 0, Math.PI*2); fCtx.fill(); }
     });
-    requestAnimationFrame(draw);
+    requestAnimationFrame(drawFlames);
 }
-resize(); draw(); window.onresize = resize;
+resize(); drawFlames(); window.onresize = resize;
 
-// --- SONG NODES (Circular) ---
+// Song Nodes
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -199,38 +193,31 @@ const songs = [
     { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
     { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
 ];
-
 const univ = document.getElementById('universe');
 const nodes = [];
-
 songs.forEach((song, i) => {
     const el = document.createElement('div');
     el.className = `node ${song.type}`;
     el.innerHTML = `<div class="dot"></div><span>${song.name}</span>`;
     el.onclick = () => window.open(song.link, '_blank');
     univ.appendChild(el);
-
     const angle = (i / songs.length) * Math.PI * 2;
-    const radiusX = window.innerWidth > 768 ? 30 : 35;
-    const radiusY = window.innerWidth > 768 ? 35 : 30;
-    
-    const posX = 50 + Math.cos(angle) * radiusX;
-    const posY = 50 + Math.sin(angle) * radiusY;
-
-    el.style.left = posX + '%'; el.style.top = posY + '%';
-    nodes.push({ el, x: (posX/100)*window.innerWidth, y: (posY/100)*window.innerHeight });
+    const rx = window.innerWidth > 768 ? 30 : 35;
+    const ry = window.innerWidth > 768 ? 35 : 30;
+    const px = 50 + Math.cos(angle) * rx;
+    const py = 50 + Math.sin(angle) * ry;
+    el.style.left = px + '%'; el.style.top = py + '%';
+    nodes.push({ el, x: (px/100)*window.innerWidth, y: (py/100)*window.innerHeight });
 });
 
 addEventListener("mousemove", () => {
     nodes.forEach(n => {
-        const dist = Math.sqrt((mouse.x - n.x)**2 + (mouse.y - n.y)**2);
-        n.el.style.opacity = dist < 250 ? 1 : 0.3;
+        const d = Math.sqrt((mouse.x - n.x)**2 + (mouse.y - n.y)**2);
+        n.el.style.opacity = d < 250 ? 1 : 0.3;
     });
-    spawnFire(mouse.x, mouse.y);
 });
 
-const btn = document.getElementById("socialBtn");
-const icons = document.getElementById("socialIcons");
+const btn = document.getElementById("socialBtn"); const icons = document.getElementById("socialIcons");
 btn.onclick = (e) => { e.stopPropagation(); icons.classList.toggle("show"); };
 document.body.onclick = () => icons.classList.remove("show");
 </script>
