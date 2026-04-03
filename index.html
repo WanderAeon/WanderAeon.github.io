@@ -3,13 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="referrer" content="no-referrer">
+    
     <title>WanderAeon | Not just heard, experienced</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 <style>
 /* Reset dimensions precisely */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; }
+
+body, html { 
+    margin: 0; 
+    padding: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: #050505 url('final.jpg') center/cover no-repeat fixed; 
+    overflow: hidden; 
+    font-family: sans-serif; 
+    position: relative;
+    /* Basic Protection: Prevent Text Selection */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 /* NEON VISUALIZER BARS (Reactive to Mouse) */
 .visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
@@ -74,7 +93,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 }
 </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
 <div class="visualizer-container" id="visualizer"></div>
 
@@ -110,35 +129,33 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </section>
 
 <script>
-// --- BASIC SECURITY PARAMETERS ---
+/** * WANDEREAON SECURITY & CORE LOGIC
+ * Protected by WanderAeon Security Parameters
+ */
 
-// 1. Right Click Disable (To prevent "Save As" or "View Source" easily)
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    // Optional: Aap yahan koi alert bhi dikha sakte hain
-    // alert("Content is protected!"); 
-});
+// 1. ADVANCED SECURITY INJECTION
+(function protect() {
+    // Disable Right Click
+    document.addEventListener('contextmenu', e => e.preventDefault());
 
-// 2. Keyboard Shortcuts Disable (F12, Ctrl+Shift+I, Ctrl+U)
-document.addEventListener('keydown', (e) => {
-    // Disable F12
-    if (e.keyCode === 123) {
-        e.preventDefault();
-        return false;
-    }
-    // Disable Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+U (Source)
-    if (e.ctrlKey && (e.shiftKey && (e.keyCode === 73 || e.keyCode === 74) || e.keyCode === 85)) {
-        e.preventDefault();
-        return false;
-    }
-});
+    // Disable Keyboard Shortcuts
+    document.addEventListener('keydown', e => {
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S
+        if (
+            e.keyCode === 123 || 
+            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+            (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))
+        ) {
+            e.preventDefault();
+            return false;
+        }
+    });
 
-// 3. Dragging Disable (Taake koi images ya text drag na kar sake)
-document.addEventListener('dragstart', (e) => {
-    e.preventDefault();
-});
-    
-    // Auto-fade intro after 4.5s
+    // Disable Dragging images/links
+    document.addEventListener('dragstart', e => e.preventDefault());
+})();
+
+// Auto-fade intro after 4.5s
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
 // Visualizer Bars Injection
@@ -156,9 +173,7 @@ const cursorDot = document.getElementById("cursor-dot");
 const brandName = "WanderAeon";
 const letters = [];
 const mouse = { x: 0, y: 0 };
-const dots = [];
 
-// Create letters
 brandName.split("").forEach((char, index) => {
     const span = document.createElement("span");
     span.innerText = char;
@@ -167,12 +182,12 @@ brandName.split("").forEach((char, index) => {
     letters.push({
         el: span,
         x: 0, y: 0,
-        targetX: 0, targetY: 0,
         angle: (index / brandName.length) * Math.PI * 2
     });
 });
 
-// Cursor Tracking
+const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 addEventListener("mousemove", e => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
@@ -185,17 +200,31 @@ addEventListener("mousemove", e => {
     bars.forEach(bar => {
         const rect = bar.getBoundingClientRect();
         const dist = Math.abs(mouse.x - rect.left);
-        if(dist < 100) { bar.style.height = (80 - dist/2) + 'px'; bar.style.background = "#fff"; }
-        else { bar.style.background = "var(--main)"; }
+        if(dist < 100) { 
+            bar.style.height = (80 - dist/2) + 'px'; 
+            bar.style.background = "#fff"; 
+        } else { 
+            bar.style.background = "var(--main)"; 
+        }
     });
 
     // Song Nodes & Leaves Interaction
-    nodes.forEach(n => {
-        const dx = mouse.x - n.x; const dy = mouse.y - n.y; const dist = Math.sqrt(dx*dx + dy*dy);
-        if(dist < 220) { n.el.style.animation = 'none'; n.el.style.opacity = 1 - (dist/220); n.el.style.filter = "blur(0px)"; } 
-        else { n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; }
+    if (typeof nodes !== 'undefined') {
+        nodes.forEach(n => {
+            const dx = mouse.x - n.x; const dy = mouse.y - n.y; 
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 220) { 
+                n.el.style.animation = 'none'; 
+                n.el.style.opacity = 1 - (dist/220); 
+                n.el.style.filter = "blur(0px)"; 
+            } else { 
+                n.el.style.animation = 'deepBreathe 8s infinite ease-in-out'; 
+            }
+        });
+    }
+    leaves.forEach(leaf => { 
+        if(Math.sqrt((mouse.x-leaf.x)**2 + (mouse.y-leaf.y)**2) < 30) leaf.isBurning = true; 
     });
-    leaves.forEach(leaf => { if(Math.sqrt((mouse.x-leaf.x)**2 + (mouse.y-leaf.y)**2) < 30) leaf.isBurning = true; });
     spawnFire(mouse.x, mouse.y);
 });
 
@@ -204,15 +233,12 @@ let time = 0;
 function animateCursor() {
     time += 0.05;
     letters.forEach((letter, i) => {
-        // Orbital positions
         const orbitRadius = 45;
         const orbitX = mouse.x + Math.cos(time + letter.angle) * orbitRadius;
         const orbitY = mouse.y + Math.sin(time + letter.angle) * orbitRadius;
 
-        // Elastic Lerp (Follow mouse trail with lag)
         letter.x += (orbitX - letter.x) * (0.15 - (i * 0.005));
         letter.y += (orbitY - letter.y) * (0.15 - (i * 0.005));
-
         letter.el.style.transform = `translate(${letter.x}px, ${letter.y}px)`;
     });
     requestAnimationFrame(animateCursor);
@@ -224,15 +250,34 @@ const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.g
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
 
-function resize() { lCanvas.width = fCanvas.width = window.innerWidth; lCanvas.height = fCanvas.height = window.innerHeight; initLeaves(); }
+function resize() { 
+    lCanvas.width = fCanvas.width = window.innerWidth; 
+    lCanvas.height = fCanvas.height = window.innerHeight; 
+    initLeaves(); 
+}
+
 function initLeaves() {
     leaves = [];
     let count = window.innerWidth < 768 ? 20 : 45; 
     for(let i=0; i<count; i++) {
-        leaves.push({ x: Math.random() * lCanvas.width, y: Math.random() * lCanvas.height, r: Math.random() * 5 + 3, color: leafColors[Math.floor(Math.random() * leafColors.length)], vx: (Math.random() - 0.5) * 1, vy: Math.random() * 0.5 + 0.3, angle: Math.random() * Math.PI * 2, isBurning: false, burnTime: 0 });
+        leaves.push({ 
+            x: Math.random() * lCanvas.width, 
+            y: Math.random() * lCanvas.height, 
+            r: Math.random() * 5 + 3, 
+            color: leafColors[Math.floor(Math.random() * leafColors.length)], 
+            vx: (Math.random() - 0.5) * 1, 
+            vy: Math.random() * 0.5 + 0.3, 
+            angle: Math.random() * Math.PI * 2, 
+            isBurning: false, 
+            burnTime: 0 
+        });
     }
 }
-function spawnFire(x, y) { for(let i=0; i<5; i++) flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 }); }
+
+function spawnFire(x, y) { 
+    for(let i=0; i<5; i++) flames.push({ x, y, s: Math.random()*5+2, a:1, vx:(Math.random()-.5)*2, vy:-Math.random()*3 }); 
+}
+
 function draw() {
     lCtx.clearRect(0,0,lCanvas.width, lCanvas.height); fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
     leaves.forEach(p => {
@@ -253,12 +298,11 @@ function draw() {
     requestAnimationFrame(draw);
 }
 
-const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 addEventListener("touchmove", e => {
     let tX = e.touches[0].clientX; let tY = e.touches[0].clientY;
     spawnFire(tX, tY);
     leaves.forEach(leaf => { if(Math.sqrt((tX-leaf.x)**2 + (tY-leaf.y)**2) < 30) leaf.isBurning = true; });
-});
+}, {passive: true});
 
 resize(); draw(); window.onresize = resize;
 
@@ -271,6 +315,7 @@ const songs = [
     { name: "Sunna hay", type: "green", link: "https://www.youtube.com/watch?v=H9HPTlYHkjQ" },
     { name: "JanEJana", type: "gold", link: "https://www.youtube.com/watch?v=twd-aJLq30U" }
 ];
+
 const nodes = []; const univ = document.getElementById('universe');
 songs.forEach((song) => {
     const el = document.createElement('div'); el.className = `node ${song.type}`;
