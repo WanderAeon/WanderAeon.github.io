@@ -3,19 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>WanderAeon | Not just heard, experienced</title>
-    <meta name="description" content="Experience the untamed shadows through music.">
-    <meta property="og:title" content="WanderAeon | Experience">
-    <meta property="og:image" content="final.jpg">
     
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta name="referrer" content="no-referrer">
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
-/* Reset & Base */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; --glow: #ff9900; }
 
@@ -27,80 +20,84 @@ body {
     overflow-x: hidden; user-select: none;
 }
 
-/* --- NEXT-LEVEL CINEMATIC INTRO --- */
+/* --- DYNAMIC BOOT-UP INTRO --- */
 #intro { 
-    position: fixed; inset: 0; background: #000; z-index: 999; 
+    position: fixed; inset: 0; background: #000; z-index: 9999; 
     display: flex; flex-direction: column; justify-content: center; align-items: center; 
     transition: opacity 1.5s cubic-bezier(0.8, 0, 0.2, 1); pointer-events: auto; 
 }
 #intro::after {
     content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
     background: rgba(255, 69, 0, 0.6); box-shadow: 0 0 20px var(--main);
-    animation: scanLine 3s linear infinite; z-index: 1001;
+    animation: scanLine 3s linear infinite; z-index: 10001;
 }
 .intro-text { 
     font-family: 'Orbitron'; font-size: 32px; color: white; letter-spacing: 12px; 
-    text-transform: uppercase; z-index: 1000; position: relative;
-    text-shadow: 0 0 15px var(--main); animation: glitchText 4s infinite;
+    text-transform: uppercase; z-index: 10000; position: relative;
+    text-shadow: 0 0 15px var(--main); animation: glitchText 3s infinite;
+    transition: 1s ease-in-out;
 }
 @keyframes glitchText {
     0%, 100% { transform: skew(0deg); opacity: 1; }
-    10% { transform: skew(5deg); color: var(--released); text-shadow: -2px 0 red, 2px 0 blue; }
-    14% { transform: skew(0deg); }
+    10% { transform: skew(8deg); color: var(--released); text-shadow: -2px 0 red, 2px 0 blue; }
+    15% { transform: skew(-8deg); color: var(--main); }
+    20% { transform: skew(0deg); }
 }
 @keyframes scanLine { 0% { top: 0%; } 100% { top: 100%; } }
 .loaded #intro { opacity: 0; pointer-events: none; }
 
 /* SECTIONS */
-section {
-    min-height: 100vh; width: 100%; display: flex; 
-    flex-direction: column; justify-content: center; 
-    align-items: center; position: relative; z-index: 2;
-}
+section { min-height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; z-index: 2; }
 
-/* CANVAS EFFECTS */
+/* CANVASES */
 canvas { position: fixed; inset: 0; pointer-events: none; }
 #leaves-canvas { z-index: 1; opacity: 0.8; }
 #fire-canvas { z-index: 3; }
 #universe { position: absolute; inset: 0; z-index: 2; pointer-events: auto; }
 
-/* HOME SECTION */
+/* HERO TEXT */
 .glow-text { 
     font-family: 'Orbitron'; font-size: clamp(3em, 10vw, 8vw); 
-    letter-spacing: 12px; background: linear-gradient(#fff, var(--main)); 
+    letter-spacing: 15px; background: linear-gradient(#fff, var(--main)); 
     -webkit-background-clip: text; color: transparent; text-align: center;
     margin: 0; pointer-events: none; z-index: 4; position: relative;
 }
 
-/* SCROLL INDICATOR (Old version mix) */
+/* BURNING "ENTER THE VOID" BUTTON */
 .scroll-hint {
     position: absolute; bottom: 40px; cursor: pointer;
-    text-decoration: none; color: white; transition: 0.3s; z-index: 10;
+    text-decoration: none; z-index: 10; display: flex; flex-direction: column; align-items: center;
 }
-.scroll-hint span {
-    display: block; font-family: 'Orbitron', sans-serif;
-    font-size: 10px; letter-spacing: 3px; margin-bottom: 10px;
-    color: var(--glow); animation: pulse 2s infinite;
+.burning-text {
+    font-family: 'Orbitron'; font-size: 11px; letter-spacing: 4px;
+    color: #fff; text-shadow: 0 0 8px var(--main), 0 0 20px var(--main);
+    animation: fireFlicker 1.5s infinite alternate;
+    margin-bottom: 12px;
+}
+@keyframes fireFlicker {
+    0% { opacity: 0.8; text-shadow: 0 0 5px var(--main), 0 0 10px var(--main); transform: scale(1); }
+    100% { opacity: 1; text-shadow: 0 0 15px var(--glow), 0 0 30px var(--main), 0 0 40px var(--main); transform: scale(1.05); }
 }
 .arrow-down {
-    width: 20px; height: 20px; border-bottom: 2px solid white;
-    border-right: 2px solid white; transform: rotate(45deg);
-    margin: 0 auto; animation: bounce 2s infinite;
+    width: 15px; height: 15px; border-bottom: 2px solid var(--main);
+    border-right: 2px solid var(--main); transform: rotate(45deg);
+    animation: bounce 2s infinite; box-shadow: 2px 2px 5px rgba(255, 69, 0, 0.5);
 }
 
-/* STORY BOX (Old version card mix) */
+/* STORY CARD */
 .story-box {
-    max-width: 700px; width: 90%;
-    background: rgba(0,0,0,0.7); padding: 50px;
-    border-left: 3px solid var(--main); border-right: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    max-width: 700px; width: 90%; background: rgba(0,0,0,0.75); padding: 50px;
+    border-left: 4px solid var(--main); backdrop-filter: blur(20px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.9); transition: 0.5s;
 }
-.story-box p { font-size: 1.1em; line-height: 1.8; color: #ddd; margin-bottom: 20px; text-align: left; }
-.highlight { color: var(--glow); font-family: 'Orbitron'; font-size: 0.9em; }
+.story-box p { font-size: 1.1em; line-height: 1.9; color: #eee; margin-bottom: 20px; }
+.highlight { color: var(--glow); font-family: 'Orbitron'; font-weight: 900; }
 .back-to-top {
-    margin-top: 30px; cursor: pointer; font-family: 'Orbitron', sans-serif;
-    font-size: 10px; color: var(--released); text-decoration: none; letter-spacing: 2px;
+    margin-top: 30px; cursor: pointer; font-family: 'Orbitron'; font-size: 9px;
+    color: var(--released); text-decoration: none; letter-spacing: 2px;
+    display: inline-block; border: 1px solid var(--released); padding: 8px 15px; transition: 0.3s;
 }
+.back-to-top:hover { background: var(--released); color: #000; box-shadow: 0 0 15px var(--released); }
 
 /* NODES */
 .node { 
@@ -115,36 +112,27 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .green .dot { background: var(--released); box-shadow: 0 0 10px var(--released); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 10px var(--hit); }
 
-/* SOCIALS */
+/* SOCIAL PANEL */
 .social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; }
-.social-btn { width: 65px; height: 65px; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; transition: 0.4s; overflow: hidden; }
+.social-btn { width: 65px; height: 65px; cursor: pointer; border-radius: 50%; background: rgba(0,0,0,0.8); border: 2px solid var(--main); display: flex; justify-content: center; align-items: center; transition: 0.4s; }
 .social-icons { position: absolute; top: 50%; left: 35px; width: 0; height: 350px; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; gap: 15px; opacity: 0; visibility: hidden; transition: 0.5s; pointer-events: none; }
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 85px; pointer-events: auto; }
-.social-icons a { width: 45px; height: 45px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+.social-icons a { width: 45px; height: 45px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; display: flex; justify-content: center; align-items: center; }
 
-/* ANIMATIONS */
 @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0) rotate(45deg);} 40% {transform: translateY(-10px) rotate(45deg);} }
-@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
-@media (max-width: 768px) { 
-    body { cursor: default; }
-    .social-panel { left: 15px; } 
-    .glow-text { font-size: 15vw; }
-    #cursor-container { display: none !important; }
-}
+@media (max-width: 768px) { .social-panel { left: 15px; } .glow-text { font-size: 14vw; } }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
-<div id="intro">
-    <div class="intro-text">WanderAeon</div>
-</div>
+<div id="intro"><div class="intro-text">WanderAeon</div></div>
 
 <canvas id="leaves-canvas"></canvas>
 <canvas id="fire-canvas"></canvas>
 
 <div id="cursor-container" style="position:fixed; pointer-events:none; z-index:9999; top:0; left:0; width:100%; height:100%; display:none;">
-    <div id="cursor-dot" style="position:absolute; width:6px; height:6px; background:var(--main); border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 15px var(--main);"></div>
+    <div id="cursor-dot" style="position:absolute; width:6px; height:6px; background:var(--main); border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 15px var(--main), 0 0 30px var(--main);"></div>
 </div>
 
 <div class="social-panel">
@@ -159,10 +147,11 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </div>
 
 <section id="home">
-    <div id="universe"></div> <h1 class="glow-text">WanderAeon</h1>
+    <div id="universe"></div>
+    <h1 class="glow-text">WanderAeon</h1>
     
     <a href="#about" class="scroll-hint">
-        <span>ENTER THE VOID</span>
+        <span class="burning-text">ENTER THE VOID</span>
         <div class="arrow-down"></div>
     </a>
 </section>
@@ -180,16 +169,26 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 // --- CORE LOGIC ---
 window.onload = () => {
     const introText = document.querySelector('.intro-text');
-    setTimeout(() => { introText.style.filter = "blur(15px)"; introText.style.opacity = "0"; }, 4000);
+    // Explosive Intro Exit
+    setTimeout(() => { 
+        introText.style.letterSpacing = "35px";
+        introText.style.filter = "blur(15px)"; 
+        introText.style.opacity = "0"; 
+    }, 4000);
+    
     setTimeout(() => {
         document.body.classList.add('loaded');
+        // Sequential pop-in of nodes
         nodes.forEach((n, i) => {
-            setTimeout(() => { n.el.style.opacity = "0.3"; n.el.style.transform = "translate(-50%, -50%) scale(1)"; }, i * 150);
+            setTimeout(() => { 
+                n.el.style.opacity = "0.3"; 
+                n.el.style.transform = "translate(-50%, -50%) scale(1)"; 
+            }, i * 180);
         });
     }, 4800);
 };
 
-// Cursor & Interaction
+// Cursor
 const cursor = document.getElementById("cursor-container");
 const dot = document.getElementById("cursor-dot");
 const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
@@ -202,7 +201,7 @@ addEventListener("mousemove", e => {
     leaves.forEach(l => { if(Math.sqrt((mouse.x-l.x)**2 + (mouse.y-l.y)**2) < 50) l.isBurning = true; });
 });
 
-// --- PATTY & FIRE CANVAS ---
+// --- CANVASES ---
 const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
 let leaves = []; let flames = []; const leafColors = ["#cc4400", "#e6b800", "#ff6600", "#b33c00"];
@@ -228,7 +227,7 @@ function draw() {
 }
 resize(); draw(); window.onresize = resize;
 
-// --- SONG NODES (Futuristic Orbit) ---
+// --- SONGS ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -255,7 +254,7 @@ addEventListener("mousemove", () => {
     nodes.forEach(n => { const d = Math.sqrt((mouse.x - n.x)**2 + (mouse.y - n.y)**2); n.el.style.opacity = d < 250 ? 1 : 0.3; });
 });
 
-// Socials & Navigation
+// Socials
 const sBtn = document.getElementById("socialBtn"); const sIcons = document.getElementById("socialIcons");
 sBtn.onclick = (e) => { e.stopPropagation(); sIcons.classList.toggle("show"); };
 document.body.onclick = () => sIcons.classList.remove("show");
