@@ -3,15 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>WanderAeon | Not just heard, experienced</title>
+    <meta name="description" content="Experience the untamed shadows and wandering souls through music.">
+    <meta property="og:title" content="WanderAeon | Not just heard, experienced">
+    <meta property="og:description" content="A futuristic musical journey. Not just heard, experienced.">
+    <meta property="og:image" content="final.jpg"> <meta property="og:type" content="website">
+    
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="referrer" content="no-referrer">
-    <title>WanderAeon | Not just heard, experienced</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
+
 <style>
-/* Reset dimensions precisely */
+/* Reset dimensions */
 *, *::before, *::after { box-sizing: border-box; }
 :root{ --main: #ff4500; --released: #00ff88; --teaser: #ff3333; --hit: #ffd700; --burn: #ffcc00; }
-body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #050505 url('final.jpg') center/cover no-repeat fixed; overflow: hidden; font-family: sans-serif; position: relative; user-select: none; }
+
+body, html { 
+    margin: 0; padding: 0; width: 100%; height: 100%; 
+    background: #050505; /* Fallback color */
+    overflow: hidden; font-family: sans-serif; position: relative; 
+    user-select: none;
+}
+
+/* PARALLAX BACKGROUND LAYER */
+#bg-layer {
+    position: fixed;
+    top: -5%; left: -5%;
+    width: 110%; height: 110%;
+    background: url('final.jpg') center/cover no-repeat;
+    z-index: -1;
+    transition: transform 0.2s ease-out; /* Smooth movement */
+    will-change: transform;
+}
 
 /* NEON VISUALIZER BARS */
 .visualizer-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding: 0 20px; z-index: 4; pointer-events: none; opacity: 0.6; }
@@ -31,28 +56,19 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 @keyframes textFade { 0% { opacity: 0; filter: blur(10px); } 30%, 70% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px var(--main); } 100% { opacity: 0; filter: blur(10px); } }
 .loaded #intro { opacity: 0; pointer-events: none; }
 
-/* NODES (Fixed Positioning Logic) */
+/* NODES */
 #universe { position: fixed; inset: 0; z-index: 5; pointer-events: auto; }
 .node { 
-    position: absolute; 
-    font-family: 'Orbitron', sans-serif; 
-    font-size: 10px; 
-    color: rgba(255,255,255,0.7); 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-    cursor: pointer; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform: translate(-50%, -50%);
+    position: absolute; font-family: 'Orbitron', sans-serif; font-size: 10px; 
+    color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; 
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; 
+    transition: 0.4s; transform: translate(-50%, -50%);
 }
-.node:hover { color: #white; transform: translate(-50%, -50%) scale(1.2); z-index: 10; opacity: 1 !important; }
-.dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; transition: 0.3s; }
+.node:hover { color: #fff; transform: translate(-50%, -50%) scale(1.15); z-index: 10; opacity: 1 !important; }
+.dot { width: 6px; height: 6px; border-radius: 50%; margin-bottom: 8px; }
 .red .dot { background: var(--teaser); box-shadow: 0 0 8px var(--teaser); }
 .green .dot { background: var(--released); box-shadow: 0 0 8px var(--released); }
 .gold .dot { background: var(--hit); box-shadow: 0 0 8px var(--hit); }
-.node:hover .dot { transform: scale(1.5); box-shadow: 0 0 20px currentColor; }
 
 /* SOCIAL PANEL */
 .social-panel { position: fixed; left: 40px; top: 50%; transform: translateY(-50%); z-index: 100; pointer-events: auto; }
@@ -72,6 +88,8 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 </head>
 <body oncontextmenu="return false;">
 
+<div id="bg-layer"></div>
+
 <div class="visualizer-container" id="visualizer"></div>
 <div id="cursor-container"><div id="cursor-dot"></div></div>
 
@@ -79,8 +97,7 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
     <div class="intro-text">WanderAeon</div>
 </div>
 
-<canvas id="leaves-canvas"></canvas>
-<canvas id="fire-canvas"></canvas>
+<canvas id="fire-canvas" style="position:fixed; inset:0; pointer-events:none; z-index:2;"></canvas>
 <div id="universe"></div>
 
 <div class="social-panel">
@@ -99,15 +116,14 @@ body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #0505
 </section>
 
 <script>
-// --- SECURITY ---
+// --- SECURITY & INTRO ---
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
     if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) e.preventDefault();
 });
-
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
-// Visualizer
+// --- VISUALIZER ---
 const viz = document.getElementById("visualizer");
 for(let i=0; i<40; i++) {
     const bar = document.createElement("div");
@@ -116,7 +132,8 @@ for(let i=0; i<40; i++) {
     viz.appendChild(bar);
 }
 
-// Cursor
+// --- CURSOR & PARALLAX LOGIC ---
+const bgLayer = document.getElementById("bg-layer");
 const cursorContainer = document.getElementById("cursor-container");
 const cursorDot = document.getElementById("cursor-dot");
 const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
@@ -136,6 +153,11 @@ addEventListener("mousemove", e => {
     cursorDot.style.left = mouse.x + 'px';
     cursorDot.style.top = mouse.y + 'px';
     cursorContainer.style.display = 'block';
+
+    // PARALLAX EFFECT: Move background slightly based on mouse
+    const moveX = (mouse.x - window.innerWidth / 2) * -0.01;
+    const moveY = (mouse.y - window.innerHeight / 2) * -0.01;
+    bgLayer.style.transform = `translate(${moveX}px, ${moveY}px)`;
 });
 
 function animateCursor() {
@@ -151,16 +173,14 @@ function animateCursor() {
 }
 animateCursor();
 
-// Canvas (Leaves & Fire)
-const lCanvas = document.getElementById("leaves-canvas"); const lCtx = lCanvas.getContext("2d");
+// --- FIRE EFFECT ---
 const fCanvas = document.getElementById("fire-canvas"); const fCtx = fCanvas.getContext("2d");
-let leaves = []; let flames = [];
-
-function resize() { lCanvas.width = fCanvas.width = window.innerWidth; lCanvas.height = fCanvas.height = window.innerHeight; }
+let flames = [];
+function resize() { fCanvas.width = window.innerWidth; fCanvas.height = window.innerHeight; }
 function spawnFire(x, y) { for(let i=0; i<2; i++) flames.push({ x, y, s: Math.random()*3+1, a:1, vx:(Math.random()-.5)*1, vy:-Math.random()*2 }); }
 
 function draw() {
-    lCtx.clearRect(0,0,lCanvas.width, lCanvas.height); fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
+    fCtx.clearRect(0,0,fCanvas.width, fCanvas.height);
     flames.forEach((p, i) => {
         p.x += p.vx; p.y += p.vy; p.a -= 0.02;
         if(p.a <= 0) flames.splice(i, 1);
@@ -170,7 +190,7 @@ function draw() {
 }
 resize(); draw(); window.onresize = resize;
 
-// --- IMPROVED SONG NODES (Circular Orbit) ---
+// --- SONG NODES (Circular) ---
 const songs = [
     { name: "Wanderer", type: "red", link: "https://youtu.be/oE4C19lM4fA" },
     { name: "Untamed Shadows", type: "green", link: "https://www.youtube.com/watch?v=VQXMUNpGjjQ" },
@@ -190,31 +210,21 @@ songs.forEach((song, i) => {
     el.onclick = () => window.open(song.link, '_blank');
     univ.appendChild(el);
 
-    // Calculate fixed circular positions around center
     const angle = (i / songs.length) * Math.PI * 2;
-    const radiusX = window.innerWidth > 768 ? 30 : 35; // % of width
-    const radiusY = window.innerWidth > 768 ? 35 : 30; // % of height
+    const radiusX = window.innerWidth > 768 ? 30 : 35;
+    const radiusY = window.innerWidth > 768 ? 35 : 30;
     
     const posX = 50 + Math.cos(angle) * radiusX;
     const posY = 50 + Math.sin(angle) * radiusY;
 
-    el.style.left = posX + '%';
-    el.style.top = posY + '%';
-    
-    // Add a gentle floating animation
-    el.style.animation = `bounce ${3 + Math.random()*2}s infinite ease-in-out ${Math.random()*2}s`;
-    
+    el.style.left = posX + '%'; el.style.top = posY + '%';
     nodes.push({ el, x: (posX/100)*window.innerWidth, y: (posY/100)*window.innerHeight });
 });
 
-// Proximity Fade Effect
 addEventListener("mousemove", () => {
     nodes.forEach(n => {
-        const dx = mouse.x - n.x; const dy = mouse.y - n.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        // Fade in when mouse is near, otherwise keep dim
-        if(dist < 250) n.el.style.opacity = 1;
-        else n.el.style.opacity = 0.3;
+        const dist = Math.sqrt((mouse.x - n.x)**2 + (mouse.y - n.y)**2);
+        n.el.style.opacity = dist < 250 ? 1 : 0.3;
     });
     spawnFire(mouse.x, mouse.y);
 });
