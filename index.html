@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WanderAeon | Not just heard, experienced</title>
+    
+    <meta name="description" content="Experience the untamed shadows through music.">
+    <meta property="og:title" content="WanderAeon | Experience">
+    <meta property="og:image" content="final.jpg">
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
@@ -26,7 +31,6 @@ body {
     transition: opacity 1.5s cubic-bezier(0.8, 0, 0.2, 1); pointer-events: auto; 
 }
 
-/* Pulse Circles FIX */
 .pulse-container { position: absolute; display: flex; justify-content: center; align-items: center; z-index: 10000; }
 .heart-pulse { position: absolute; width: 150px; height: 150px; border: 2px solid var(--main); border-radius: 50%; opacity: 0; animation: pulseAnim 2s infinite ease-out; }
 .pulse-2 { animation-delay: 0.7s; }
@@ -70,7 +74,7 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
     margin: 0; pointer-events: none; z-index: 4; position: relative;
 }
 
-/* NAVIGATION BUTTONS (Enter Void & Return Home) */
+/* NAVIGATION BUTTONS */
 .nav-link {
     text-decoration: none; cursor: pointer; font-family: 'Orbitron'; font-size: 10px;
     color: var(--released); letter-spacing: 3px; display: flex; flex-direction: column; align-items: center;
@@ -112,7 +116,15 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 .social-icons.show { opacity: 1; visibility: visible; width: 100px; left: 85px; pointer-events: auto; }
 .social-icons a { width: 45px; height: 45px; background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; display: flex; justify-content: center; align-items: center; }
 
-@media (max-width: 768px) { .social-panel { left: 15px; } .glow-text { font-size: 14vw; } }
+/* --- MOBILE RESPONSIVE FIX --- */
+@media (max-width: 768px) {
+    body, html { overflow-x: hidden; }
+    .glow-text { font-size: 14vw; letter-spacing: 5px; }
+    .social-panel { left: 10px; transform: translateY(-50%) scale(0.8); }
+    .story-box { width: 95%; padding: 25px; margin: 20px auto; }
+    .node { font-size: 9px; }
+    .nav-link { padding: 10px 18px; font-size: 9px; }
+}
 </style>
 </head>
 <body oncontextmenu="return false;">
@@ -234,7 +246,9 @@ songs.forEach((song, i) => {
     el.onclick = () => window.open(song.link, '_blank');
     univ.appendChild(el);
     const angle = (i / songs.length) * Math.PI * 2;
-    const rx = window.innerWidth > 768 ? 32 : 35; const ry = window.innerWidth > 768 ? 38 : 32;
+    // Mobile responsive radius logic
+    const rx = window.innerWidth > 768 ? 32 : 28; 
+    const ry = window.innerWidth > 768 ? 38 : 30;
     const px = 50 + Math.cos(angle) * rx; const py = 50 + Math.sin(angle) * ry;
     el.style.left = px + '%'; el.style.top = py + '%';
     nodes.push({ el, x: (px/100)*window.innerWidth, y: (py/100)*window.innerHeight });
