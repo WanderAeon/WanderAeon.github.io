@@ -110,7 +110,35 @@ canvas { position: fixed; inset: 0; pointer-events: none; }
 </section>
 
 <script>
-// Auto-fade intro after 4.5s
+// --- BASIC SECURITY PARAMETERS ---
+
+// 1. Right Click Disable (To prevent "Save As" or "View Source" easily)
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    // Optional: Aap yahan koi alert bhi dikha sakte hain
+    // alert("Content is protected!"); 
+});
+
+// 2. Keyboard Shortcuts Disable (F12, Ctrl+Shift+I, Ctrl+U)
+document.addEventListener('keydown', (e) => {
+    // Disable F12
+    if (e.keyCode === 123) {
+        e.preventDefault();
+        return false;
+    }
+    // Disable Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+U (Source)
+    if (e.ctrlKey && (e.shiftKey && (e.keyCode === 73 || e.keyCode === 74) || e.keyCode === 85)) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// 3. Dragging Disable (Taake koi images ya text drag na kar sake)
+document.addEventListener('dragstart', (e) => {
+    e.preventDefault();
+});
+    
+    // Auto-fade intro after 4.5s
 setTimeout(() => { document.body.classList.add('loaded'); }, 4500);
 
 // Visualizer Bars Injection
